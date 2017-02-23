@@ -165,9 +165,10 @@ public final class HilbertCurve {
      * @return the coordinates of the point represented by the transposed index
      *         on the Hilbert curve
      */
-    private long[] transposedIndexToPoint(long... transposedIndex) {
-        int n = transposedIndex.length; // number of dimensions
-        long[] x = Arrays.copyOf(transposedIndex, n);
+    private long[] transposedIndexToPoint(long... x) {
+        // Note that x is mutated by this method (as a performance improvement
+        // to avoid allocation)
+        int n = x.length; // number of dimensions
         long p, q, t;
         int i;
         // Gray decode by H ^ (H/2)
