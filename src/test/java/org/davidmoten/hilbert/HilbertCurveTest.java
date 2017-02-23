@@ -142,7 +142,7 @@ public class HilbertCurveTest {
     @Test
     public void testPointFromIndexBits1Point0_1() {
         HilbertCurve c = HilbertCurve.bits(1).dimensions(2);
-        long[] ti = c.pointToTransposedIndex(0, 1);
+        long[] ti = c.transposedIndex(0, 1);
         assertEquals("0,1", ti[0] + "," + ti[1]);
         assertEquals(1, c.index(0, 1).intValue());
         long[] ti2 = c.transpose(BigInteger.valueOf(1));
@@ -152,7 +152,7 @@ public class HilbertCurveTest {
     @Test
     public void testPointFromIndexBits1Point1_1() {
         HilbertCurve c = HilbertCurve.bits(1).dimensions(2);
-        long[] ti = c.pointToTransposedIndex(1, 1);
+        long[] ti = c.transposedIndex(1, 1);
         assertEquals("1,0", ti[0] + "," + ti[1]);
         assertEquals(2, c.index(1, 1).intValue());
         long[] ti2 = c.transpose(BigInteger.valueOf(2));
