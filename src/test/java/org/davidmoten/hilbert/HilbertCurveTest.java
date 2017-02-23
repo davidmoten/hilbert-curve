@@ -105,6 +105,25 @@ public class HilbertCurveTest {
     }
 
     @Test
+    public void checkPathIsSingleStepOnly() {
+        for (int bits = 1; bits <= 10; bits++) {
+            for (int dimensions = 2; dimensions <= 10; dimensions++) {
+                HilbertCurve c = HilbertCurve.bits(bits).dimensions(dimensions);
+                long[] point = c.point(0);
+                for (long i = 1; i < Math.pow(2, bits + 1); i++) {
+                    long[] point2 = c.point(i);
+                    int sum = 0;
+                    for (int j = 0; j < point.length; j++) {
+                        sum += Math.abs(point2[j] - point[j]);
+                    }
+                    assertEquals(1, sum);
+                    point = point2;
+                }
+            }
+        }
+    }
+
+    @Test
     public void testPointFromIndexBits1Point0_1() {
         HilbertCurve c = HilbertCurve.bits(1).dimensions(2);
         long[] ti = c.pointToTransposedIndex(0, 1);
@@ -123,36 +142,36 @@ public class HilbertCurveTest {
         long[] ti2 = c.transpose(BigInteger.valueOf(2));
         assertEquals("1,0", ti2[0] + "," + ti2[1]);
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
     public void testBitsPositive() {
         HilbertCurve.bits(0);
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
     public void testDimensionAtLeastTwo() {
         HilbertCurve.bits(2).dimensions(1);
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
     public void testPointMatchesDimensions() {
         HilbertCurve c = HilbertCurve.bits(2).dimensions(2);
-        long[] point = {1};
+        long[] point = { 1 };
         c.index(point);
     }
-    
+
     @Test(expected = NullPointerException.class)
     public void testIndexCannotBeNull() {
         HilbertCurve c = HilbertCurve.bits(2).dimensions(2);
         c.point((BigInteger) null);
     }
-    
-    @Test(expected=IllegalArgumentException.class)
+
+    @Test(expected = IllegalArgumentException.class)
     public void testIndexCannotBeNegative() {
         HilbertCurve c = HilbertCurve.bits(2).dimensions(2);
         c.point(BigInteger.valueOf(-1));
     }
-    
+
     private static boolean checkRoundTrip(int bits, int dimensions, long value) {
         HilbertCurve c = HilbertCurve.bits(bits).dimensions(dimensions);
         long[] point = c.point(value);
