@@ -31,8 +31,9 @@ public class HilbertCurveTest {
 
     @Test
     public void testToBigInteger() {
+        HilbertCurve c = HilbertCurve.bits(5).dimensions(2);
         long[] ti = { 0, 16 };
-        assertEquals(256, HilbertCurve.toBigInteger(5, ti).intValue());
+        assertEquals(256, c.toBigInteger(ti).intValue());
     }
 
     @Test

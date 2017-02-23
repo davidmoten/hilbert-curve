@@ -59,7 +59,7 @@ public final class HilbertCurve {
         final int bits;
 
         private HilbertCurveBuilder(int bits) {
-            Preconditions.checkArgument(bits>0, "bits must be greater than zero");
+            Preconditions.checkArgument(bits > 0, "bits must be greater than zero");
             this.bits = bits;
         }
 
@@ -71,7 +71,7 @@ public final class HilbertCurve {
 
     public BigInteger index(long... point) {
         Preconditions.checkArgument(point.length == dimensions);
-        return toBigInteger(bits, transposedIndex(bits, point));
+        return toBigInteger(transposedIndex(bits, point));
     }
 
     public long[] point(BigInteger index) {
@@ -90,7 +90,8 @@ public final class HilbertCurve {
      * 
      * In Skilling's paper this function is named {@code TransposeToAxes}
      * 
-     * @param transposedIndex distance along the Hilbert curve in transposed form
+     * @param transposedIndex
+     *            distance along the Hilbert curve in transposed form
      * @return the coordinates of the point represented by the transposed index
      *         on the Hilbert curve
      */
@@ -170,8 +171,8 @@ public final class HilbertCurve {
     private static long[] transposedIndexToPoint(int bits, long... transposedIndex) {
 
         final long N = 2L << (bits - 1);
-        long[] x = Arrays.copyOf(transposedIndex, transposedIndex.length);
-        int n = x.length; // n: Number of dimensions
+        int n = transposedIndex.length; // number of dimensions
+        long[] x = Arrays.copyOf(transposedIndex, n);
         long p, q, t;
         int i;
         // Gray decode by H ^ (H/2)
@@ -204,8 +205,7 @@ public final class HilbertCurve {
     // which can have as many bits as necessary. This converts the array into a
     // single number.
     @VisibleForTesting
-    static BigInteger toBigInteger(int bits, long... transposedIndex) {
-        int length = transposedIndex.length * bits;
+    BigInteger toBigInteger(long... transposedIndex) {
         BitSet b = new BitSet(length);
         int bIndex = length - 1;
         long mask = 1L << (bits - 1);
