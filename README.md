@@ -15,7 +15,7 @@ Maven [reports](https://davidmoten.github.io/hilbert-curve/index.html) including
 
 Background
 -------------
-A Hilbert curve is a continuous fractal space-filling curve first described by David Hilbert in 1891.
+A [Hilbert curve](https://en.wikipedia.org/wiki/Hilbert_curve) is a continuous fractal space-filling curve first described by David Hilbert in 1891.
 
 This library supports *approximations* to the Hilbert curve. *H<sub>n</sub>* is the n-th approximation to the Hilbert curve and is a path of 2<sup>n</sup>-1 straight line segments of length 1.
 
