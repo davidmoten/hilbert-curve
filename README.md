@@ -11,6 +11,7 @@ Java utilities for transforming distance along N-dimensional Hilbert Curve to a 
 Status: *deployed to Maven Central*
 
 2D Hilbert curves with 1 to 6 bits:
+
 | | |
 | --- | --- |
 |  <img src="src/docs/hilbert-2d-bits-1.png?raw=true" /> |  <img src="src/docs/hilbert-2d-bits-2.png?raw=true" />
