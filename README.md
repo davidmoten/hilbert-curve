@@ -12,12 +12,9 @@ Status: *deployed to Maven Central*
 
 |  | |
 | --- | --- |
-|  <img src="src/docs/hilbert-2d-bits-1.png?raw=true" /> |  <img src="src/docs/hilbert-2d-bits-1.png?raw=true" />
-|  <img src="src/docs/hilbert-2d-bits-2.png?raw=true" /> |  <img src="src/docs/hilbert-2d-bits-2.png?raw=true" />
-|  <img src="src/docs/hilbert-2d-bits-3.png?raw=true" /> |  <img src="src/docs/hilbert-2d-bits-3.png?raw=true" />
-|  <img src="src/docs/hilbert-2d-bits-4.png?raw=true" /> |  <img src="src/docs/hilbert-2d-bits-4.png?raw=true" />
-|  <img src="src/docs/hilbert-2d-bits-5.png?raw=true" /> |  <img src="src/docs/hilbert-2d-bits-5.png?raw=true" />
-|  <img src="src/docs/hilbert-2d-bits-6.png?raw=true" /> |  <img src="src/docs/hilbert-2d-bits-6.png?raw=true" />
+|  <img src="src/docs/hilbert-2d-bits-1.png?raw=true" /> |  <img src="src/docs/hilbert-2d-bits-2.png?raw=true" />
+|  <img src="src/docs/hilbert-2d-bits-3.png?raw=true" /> |  <img src="src/docs/hilbert-2d-bits-4.png?raw=true" />
+|  <img src="src/docs/hilbert-2d-bits-5.png?raw=true" /> |  <img src="src/docs/hilbert-2d-bits-6.png?raw=true" />
 
 Getting started
 -----------------
