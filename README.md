@@ -3,10 +3,12 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.davidmoten/hilbert-curve/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/com.github.davidmoten/hilbert-curve)<br/>
 [![codecov](https://codecov.io/gh/davidmoten/hilbert-curve/branch/master/graph/badge.svg)](https://codecov.io/gh/davidmoten/hilbert-curve)<br/>
 
-Java utilities for transforming distance along N-dimensional Hilbert Curve to a point and back
+Java utilities for transforming distance along N-dimensional Hilbert Curve to a point and back.
 
 * supports N dimensions
 * renders in 2-dimensions
+
+Status: *deployed to Maven Central*
 
 Getting started
 -----------------
