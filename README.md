@@ -10,6 +10,8 @@ Java utilities for transforming distance along an N-dimensional Hilbert Curve to
 
 Status: *deployed to Maven Central*
 
+Maven [reports](https://davidmoten.github.io/hilbert-curve/index.html) including [javadocs](https://davidmoten.github.io/hilbert-curve/apidocs/index.html)
+
 Background
 -------------
 A Hilbert curve is a continuous fractal space-filling curve first described by David Hilbert in 1891.
