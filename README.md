@@ -50,6 +50,12 @@ long[] point = {3, 4};
 BigInteger index = c.index(point);
 ```
 
+To render a curve (for 2 dimensions only) to a PNG of 800x800 pixels:
+
+```java
+HilbertCurveRenderer.renderToFile(bits, 800, "target/image.png");
+```
+
 Credits
 ----------
 Primary credit goes to John Skilling for his article "Programming the Hilbert curve" (American Institue of Physics (AIP) Conf. Proc. 707, 381 (2004)).
