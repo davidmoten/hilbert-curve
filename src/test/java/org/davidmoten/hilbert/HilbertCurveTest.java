@@ -1,10 +1,15 @@
 package org.davidmoten.hilbert;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.BitSet;
 
@@ -41,16 +46,27 @@ public class HilbertCurveTest {
     }
 
     @Test
-    public void testPrintOutIndexValues() {
-        int bits = 5;
-        HilbertCurve c = HilbertCurve.bits(bits).dimensions(2);
-        int n = 2 << (bits - 1);
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                System.out.print(c.index(i, j));
-                System.out.print("\t");
+    public void testPrintOutIndexValues() throws IOException {
+        for (int bits = 1; bits <= 7; bits++) {
+            HilbertCurve c = HilbertCurve.bits(bits).dimensions(2);
+            int n = 2 << (bits - 1);
+            PrintStream out = new PrintStream("target/indexes-2d-bits-" + bits + ".txt");
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    out.print(c.index(i, j));
+                    if (j != n - 1)
+                        out.print("\t");
+                }
+                out.println();
             }
-            System.out.println();
+            out.close();
+            String actual = new String(Files.readAllBytes(
+                    new File("target/indexes-2d-bits-" + bits + ".txt").toPath()),
+                    StandardCharsets.UTF_8);
+            String expected = new String(Files.readAllBytes(
+                    new File("src/test/resources/expected/indexes-2d-bits-" + bits + ".txt").toPath()),
+                    StandardCharsets.UTF_8);
+            assertEquals(expected, actual);
         }
     }
 
