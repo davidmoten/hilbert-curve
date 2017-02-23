@@ -21,6 +21,7 @@ public final class HilbertCurve {
 
     private final int bits;
     private final int dimensions;
+    // cached calculations
     private final int length;
     private final long N;
     private final long M;
@@ -29,8 +30,8 @@ public final class HilbertCurve {
     private HilbertCurve(int bits, int dimensions) {
         this.bits = bits;
         this.dimensions = dimensions;
+        // cache a few calculated values for small perf improvements
         this.length = bits * dimensions;
-        // cache a few calculated values
         this.N = 2L << (bits - 1);
         this.M = 1L << (bits - 1);
         this.initialMask = 1L << (bits - 1);
@@ -49,6 +50,9 @@ public final class HilbertCurve {
         return new HilbertCurveBuilder(bits);
     }
 
+    /**
+     * Builds a {@link HilbertCurve} instance.
+     */
     public static class HilbertCurveBuilder {
         final int bits;
 
@@ -63,17 +67,53 @@ public final class HilbertCurve {
         }
     }
 
+    /**
+     * Converts a point to its Hilbert curve index.
+     * 
+     * @param point
+     *            an array of {@code long}. Each coordinate can be between 0 and
+     *            2<sup>bits</sup>-1.
+     * @return index (nonnegative {@link BigInteger})
+     * @throws {@link
+     *             IllegalArgumentException} if length of point array is not
+     *             equal to the number of dimensions.
+     */
     public BigInteger index(long... point) {
         Preconditions.checkArgument(point.length == dimensions);
         return toBigInteger(transposedIndex(point));
     }
 
+    /**
+     * Converts a {@link BigInteger} index (distance along the Hilbert Curve
+     * from 0) to a point of dimensions defined in the constructor of
+     * {@code this}.
+     * 
+     * @param index
+     *            index along the Hilbert Curve from 0. Maximum value
+     *            2<sup>bits+1</sup>-1.
+     * @return array of longs being the point
+     * @throws {@link
+     *             NullPointerException} if index is null
+     * @throws {@link
+     *             IllegalArgumentException} if index is negative
+     */
     public long[] point(BigInteger index) {
         Preconditions.checkNotNull(index);
         Preconditions.checkArgument(index.signum() != -1, "index cannot be negative");
         return transposedIndexToPoint(transpose(index));
     }
 
+    /**
+     * Converts a {@code long} index (distance along the Hilbert Curve from 0)
+     * to a point of dimensions defined in the constructor of {@code this}.
+     * 
+     * @param index
+     *            index along the Hilbert Curve from 0. Maximum value
+     *            2<sup>bits+1</sup>-1.
+     * @return array of longs being the point
+     * @throws {@link
+     *             IllegalArgumentException} if index is negative
+     */
     public long[] point(long index) {
         return point(BigInteger.valueOf(index));
     }
@@ -81,7 +121,8 @@ public final class HilbertCurve {
     /**
      * Returns the transposed representation of the Hilbert curve index.
      * 
-     * <p>The Hilbert index is expressed internally as an array of transposed bits.
+     * <p>
+     * The Hilbert index is expressed internally as an array of transposed bits.
      * 
      * <pre>
       Example: 5 bits for each of n=3 coordinates.
