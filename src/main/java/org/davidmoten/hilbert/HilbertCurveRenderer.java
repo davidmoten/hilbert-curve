@@ -13,6 +13,10 @@ import javax.imageio.ImageIO;
 import org.davidmoten.hilbert.exceptions.IORuntimeException;
 
 public final class HilbertCurveRenderer {
+    
+    private HilbertCurveRenderer() {
+        //prevent instantiation
+    }
 
     public static void renderToFile(int bits, int width, String filename) {
         BufferedImage b = render(bits, width);

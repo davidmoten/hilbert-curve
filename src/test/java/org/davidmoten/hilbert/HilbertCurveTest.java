@@ -41,20 +41,6 @@ public class HilbertCurveTest {
     }
 
     @Test
-    public void testReverseOddNumberOfElements() {
-        byte[] bytes = { 1, 2, 3, 4, 5 };
-        Util.reverse(bytes);
-        assertArrayEquals(new byte[] { 5, 4, 3, 2, 1 }, bytes);
-    }
-
-    @Test
-    public void testReverseEventNumberOfElements() {
-        byte[] bytes = { 1, 2, 3, 4, 5, 6 };
-        Util.reverse(bytes);
-        assertArrayEquals(new byte[] { 6, 5, 4, 3, 2, 1 }, bytes);
-    }
-
-    @Test
     public void testPrintOutIndexValues() {
         int bits = 5;
         HilbertCurve c = HilbertCurve.bits(bits).dimensions(2);
@@ -159,6 +145,12 @@ public class HilbertCurveTest {
     public void testIndexCannotBeNull() {
         HilbertCurve c = HilbertCurve.bits(2).dimensions(2);
         c.point((BigInteger) null);
+    }
+    
+    @Test(expected=IllegalArgumentException.class)
+    public void testIndexCannotBeNegative() {
+        HilbertCurve c = HilbertCurve.bits(2).dimensions(2);
+        c.point(BigInteger.valueOf(-1));
     }
     
     private static boolean checkRoundTrip(int bits, int dimensions, long value) {

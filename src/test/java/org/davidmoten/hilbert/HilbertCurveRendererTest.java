@@ -8,9 +8,17 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import org.davidmoten.hilbert.HilbertCurveRenderer;
+import org.davidmoten.hilbert.exceptions.IORuntimeException;
 import org.junit.Test;
 
+import com.github.davidmoten.junit.Asserts;
+
 public class HilbertCurveRendererTest {
+    
+    @Test
+    public void isUtilClass() {
+        Asserts.assertIsUtilityClass(HilbertCurveRenderer.class);
+    }
 
     @Test
     public void testImageCreation() {
@@ -28,7 +36,12 @@ public class HilbertCurveRendererTest {
             assertTrue(distance(expected, b) < 100);
         }
     }
-
+    
+    @Test
+    public void testException() {
+        new IORuntimeException(new IOException());
+    }
+    
     private static double distance(BufferedImage imgA, BufferedImage imgB) {
         // The images must be the same size.
         if (imgA.getWidth() == imgB.getWidth() && imgA.getHeight() == imgB.getHeight()) {
