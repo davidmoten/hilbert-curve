@@ -74,9 +74,9 @@ public final class HilbertCurve {
      *            an array of {@code long}. Each coordinate can be between 0 and
      *            2<sup>bits</sup>-1.
      * @return index (nonnegative {@link BigInteger})
-     * @throws {@link
-     *             IllegalArgumentException} if length of point array is not
-     *             equal to the number of dimensions.
+     * @throws IllegalArgumentException
+     *             if length of point array is not equal to the number of
+     *             dimensions.
      */
     public BigInteger index(long... point) {
         Preconditions.checkArgument(point.length == dimensions);
@@ -92,10 +92,10 @@ public final class HilbertCurve {
      *            index along the Hilbert Curve from 0. Maximum value
      *            2<sup>bits+1</sup>-1.
      * @return array of longs being the point
-     * @throws {@link
-     *             NullPointerException} if index is null
-     * @throws {@link
-     *             IllegalArgumentException} if index is negative
+     * @throws NullPointerException
+     *             if index is null
+     * @throws IllegalArgumentException
+     *             if index is negative
      */
     public long[] point(BigInteger index) {
         Preconditions.checkNotNull(index);
@@ -111,8 +111,8 @@ public final class HilbertCurve {
      *            index along the Hilbert Curve from 0. Maximum value
      *            2<sup>bits+1</sup>-1.
      * @return array of longs being the point
-     * @throws {@link
-     *             IllegalArgumentException} if index is negative
+     * @throws IllegalArgumentException
+     *             if index is negative
      */
     public long[] point(long index) {
         return point(BigInteger.valueOf(index));
