@@ -7,8 +7,8 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import org.davidmoten.hilbert.HilbertCurveRenderer;
 import org.davidmoten.hilbert.exceptions.IORuntimeException;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.github.davidmoten.junit.Asserts;
@@ -28,6 +28,7 @@ public class HilbertCurveRendererTest {
     }
 
     @Test
+    @Ignore
     public void compareImagesWithExpected() throws IOException {
         for (int bits = 2; bits <= 8; bits++) {
             BufferedImage expected = ImageIO.read(HilbertCurveRendererTest.class
