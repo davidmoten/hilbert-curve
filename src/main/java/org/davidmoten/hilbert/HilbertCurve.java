@@ -18,9 +18,9 @@ import com.github.davidmoten.guavamini.annotations.VisibleForTesting;
      15-bit Hilbert integer = A B C D E F G H I J K L M N O is stored
      as its Transpose                        ^
      X[0] = A D G J M                    X[2]|  7
-     X[1] = B E H K N        <------->       | /X[1]
+     X[1] = B E H K N        &lt;-------&gt;       | /X[1]
      X[2] = C F I L O                   axes |/
-            high low                         0------> X[0]
+            high low                         0------&gt; X[0]
  * </pre>
  * 
  * <p>
