@@ -10,12 +10,14 @@ Java utilities for transforming distance along N-dimensional Hilbert Curve to a 
 
 Status: *deployed to Maven Central*
 
-| 1 bit| <img src="src/docs/hilbert-2d-bits-1.png?raw=true" /> | 
-| 2 bit| <img src="src/docs/hilbert-2d-bits-2.png?raw=true" /> | 
-| 3 bit| <img src="src/docs/hilbert-2d-bits-3.png?raw=true" /> | 
-| 4 bit| <img src="src/docs/hilbert-2d-bits-4.png?raw=true" /> | 
-| 5 bit| <img src="src/docs/hilbert-2d-bits-5.png?raw=true" /> | 
-| 6 bit| <img src="src/docs/hilbert-2d-bits-6.png?raw=true" /> | 
+| Bits | Image |
+| --- | --- |
+| 1 | <img src="src/docs/hilbert-2d-bits-1.png?raw=true" /> | 
+| 2 | <img src="src/docs/hilbert-2d-bits-2.png?raw=true" /> | 
+| 3 | <img src="src/docs/hilbert-2d-bits-3.png?raw=true" /> | 
+| 4 | <img src="src/docs/hilbert-2d-bits-4.png?raw=true" /> | 
+| 5 | <img src="src/docs/hilbert-2d-bits-5.png?raw=true" /> | 
+| 6 | <img src="src/docs/hilbert-2d-bits-6.png?raw=true" /> | 
 
 Getting started
 -----------------
