@@ -34,10 +34,12 @@ public final class HilbertCurve {
 
     private final int bits;
     private final int dimensions;
+    private final int length;
 
     private HilbertCurve(int bits, int dimensions) {
         this.bits = bits;
         this.dimensions = dimensions;
+        this.length = bits * dimensions;
     }
 
     /**
@@ -120,7 +122,6 @@ public final class HilbertCurve {
 
     @VisibleForTesting
     long[] transpose(BigInteger index) {
-        int length = dimensions * bits;
         byte[] bytes = index.toByteArray();
         Util.reverse(bytes);
         BitSet b = BitSet.valueOf(bytes);
