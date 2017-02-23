@@ -43,6 +43,7 @@ public final class HilbertCurve {
         this.bits = bits;
         this.dimensions = dimensions;
         this.length = bits * dimensions;
+        // cache a few calculated values
         this.N = 2L << (bits - 1);
         this.M = 1L << (bits - 1);
         this.initialMask = 1L << (bits - 1);
@@ -124,8 +125,8 @@ public final class HilbertCurve {
      */
     @VisibleForTesting
     long[] transposedIndex(long... point) {
-        long[] x = Arrays.copyOf(point, point.length);
         int n = point.length; // n: Number of dimensions
+        long[] x = Arrays.copyOf(point, n);
         long p, q, t;
         int i;
         // Inverse undo
