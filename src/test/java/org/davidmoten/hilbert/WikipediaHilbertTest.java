@@ -21,7 +21,6 @@ public class WikipediaHilbertTest {
         for (int i = 0; i < n * n; i++) {
             long[] point = { 0, 0 };
             d2xy(n, i, point);
-            System.out.println(i + "\t" + Arrays.toString(point));
         }
         int width = 800;
         int height = width;
