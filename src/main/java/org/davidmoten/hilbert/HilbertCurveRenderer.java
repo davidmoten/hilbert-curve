@@ -13,9 +13,9 @@ import javax.imageio.ImageIO;
 import org.davidmoten.hilbert.exceptions.IORuntimeException;
 
 public final class HilbertCurveRenderer {
-    
+
     private HilbertCurveRenderer() {
-        //prevent instantiation
+        // prevent instantiation
     }
 
     public static void renderToFile(int bits, int width, String filename) {
@@ -39,12 +39,15 @@ public final class HilbertCurveRenderer {
         g.setPaint(Color.black);
         g.setStroke(new BasicStroke(0.5f));
         int margin = 10;
-        int x = margin;
-        int y = margin;
+        int cellSize = (width - 2 * margin) / (n);
+        int x = margin + cellSize / 2;
+        int y = margin + cellSize / 2;
         for (long i = 0; i < n * n; i++) {
             long[] point = c.point(BigInteger.valueOf(i));
-            int x2 = (int) Math.round((double) point[0] / (n - 1) * (width - 2 * margin) + margin);
-            int y2 = (int) Math.round((double) point[1] / (n - 1) * (height - 2 * margin) + margin);
+            int x2 = (int) Math.round((double) point[0] / (n - 1) * (width - 2 * margin - cellSize) + margin)
+                    + cellSize / 2;
+            int y2 = (int) Math.round((double) point[1] / (n - 1) * (height - 2 * margin - cellSize) + margin)
+                    + cellSize / 2;
             g.drawLine(x, y, x2, y2);
             x = x2;
             y = y2;
