@@ -33,6 +33,8 @@ Add this to your maven pom.xml:
 Usage
 ---------
 
+## index from point
+
 Get index (distance along the curve in integer units) to 2-dimensional point:
 
 ```java
@@ -40,6 +42,8 @@ HilbertCurve c =
     HilbertCurve.bits(5).dimensions(2);
 long[] point = c.point(22);
 ```
+
+## point from index
 
 Get the point corresponding to a particular index along the curve:
 
@@ -49,6 +53,8 @@ HilbertCurve c =
 long[] point = {3, 4};
 BigInteger index = c.index(point);
 ```
+
+## render a curve
 
 To render a curve (for 2 dimensions only) to a PNG of 800x800 pixels:
 
