@@ -35,7 +35,7 @@ Usage
 
 ### Index from point
 
-Get index (distance along the curve in integer units) to 2-dimensional point:
+Get the index (distance along the curve in integer units) for a 2-dimensional point:
 
 ```java
 HilbertCurve c = 
