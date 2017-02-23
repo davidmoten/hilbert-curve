@@ -88,7 +88,7 @@ public final class HilbertCurve {
      * 
      * In Skilling's paper this function is named {@code TransposeToAxes}
      * 
-     * @param transposedIndex
+     * @param transposedIndex distance along the Hilbert curve in transposed form
      * @return the coordinates of the point represented by the transposed index
      *         on the Hilbert curve
      */
