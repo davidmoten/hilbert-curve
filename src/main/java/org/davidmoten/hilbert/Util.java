@@ -1,6 +1,6 @@
 package org.davidmoten.hilbert;
 
-public final class Util {
+final class Util {
 
     private Util() {
         // prevent instantiation

@@ -8,20 +8,7 @@ import com.github.davidmoten.guavamini.Preconditions;
 import com.github.davidmoten.guavamini.annotations.VisibleForTesting;
 
 /**
- * Converts between Hilbert index (transposed and {@code BigInteger}) and
- * N-dimensional points.
- * 
- * The Hilbert index is expressed as an array of transposed bits.
- * 
- * <pre>
-  Example: 5 bits for each of n=3 coordinates.
-     15-bit Hilbert integer = A B C D E F G H I J K L M N O is stored
-     as its Transpose                        ^
-     X[0] = A D G J M                    X[2]|  7
-     X[1] = B E H K N        &lt;-------&gt;       | /X[1]
-     X[2] = C F I L O                   axes |/
-            high low                         0------&gt; X[0]
- * </pre>
+ * Converts between Hilbert index ({@code BigInteger}) and N-dimensional points.
  * 
  * <p>
  * Note: This algorithm is derived from work done by John Skilling and published
@@ -91,6 +78,25 @@ public final class HilbertCurve {
         return point(BigInteger.valueOf(index));
     }
 
+    /**
+     * Returns the transposed representation of the Hilbert curve index.
+     * 
+     * <p>The Hilbert index is expressed internally as an array of transposed bits.
+     * 
+     * <pre>
+      Example: 5 bits for each of n=3 coordinates.
+         15-bit Hilbert integer = A B C D E F G H I J K L M N O is stored
+         as its Transpose                        ^
+         X[0] = A D G J M                    X[2]|  7
+         X[1] = B E H K N        &lt;-------&gt;       | /X[1]
+         X[2] = C F I L O                   axes |/
+                high low                         0------&gt; X[0]
+     * </pre>
+     * 
+     * @param index
+     *            index to be tranposed
+     * @return transposed index
+     */
     @VisibleForTesting
     long[] transpose(BigInteger index) {
         byte[] bytes = index.toByteArray();
