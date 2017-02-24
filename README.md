@@ -89,6 +89,7 @@ Small option:
 ```java
 SmallHilbertCurve c = 
     HilbertCurve.small().bits(5).dimensions(2);
+long[] point = c.point(22);
 ```
 
 ### Render a curve
