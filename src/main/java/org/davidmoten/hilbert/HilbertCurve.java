@@ -80,7 +80,7 @@ public final class HilbertCurve {
      */
     public BigInteger index(long... point) {
         Preconditions.checkArgument(point.length == dimensions);
-        return toBigInteger(transposedIndex( point));
+        return toBigInteger(transposedIndex(point));
     }
 
     /**
@@ -140,12 +140,10 @@ public final class HilbertCurve {
      */
     @VisibleForTesting
     long[] transpose(BigInteger index) {
-        byte[] bytes = index.toByteArray();
-        Util.reverse(bytes);
-        BitSet b = BitSet.valueOf(bytes);
+        byte[] b = index.toByteArray();
         long[] x = new long[dimensions];
-        for (int idx = 0; idx < b.length(); idx++) {
-            if (b.get(idx)) {
+        for (int idx = 0; idx < 8 * b.length; idx++) {
+            if ((b[b.length - 1 - idx / 8] & (1L << (idx % 8))) != 0) {
                 int dim = (length - idx - 1) % dimensions;
                 int shift = (idx / dimensions) % bits;
                 x[dim] |= 1 << shift;
