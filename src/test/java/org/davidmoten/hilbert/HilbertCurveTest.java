@@ -33,7 +33,7 @@ public class HilbertCurveTest {
     public void testToBigInteger() {
         HilbertCurve c = HilbertCurve.bits(5).dimensions(2);
         long[] ti = { 0, 16 };
-        assertEquals(256, c.toBigInteger(ti).intValue());
+        assertEquals(256, c.toIndex(ti).intValue());
     }
 
     @Test
@@ -187,7 +187,7 @@ public class HilbertCurveTest {
     @Test
     public void testPointFromIndexBits1Point0_1() {
         HilbertCurve c = HilbertCurve.bits(1).dimensions(2);
-        long[] ti = c.transposedIndex(0, 1);
+        long[] ti = c.transposedIndex(1, 0, 1);
         assertEquals("0,1", ti[0] + "," + ti[1]);
         assertEquals(1, c.index(0, 1).intValue());
         long[] ti2 = c.transpose(BigInteger.valueOf(1));
@@ -197,7 +197,7 @@ public class HilbertCurveTest {
     @Test
     public void testPointFromIndexBits1Point0_1MutateAllowed() {
         HilbertCurve c = HilbertCurve.bits(1).dimensions(2);
-        long[] ti = c.transposedIndex(0, 1);
+        long[] ti = HilbertCurve.transposedIndex(1, 0, 1);
         assertEquals("0,1", ti[0] + "," + ti[1]);
         assertEquals(1, c.index(0, 1).intValue());
         long[] ti2 = c.transpose(BigInteger.valueOf(1));
@@ -207,7 +207,7 @@ public class HilbertCurveTest {
     @Test
     public void testPointFromIndexBits1Point1_1() {
         HilbertCurve c = HilbertCurve.bits(1).dimensions(2);
-        long[] ti = c.transposedIndex(1, 1);
+        long[] ti = HilbertCurve.transposedIndex(1, 1, 1);
         assertEquals("1,0", ti[0] + "," + ti[1]);
         assertEquals(2, c.index(1, 1).intValue());
         long[] ti2 = c.transpose(BigInteger.valueOf(2));
@@ -251,9 +251,9 @@ public class HilbertCurveTest {
     }
 
     private static boolean checkRoundTripLong(int bits, int dimensions, long value) {
-        HilbertCurve c = HilbertCurve.bits(bits).dimensions(dimensions);
-        long[] point = c.pointLong(value);
+        SmallHilbertCurve c = HilbertCurve.small().bits(bits).dimensions(dimensions);
+        long[] point = c.point(value);
         assertEquals(dimensions, point.length);
-        return value == c.indexLong(point);
+        return value == c.index(point);
     }
 }

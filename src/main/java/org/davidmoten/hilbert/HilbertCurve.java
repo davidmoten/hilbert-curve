@@ -22,18 +22,12 @@ public final class HilbertCurve {
     private final int dimensions;
     // cached calculations
     private final int length;
-    private final long N;
-    private final long M;
-    private final long initialMask;
 
     private HilbertCurve(int bits, int dimensions) {
         this.bits = bits;
         this.dimensions = dimensions;
-        // cache a few calculated values for small perf improvements
+        // cache a calculated values for small perf improvements
         this.length = bits * dimensions;
-        this.N = 2L << (bits - 1);
-        this.M = 1L << (bits - 1);
-        this.initialMask = 1L << (bits - 1);
     }
 
     /**
@@ -45,17 +39,23 @@ public final class HilbertCurve {
      *            top-level Hilbert curve
      * @return builder for object to do transformations with the Hilbert Curve
      */
-    public static HilbertCurveBuilder bits(int bits) {
-        return new HilbertCurveBuilder(bits);
+    public static Builder bits(int bits) {
+        return new Builder(bits);
     }
+
+    public static SmallHilbertCurve.Builder small() {
+        return new SmallHilbertCurve.Builder();
+    }
+
+
 
     /**
      * Builds a {@link HilbertCurve} instance.
      */
-    public static class HilbertCurveBuilder {
+    public static final class Builder {
         final int bits;
 
-        private HilbertCurveBuilder(int bits) {
+        private Builder(int bits) {
             Preconditions.checkArgument(bits > 0, "bits must be greater than zero");
             Preconditions.checkArgument(bits < 64, "bits must be 63 or less");
             this.bits = bits;
@@ -80,13 +80,7 @@ public final class HilbertCurve {
      */
     public BigInteger index(long... point) {
         Preconditions.checkArgument(point.length == dimensions);
-        return toBigInteger(transposedIndex(point));
-    }
-
-    public long indexLong(long... point) {
-        Preconditions.checkArgument(point.length == dimensions);
-        Preconditions.checkArgument(dimensions * bits <= 63);
-        return toLong(transposedIndex(point));
+        return toIndex(transposedIndex(bits, point));
     }
 
     /**
@@ -106,7 +100,7 @@ public final class HilbertCurve {
     public long[] point(BigInteger index) {
         Preconditions.checkNotNull(index);
         Preconditions.checkArgument(index.signum() != -1, "index cannot be negative");
-        return transposedIndexToPoint(transpose(index));
+        return transposedIndexToPoint(bits, transpose(index));
     }
 
     /**
@@ -122,11 +116,6 @@ public final class HilbertCurve {
      */
     public long[] point(long index) {
         return point(BigInteger.valueOf(index));
-    }
-
-    public long[] pointLong(long index) {
-        Preconditions.checkArgument(dimensions * bits <= 63);
-        return transposedIndexToPoint(transposeLong(index));
     }
 
     /**
@@ -163,18 +152,6 @@ public final class HilbertCurve {
         return x;
     }
 
-    private long[] transposeLong(long index) {
-        long[] x = new long[dimensions];
-        for (int idx = 0; idx < 64; idx++) {
-            if ((index & (1L << idx)) != 0) {
-                int dim = (length - idx - 1) % dimensions;
-                int shift = (idx / dimensions) % bits;
-                x[dim] |= 1L << shift;
-            }
-        }
-        return x;
-    }
-
     /**
      * <p>
      * Given the axes (coordinates) of a point in N-Dimensional space, find the
@@ -194,9 +171,10 @@ public final class HilbertCurve {
      * @return The Hilbert distance (or index) as a transposed Hilbert index
      */
     @VisibleForTesting
-    long[] transposedIndex(long... point) {
-        int n = point.length; // n: Number of dimensions
-        long[] x = Arrays.copyOf(point, n);
+    static long[] transposedIndex(int bits, long... point) {
+        final long M = 1L << (bits - 1);
+        final int n = point.length; // n: Number of dimensions
+        final long[] x = Arrays.copyOf(point, n);
         long p, q, t;
         int i;
         // Inverse undo
@@ -235,7 +213,8 @@ public final class HilbertCurve {
      * @return the coordinates of the point represented by the transposed index
      *         on the Hilbert curve
      */
-    private long[] transposedIndexToPoint(long... x) {
+    static long[] transposedIndexToPoint(int bits, long... x) {
+        final long N = 2L << (bits - 1);
         // Note that x is mutated by this method (as a performance improvement
         // to avoid allocation)
         int n = x.length; // number of dimensions
@@ -271,10 +250,10 @@ public final class HilbertCurve {
     // which can have as many bits as necessary. This converts the array into a
     // single number.
     @VisibleForTesting
-    BigInteger toBigInteger(long... transposedIndex) {
+    BigInteger toIndex(long... transposedIndex) {
         byte[] b = new byte[length];
         int bIndex = length - 1;
-        long mask = initialMask;
+        long mask = 1L << (bits - 1);
         for (int i = 0; i < bits; i++) {
             for (int j = 0; j < transposedIndex.length; j++) {
                 if ((transposedIndex[j] & mask) != 0) {
@@ -286,23 +265,6 @@ public final class HilbertCurve {
         }
         // b is expected to be BigEndian
         return new BigInteger(1, b);
-    }
-
-    long toLong(long... transposedIndex) {
-        long b = 0;
-        int bIndex = length - 1;
-        long mask = initialMask;
-        for (int i = 0; i < bits; i++) {
-            for (int j = 0; j < transposedIndex.length; j++) {
-                if ((transposedIndex[j] & mask) != 0) {
-                    b |= 1 << bIndex;
-                }
-                bIndex--;
-            }
-            mask >>= 1;
-        }
-        // b is expected to be BigEndian
-        return b;
     }
 
 }
