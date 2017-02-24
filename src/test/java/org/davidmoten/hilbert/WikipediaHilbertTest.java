@@ -1,15 +1,17 @@
 package org.davidmoten.hilbert;
 
+import static org.junit.Assert.assertEquals;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 
 import javax.imageio.ImageIO;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 public class WikipediaHilbertTest {
@@ -42,11 +44,12 @@ public class WikipediaHilbertTest {
         }
         ImageIO.write(b, "PNG", new File("target/imageWiki.png"));
     }
-    
-    
+
     @Test
     public void roundTrip() {
-        //TODO 
+        long[] point = new long[2];
+        d2xy(32, 3, point);
+        assertEquals(3, xy2d(32, point));
     }
 
     private static long xy2d(long n, long[] point) {
