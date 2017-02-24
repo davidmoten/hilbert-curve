@@ -106,7 +106,7 @@ HilbertCurveRenderer.renderToFile(bits, 800, "target/image.png");
 To run benchmarks:
 
 ```bash
-mvn clean install -P benchmarks
+mvn clean install -P benchmark
 ```
 
 Credits
