@@ -80,7 +80,7 @@ public final class HilbertCurve {
      */
     public BigInteger index(long... point) {
         Preconditions.checkArgument(point.length == dimensions);
-        return toBigInteger(transposedIndex(point));
+        return toBigInteger(transposedIndex( point));
     }
 
     /**
@@ -89,8 +89,8 @@ public final class HilbertCurve {
      * {@code this}.
      * 
      * @param index
-     *            index along the Hilbert Curve from 0. Maximum value
-     *            2<sup>bits+1</sup>-1.
+     *            index along the Hilbert Curve from 0. Maximum value 2
+     *            <sup>bits+1</sup>-1.
      * @return array of longs being the point
      * @throws NullPointerException
      *             if index is null
@@ -108,8 +108,8 @@ public final class HilbertCurve {
      * to a point of dimensions defined in the constructor of {@code this}.
      * 
      * @param index
-     *            index along the Hilbert Curve from 0. Maximum value
-     *            2<sup>bits+1</sup>-1.
+     *            index along the Hilbert Curve from 0. Maximum value 2
+     *            <sup>bits+1</sup>-1.
      * @return array of longs being the point
      * @throws IllegalArgumentException
      *             if index is negative
@@ -165,6 +165,8 @@ public final class HilbertCurve {
      *
      * <p>
      * Note: In Skilling's paper, this function is called AxestoTranspose.
+     * 
+     * @param mutate
      * 
      * @param point
      *            Point in N-space
@@ -249,26 +251,20 @@ public final class HilbertCurve {
     // single number.
     @VisibleForTesting
     BigInteger toBigInteger(long... transposedIndex) {
-        BitSet b = new BitSet(length);
+        byte[] b = new byte[length];
         int bIndex = length - 1;
         long mask = initialMask;
         for (int i = 0; i < bits; i++) {
             for (int j = 0; j < transposedIndex.length; j++) {
                 if ((transposedIndex[j] & mask) != 0) {
-                    b.set(bIndex);
+                    b[length - 1 - bIndex / 8] |= 1 << (bIndex % 8);
                 }
                 bIndex--;
             }
             mask >>= 1;
         }
-        if (b.isEmpty())
-            return BigInteger.ZERO;
-        else {
-            byte[] bytes = b.toByteArray();
-            // make Big Endian
-            Util.reverse(bytes);
-            return new BigInteger(1, bytes);
-        }
+        // b is expected to be BigEndian
+        return new BigInteger(1, b);
     }
 
 }

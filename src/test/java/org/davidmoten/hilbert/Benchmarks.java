@@ -16,7 +16,7 @@ public class Benchmarks {
             b.consume(i == c.index(point).longValue());
         }
     }
-
+    
     @Benchmark
     public void point(Blackhole b) {
         for (long i = 0; i < N; i++) {

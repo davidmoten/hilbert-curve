@@ -60,11 +60,13 @@ public class HilbertCurveTest {
                 out.println();
             }
             out.close();
-            String actual = new String(Files.readAllBytes(
-                    new File("target/indexes-2d-bits-" + bits + ".txt").toPath()),
+            String actual = new String(
+                    Files.readAllBytes(
+                            new File("target/indexes-2d-bits-" + bits + ".txt").toPath()),
                     StandardCharsets.UTF_8);
             String expected = new String(Files.readAllBytes(
-                    new File("src/test/resources/expected/indexes-2d-bits-" + bits + ".txt").toPath()),
+                    new File("src/test/resources/expected/indexes-2d-bits-" + bits + ".txt")
+                            .toPath()),
                     StandardCharsets.UTF_8);
             assertEquals(expected, actual);
         }
@@ -141,6 +143,16 @@ public class HilbertCurveTest {
 
     @Test
     public void testPointFromIndexBits1Point0_1() {
+        HilbertCurve c = HilbertCurve.bits(1).dimensions(2);
+        long[] ti = c.transposedIndex(0, 1);
+        assertEquals("0,1", ti[0] + "," + ti[1]);
+        assertEquals(1, c.index(0, 1).intValue());
+        long[] ti2 = c.transpose(BigInteger.valueOf(1));
+        assertEquals("0,1", ti2[0] + "," + ti2[1]);
+    }
+
+    @Test
+    public void testPointFromIndexBits1Point0_1MutateAllowed() {
         HilbertCurve c = HilbertCurve.bits(1).dimensions(2);
         long[] ti = c.transposedIndex(0, 1);
         assertEquals("0,1", ti[0] + "," + ti[1]);
