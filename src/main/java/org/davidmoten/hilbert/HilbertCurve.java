@@ -2,7 +2,6 @@ package org.davidmoten.hilbert;
 
 import java.math.BigInteger;
 import java.util.Arrays;
-import java.util.BitSet;
 
 import com.github.davidmoten.guavamini.Preconditions;
 import com.github.davidmoten.guavamini.annotations.VisibleForTesting;
@@ -58,6 +57,7 @@ public final class HilbertCurve {
 
         private HilbertCurveBuilder(int bits) {
             Preconditions.checkArgument(bits > 0, "bits must be greater than zero");
+            Preconditions.checkArgument(bits < 64, "bits must be 63 or less");
             this.bits = bits;
         }
 

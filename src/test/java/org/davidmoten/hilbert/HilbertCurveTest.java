@@ -118,6 +118,23 @@ public class HilbertCurveTest {
     }
 
     @Test
+    public void testRoundTripLotsOfBits() {
+        for (int i = 1; i <= 100000; i++)
+            assertTrue(checkRoundTrip(63, 10, i));
+    }
+    
+    @Test
+    public void testRoundTripLotsOfDimensions() {
+        for (int i = 1; i <= 100; i++)
+            assertTrue(checkRoundTrip(63, 10000, i));
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testTooManyBits() {
+        HilbertCurve.bits(64);
+    }
+
+    @Test
     public void testRoundTrip3Dimensions3BitsIndex1() {
         assertTrue(checkRoundTrip(3, 3, 1));
     }
