@@ -124,6 +124,11 @@ public final class HilbertCurve {
         return point(BigInteger.valueOf(index));
     }
 
+    public long[] pointLong(long index) {
+        Preconditions.checkArgument(dimensions * bits <= 63);
+        return transposedIndexToPoint(transposeLong(index));
+    }
+
     /**
      * Returns the transposed representation of the Hilbert curve index.
      * 
@@ -150,6 +155,18 @@ public final class HilbertCurve {
         long[] x = new long[dimensions];
         for (int idx = 0; idx < 8 * b.length; idx++) {
             if ((b[b.length - 1 - idx / 8] & (1L << (idx % 8))) != 0) {
+                int dim = (length - idx - 1) % dimensions;
+                int shift = (idx / dimensions) % bits;
+                x[dim] |= 1L << shift;
+            }
+        }
+        return x;
+    }
+
+    private long[] transposeLong(long index) {
+        long[] x = new long[dimensions];
+        for (int idx = 0; idx < 64; idx++) {
+            if ((index & (1L << idx)) != 0) {
                 int dim = (length - idx - 1) % dimensions;
                 int shift = (idx / dimensions) % bits;
                 x[dim] |= 1L << shift;

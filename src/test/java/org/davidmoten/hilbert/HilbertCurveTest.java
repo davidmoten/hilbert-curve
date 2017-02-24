@@ -118,8 +118,8 @@ public class HilbertCurveTest {
     @Test
     public void testRoundTripsLong() {
         boolean failed = false;
-        for (int bits = 1; bits <= 17; bits++) {
-            for (int dimensions = 2; dimensions <= 3; dimensions++)
+        for (int bits = 1; bits <= 10; bits++) {
+            for (int dimensions = 2; dimensions <= Math.min(5, 63 / bits); dimensions++)
                 for (long i = 0; i < Math.pow(2, bits + 1); i++) {
                     if (!checkRoundTripLong(bits, dimensions, i)) {
                         System.out.println(
@@ -252,7 +252,7 @@ public class HilbertCurveTest {
 
     private static boolean checkRoundTripLong(int bits, int dimensions, long value) {
         HilbertCurve c = HilbertCurve.bits(bits).dimensions(dimensions);
-        long[] point = c.point(value);
+        long[] point = c.pointLong(value);
         assertEquals(dimensions, point.length);
         return value == c.indexLong(point);
     }
