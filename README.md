@@ -46,6 +46,10 @@ Add this to your maven pom.xml:
 Usage
 ---------
 
+The maximum index on the Hilbert curve is 2<sup>dimensions*bits</sup> - 1. If your 
+`bits * dimensions` is <= 63 then you can increase performance and reduce allocations by using the `small()` option.
+
+
 ### Index from point
 
 Get the index (distance along the curve in integer units) for a 2-dimensional point:
@@ -53,6 +57,16 @@ Get the index (distance along the curve in integer units) for a 2-dimensional po
 ```java
 HilbertCurve c = 
     HilbertCurve.bits(5).dimensions(2);
+long[] point = c.point(22);
+//or
+long[] point = c.point(BigInteger.valueOf(22));
+```
+
+Small option:
+
+```java
+SmallHilbertCurve c = 
+    HilbertCurve.small().bits(5).dimensions(2);
 long[] point = c.point(22);
 ```
 
@@ -65,6 +79,17 @@ HilbertCurve c =
     HilbertCurve.bits(5).dimensions(2);
 long[] point = {3, 4};
 BigInteger index = c.index(point);
+```
+
+Small option:
+
+```java
+SmallHilbertCurve c = 
+    HilbertCurve.small().bits(5).dimensions(2);
+long[] point = {3, 4};
+//returns long rather than BigInteger
+long index = c.index(point);
+
 ```
 
 ### Render a curve
