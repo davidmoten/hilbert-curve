@@ -47,7 +47,7 @@ Usage
 ---------
 
 The maximum index on the Hilbert curve is 2<sup>dimensions*bits</sup> - 1. If your 
-`bits * dimensions` is <= 63 then you can increase performance and reduce allocations by using the `small()` option.
+`bits * dimensions` is <= 63 then you can increase performance and reduce allocations by using the `small()` option which uses `long` values for indexes rather than `BigInteger` values.
 
 
 ### Index from point
