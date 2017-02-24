@@ -83,6 +83,12 @@ public final class HilbertCurve {
         return toBigInteger(transposedIndex(point));
     }
 
+    public long indexLong(long... point) {
+        Preconditions.checkArgument(point.length == dimensions);
+        Preconditions.checkArgument(dimensions * bits <= 63);
+        return toLong(transposedIndex(point));
+    }
+
     /**
      * Converts a {@link BigInteger} index (distance along the Hilbert Curve
      * from 0) to a point of dimensions defined in the constructor of
@@ -263,6 +269,23 @@ public final class HilbertCurve {
         }
         // b is expected to be BigEndian
         return new BigInteger(1, b);
+    }
+
+    long toLong(long... transposedIndex) {
+        long b = 0;
+        int bIndex = length - 1;
+        long mask = initialMask;
+        for (int i = 0; i < bits; i++) {
+            for (int j = 0; j < transposedIndex.length; j++) {
+                if ((transposedIndex[j] & mask) != 0) {
+                    b |= 1 << bIndex;
+                }
+                bIndex--;
+            }
+            mask >>= 1;
+        }
+        // b is expected to be BigEndian
+        return b;
     }
 
 }

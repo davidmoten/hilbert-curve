@@ -60,13 +60,11 @@ public class HilbertCurveTest {
                 out.println();
             }
             out.close();
-            String actual = new String(
-                    Files.readAllBytes(
-                            new File("target/indexes-2d-bits-" + bits + ".txt").toPath()),
+            String actual = new String(Files.readAllBytes(new File("target/indexes-2d-bits-" + bits + ".txt").toPath()),
                     StandardCharsets.UTF_8);
-            String expected = new String(Files.readAllBytes(
-                    new File("src/test/resources/expected/indexes-2d-bits-" + bits + ".txt")
-                            .toPath()),
+            String expected = new String(
+                    Files.readAllBytes(
+                            new File("src/test/resources/expected/indexes-2d-bits-" + bits + ".txt").toPath()),
                     StandardCharsets.UTF_8);
             assertEquals(expected, actual);
         }
@@ -106,8 +104,26 @@ public class HilbertCurveTest {
             for (int dimensions = 2; dimensions <= 10; dimensions++)
                 for (long i = 0; i < Math.pow(2, bits + 1); i++) {
                     if (!checkRoundTrip(bits, dimensions, i)) {
-                        System.out.println("failed round trip for bits=" + bits + ", dimensions="
-                                + dimensions + ", index=" + i);
+                        System.out.println(
+                                "failed round trip for bits=" + bits + ", dimensions=" + dimensions + ", index=" + i);
+                        failed = true;
+                    }
+                }
+        }
+        if (failed) {
+            Assert.fail("round trips failed (listed in log)");
+        }
+    }
+
+    @Test
+    public void testRoundTripsLong() {
+        boolean failed = false;
+        for (int bits = 1; bits <= 17; bits++) {
+            for (int dimensions = 2; dimensions <= 3; dimensions++)
+                for (long i = 0; i < Math.pow(2, bits + 1); i++) {
+                    if (!checkRoundTripLong(bits, dimensions, i)) {
+                        System.out.println(
+                                "failed round trip for bits=" + bits + ", dimensions=" + dimensions + ", index=" + i);
                         failed = true;
                     }
                 }
@@ -234,4 +250,10 @@ public class HilbertCurveTest {
         return value == c.index(point).longValue();
     }
 
+    private static boolean checkRoundTripLong(int bits, int dimensions, long value) {
+        HilbertCurve c = HilbertCurve.bits(bits).dimensions(dimensions);
+        long[] point = c.point(value);
+        assertEquals(dimensions, point.length);
+        return value == c.indexLong(point);
+    }
 }
