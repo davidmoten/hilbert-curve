@@ -119,8 +119,8 @@ public class HilbertCurveTest {
 
     @Test
     public void testPointManyBits() {
-        HilbertCurve c = HilbertCurve.bits(60).dimensions(2);
-        String num = "1000000000000000000000000000000000000";
+        HilbertCurve c = HilbertCurve.bits(60).dimensions(3);
+        String num = "1000000000000000000000000000000000000000000000";
         System.out.println("length = " + num.length());
         BigInteger n = new BigInteger(num);
         System.out.println(Arrays.toString(c.point(n)));
