@@ -118,17 +118,27 @@ public class HilbertCurveTest {
     }
 
     @Test
+    public void testPointManyBits() {
+        HilbertCurve c = HilbertCurve.bits(60).dimensions(2);
+        String num = "1000000000000000000000000000000000000";
+        System.out.println("length = " + num.length());
+        BigInteger n = new BigInteger(num);
+        System.out.println(Arrays.toString(c.point(n)));
+        assertEquals(n, c.index(c.point(n)));
+    }
+
+    @Test
     public void testRoundTripLotsOfBits() {
         for (int i = 1; i <= 100000; i++)
             assertTrue(checkRoundTrip(63, 10, i));
     }
-    
+
     @Test
     public void testRoundTripLotsOfDimensions() {
         for (int i = 1; i <= 100; i++)
             assertTrue(checkRoundTrip(63, 10000, i));
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
     public void testTooManyBits() {
         HilbertCurve.bits(64);
