@@ -47,7 +47,7 @@ Usage
 ---------
 
 The maximum index on the Hilbert curve is 2<sup>dimensions*bits</sup> - 1. If your 
-`bits * dimensions` is <= 63 then you can increase performance and reduce allocations by using the **small** option which uses `long` values for indexes rather than `BigInteger` values. 
+`bits * dimensions` is <= 63 then you can increase performance and reduce allocations by using the <b>small</b> option which uses `long` values for indexes rather than `BigInteger` values. 
 JMH benchmarks show up to 30% better throughput using `small`. 
 
 
