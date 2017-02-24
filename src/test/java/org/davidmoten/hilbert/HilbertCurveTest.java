@@ -243,6 +243,17 @@ public class HilbertCurveTest {
         c.point(BigInteger.valueOf(-1));
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void smallBitsTimesDimensionsMustBeLessThan63() {
+        HilbertCurve.small().bits(8).dimensions(8);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void smallPointDimensionsForSmallCurve() {
+        SmallHilbertCurve c = HilbertCurve.small().bits(8).dimensions(2);
+        c.index(1, 2, 3);
+    }
+
     private static boolean checkRoundTrip(int bits, int dimensions, long value) {
         HilbertCurve c = HilbertCurve.bits(bits).dimensions(dimensions);
         long[] point = c.point(value);

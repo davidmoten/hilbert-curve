@@ -16,12 +16,10 @@ public final class SmallHilbertCurve {
 
     public long index(long... point) {
         Preconditions.checkArgument(point.length == dimensions);
-        Preconditions.checkArgument(dimensions * bits <= 63);
         return toIndex(HilbertCurve.transposedIndex(bits, point));
     }
 
     public long[] point(long index) {
-        Preconditions.checkArgument(dimensions * bits <= 63);
         return HilbertCurve.transposedIndexToPoint(bits, transposeLong(index));
     }
 
