@@ -7,7 +7,7 @@ Java utilities for transforming distance along an N-dimensional Hilbert Curve to
 
 * supports N dimensions
 * renders in 2-dimensions
-* benchmarked with `jmh` (improvement PRs welcome!)
+* benchmarked with `jmh`
 
 Status: *deployed to Maven Central*
 
