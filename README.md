@@ -47,7 +47,8 @@ Usage
 ---------
 
 The maximum index on the Hilbert curve is 2<sup>dimensions*bits</sup> - 1. If your 
-`bits * dimensions` is <= 63 then you can increase performance and reduce allocations by using the `small()` option which uses `long` values for indexes rather than `BigInteger` values.
+`bits * dimensions` is <= 63 then you can increase performance and reduce allocations by using the **`small()`** option which uses `long` values for indexes rather than `BigInteger` values. 
+JMH benchmarks show up to 30% better throughput using `small`. 
 
 
 ### Index from point
@@ -98,6 +99,14 @@ To render a curve (for 2 dimensions only) to a PNG of 800x800 pixels:
 
 ```java
 HilbertCurveRenderer.renderToFile(bits, 800, "target/image.png");
+```
+
+## Benchmarks
+
+To run benchmarks:
+
+```bash
+mvn clean install -P benchmarks
 ```
 
 Credits
