@@ -11,7 +11,6 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 public class WikipediaHilbertTest {

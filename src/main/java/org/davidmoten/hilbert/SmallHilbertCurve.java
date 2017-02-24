@@ -2,6 +2,16 @@ package org.davidmoten.hilbert;
 
 import com.github.davidmoten.guavamini.Preconditions;
 
+/**
+ * Converts between Hilbert index ({@code BigInteger}) and N-dimensional points.
+ * 
+ * <p>
+ * Note: This algorithm is derived from work done by John Skilling and published
+ * in "Programming the Hilbert curve". (c) 2004 American Institute of Physics.
+ * With thanks also to Paul Chernoch who published a C# algorithm for Skilling's
+ * work on StackOverflow and
+ * <a href="https://github.com/paulchernoch/HilbertTransformation">GitHub</a>).
+ */
 public final class SmallHilbertCurve {
 
     private final int bits;
@@ -14,11 +24,34 @@ public final class SmallHilbertCurve {
         this.length = bits * dimensions;
     }
 
+    /**
+     * Converts a point to its Hilbert curve index.
+     * 
+     * @param point
+     *            an array of {@code long}. Each coordinate can be between 0 and
+     *            2<sup>bits</sup>-1.
+     * @return index {@code long} in the range 0 to 2<sup>bits *
+     *         dimensions</sup> - 1
+     * @throws IllegalArgumentException
+     *             if length of point array is not equal to the number of
+     *             dimensions.
+     */
     public long index(long... point) {
         Preconditions.checkArgument(point.length == dimensions);
         return toIndex(HilbertCurve.transposedIndex(bits, point));
     }
 
+    /**
+     * Converts a {@code long} index (distance along the Hilbert Curve from 0)
+     * to a point of dimensions defined in the constructor of {@code this}.
+     * 
+     * @param index
+     *            index along the Hilbert Curve from 0. Maximum value 2
+     *            <sup>bits * dimensions</sup>-1.
+     * @return array of longs being the point
+     * @throws IllegalArgumentException
+     *             if index is negative
+     */
     public long[] point(long index) {
         return HilbertCurve.transposedIndexToPoint(bits, transposeLong(index));
     }

@@ -47,8 +47,6 @@ public final class HilbertCurve {
         return new SmallHilbertCurve.Builder();
     }
 
-
-
     /**
      * Builds a {@link HilbertCurve} instance.
      */
@@ -90,7 +88,7 @@ public final class HilbertCurve {
      * 
      * @param index
      *            index along the Hilbert Curve from 0. Maximum value 2
-     *            <sup>bits+1</sup>-1.
+     *            <sup>bits * dimensions</sup>-1.
      * @return array of longs being the point
      * @throws NullPointerException
      *             if index is null
