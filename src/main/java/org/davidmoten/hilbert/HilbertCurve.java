@@ -146,7 +146,7 @@ public final class HilbertCurve {
             if ((b[b.length - 1 - idx / 8] & (1L << (idx % 8))) != 0) {
                 int dim = (length - idx - 1) % dimensions;
                 int shift = (idx / dimensions) % bits;
-                x[dim] |= 1 << shift;
+                x[dim] |= 1L << shift;
             }
         }
         return x;
