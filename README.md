@@ -58,8 +58,7 @@ Get the index (distance along the curve in integer units) for a 2-dimensional po
 ```java
 HilbertCurve c = 
     HilbertCurve.bits(5).dimensions(2);
-long[] point = {3, 4};
-BigInteger index = c.index(point);
+BigInteger index = c.index(3, 4);
 ```
 
 Small option:
@@ -67,9 +66,8 @@ Small option:
 ```java
 SmallHilbertCurve c = 
     HilbertCurve.small().bits(5).dimensions(2);
-long[] point = {3, 4};
 //returns long rather than BigInteger
-long index = c.index(point);
+long index = c.index(3, 4);
 
 ```
 
