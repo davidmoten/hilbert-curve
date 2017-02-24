@@ -2,7 +2,9 @@ package org.davidmoten.hilbert;
 
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.List;
 
+import com.github.davidmoten.guavamini.Lists;
 import com.github.davidmoten.guavamini.Preconditions;
 import com.github.davidmoten.guavamini.annotations.VisibleForTesting;
 
@@ -263,6 +265,41 @@ public final class HilbertCurve {
         }
         // b is expected to be BigEndian
         return new BigInteger(1, b);
+    }
+
+    public List<Range> query(long[] point1, long[] point2, int maxRanges) {
+        // TODO
+        // Brute force is to travel the perimeter of the bounding box looking
+        // for max and min index values and return a single range. This method
+        // is potentially very wasteful because the Hilbert curve has locality
+        // discontinuities recursively at divisors of 2 in the domain and it is
+        // unnecessary to travel the whole perimeter as it can be solved more
+        // efficiently using a recursive technique.
+        //
+        // Minimal force is to recursively break the bounding box up into
+        // smaller boxes so that the discontinuities have progressively less
+        // effect. We stop the recursive process when we have split the interval
+        // into a maximum number of sub-intervals (`maxRanges`).
+
+        return Lists.newArrayList();
+    }
+
+    public static final class Range {
+        private final BigInteger start;
+        private final BigInteger finish;
+
+        public Range(BigInteger start, BigInteger finish) {
+            this.start = start;
+            this.finish = finish;
+        }
+
+        public BigInteger start() {
+            return start;
+        }
+
+        public BigInteger finish() {
+            return finish;
+        }
     }
 
 }
