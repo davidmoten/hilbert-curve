@@ -1,5 +1,9 @@
 package org.davidmoten.hilbert;
 
+import java.util.Collections;
+import java.util.List;
+
+import com.github.davidmoten.guavamini.Lists;
 import com.github.davidmoten.guavamini.Preconditions;
 
 /**
@@ -83,6 +87,92 @@ public final class SmallHilbertCurve {
             }
         }
         return x;
+    }
+
+    public List<Range> query(long[] point1, long[] point2, int maxRanges) {
+        // TODO
+        // Brute force is to travel the perimeter of the bounding box looking
+        // for max and min index values and return a single range. This method
+        // is potentially very wasteful because the Hilbert curve has locality
+        // discontinuities recursively at divisors of 2 in the domain and it is
+        // unnecessary to travel the whole perimeter as it can be solved more
+        // efficiently using a recursive technique.
+        //
+        // Minimal force is to recursively break the bounding box up into
+        // smaller boxes so that the discontinuities have progressively less
+        // effect. We stop the recursive process when we have split the interval
+        // into a maximum number of sub-intervals (`maxRanges`).
+
+        return Lists.newArrayList();
+    }
+
+    public static final class Range {
+
+        private final long low;
+        private final long high;
+
+        public Range(long low, long high) {
+            this.low = low;
+            this.high = high;
+        }
+
+        public long low() {
+            return low;
+        }
+
+        public long high() {
+            return high;
+        }
+
+        public List<Range> split() {
+            long x = mostSignificantBetween(low, high);
+            if (x == low || x == high) {
+                return Collections.singletonList(this);
+            } else {
+                return Lists.newArrayList(new Range(low, x), new Range(x + 1, high));
+            }
+        }
+
+        public List<Range> split(int n) {
+            if (n <= 1) {
+                return split();
+            }
+            List<Range> result = Lists.newArrayList();
+            for (Range range : split()) {
+                result.addAll(range.split(n - 1));
+            }
+            return result;
+        }
+
+        @Override
+        public String toString() {
+            return "Range [low=" + low + ", high=" + high + "]";
+        }
+    }
+
+    static long mostSignificantBetween(long a, long b) {
+        if (a > b) {
+            return mostSignificantBetween(b, a);
+        } else if (a == b) {
+            return a;
+        } else {
+            long x = a + 1;
+            int bit = 0;
+            while (x < b) {
+                if ((x & (1 << bit)) == 0) {
+                    bit++;
+                } else {
+                    long y = x + (1 << bit);
+                    if (y < b) {
+                        bit++;
+                        x = y;
+                    } else {
+                        break;
+                    }
+                }
+            }
+            return x;
+        }
     }
 
     public static final class Builder {

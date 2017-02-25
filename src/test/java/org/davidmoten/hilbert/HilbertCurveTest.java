@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.BitSet;
 
+import org.davidmoten.hilbert.SmallHilbertCurve.Range;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -269,17 +270,22 @@ public class HilbertCurveTest {
     }
 
     @Test
-    public void testMostSignificantBetweens() {
+    public void testMostSignificantBetweenLong() {
         // want to find the binary number with the most trailing zeroes x
         // s.t. a < x < b
-        assertEquals(6, (long) HilbertCurve.mostSignificantBetween(5, 7));
-        assertEquals(4, (long) HilbertCurve.mostSignificantBetween(3, 8));
-        assertEquals(16, (long) HilbertCurve.mostSignificantBetween(3, 18));
-        assertEquals(4, (long) HilbertCurve.mostSignificantBetween(3, 4));
-        assertEquals(8, (long) HilbertCurve.mostSignificantBetween(0, 16));
-        assertEquals(72, (long) HilbertCurve.mostSignificantBetween(71, 78));
-        assertEquals(2, (long) HilbertCurve.mostSignificantBetween(2, 2));
-        assertEquals(8, (long) HilbertCurve.mostSignificantBetween(16, 0));
+        assertEquals(6, (long) SmallHilbertCurve.mostSignificantBetween(5, 7));
+        assertEquals(4, (long) SmallHilbertCurve.mostSignificantBetween(3, 8));
+        assertEquals(16, (long) SmallHilbertCurve.mostSignificantBetween(3, 18));
+        assertEquals(4, (long) SmallHilbertCurve.mostSignificantBetween(3, 4));
+        assertEquals(8, (long) SmallHilbertCurve.mostSignificantBetween(0, 16));
+        assertEquals(72, (long) SmallHilbertCurve.mostSignificantBetween(71, 78));
+        assertEquals(2, (long) SmallHilbertCurve.mostSignificantBetween(2, 2));
+        assertEquals(8, (long) SmallHilbertCurve.mostSignificantBetween(16, 0));
+    }
+
+    @Test
+    public void testRange() {
+        new Range(100, 220).split(3).stream().forEach(System.out::println);
     }
 
 }
