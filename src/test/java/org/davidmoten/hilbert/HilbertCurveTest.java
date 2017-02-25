@@ -272,35 +272,15 @@ public class HilbertCurveTest {
     }
 
     @Test
-    public void testBetween() {
+    public void testMostSignificantBetweens() {
         // want to find the binary number with the most trailing zeroes x
         // s.t. a <x < b
-        assertEquals(6, (long) f(5, 7));
-        assertEquals(4, (long) f(3, 8));
-        assertEquals(16, (long) f(3, 18));
-        assertEquals(4, (long) f(3, 4));
-        assertEquals(8, (long) f(0, 16));
-        assertEquals(72, (long) f(71, 78));
-    }
-
-    public static long f(long a, long b) {
-        Preconditions.checkArgument(a < b);
-        long x = a + 1;
-        int bit = 0;
-        while (x < b) {
-            if ((x & (1 << bit)) == 0) {
-                bit++;
-            } else {
-                long y = x + (1 << bit);
-                if (y < b) {
-                    bit++;
-                    x = y;
-                } else {
-                    break;
-                }
-            }
-        }
-        return x;
+        assertEquals(6, (long) HilbertCurve.mostSignificantBetween(5, 7));
+        assertEquals(4, (long) HilbertCurve.mostSignificantBetween(3, 8));
+        assertEquals(16, (long) HilbertCurve.mostSignificantBetween(3, 18));
+        assertEquals(4, (long) HilbertCurve.mostSignificantBetween(3, 4));
+        assertEquals(8, (long) HilbertCurve.mostSignificantBetween(0, 16));
+        assertEquals(72, (long) HilbertCurve.mostSignificantBetween(71, 78));
     }
 
 }

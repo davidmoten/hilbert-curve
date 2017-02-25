@@ -285,7 +285,7 @@ public final class HilbertCurve {
     }
 
     public static final class Range {
-        
+
         private final BigInteger low;
         private final BigInteger high;
 
@@ -300,6 +300,32 @@ public final class HilbertCurve {
 
         public BigInteger high() {
             return high;
+        }
+
+    }
+
+    public static long mostSignificantBetween(long a, long b) {
+        if (a > b) {
+            return mostSignificantBetween(b, a);
+        } else if (a == b) {
+            return a;
+        } else {
+            long x = a + 1;
+            int bit = 0;
+            while (x < b) {
+                if ((x & (1 << bit)) == 0) {
+                    bit++;
+                } else {
+                    long y = x + (1 << bit);
+                    if (y < b) {
+                        bit++;
+                        x = y;
+                    } else {
+                        break;
+                    }
+                }
+            }
+            return x;
         }
     }
 
