@@ -285,20 +285,21 @@ public final class HilbertCurve {
     }
 
     public static final class Range {
-        private final BigInteger start;
-        private final BigInteger finish;
+        
+        private final BigInteger low;
+        private final BigInteger high;
 
-        public Range(BigInteger start, BigInteger finish) {
-            this.start = start;
-            this.finish = finish;
+        public Range(BigInteger low, BigInteger high) {
+            this.low = low;
+            this.high = high;
         }
 
-        public BigInteger start() {
-            return start;
+        public BigInteger low() {
+            return low;
         }
 
-        public BigInteger finish() {
-            return finish;
+        public BigInteger high() {
+            return high;
         }
     }
 

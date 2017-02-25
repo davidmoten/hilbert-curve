@@ -278,6 +278,7 @@ public class HilbertCurveTest {
         assertEquals(6, (long) f(5, 7));
         assertEquals(4, (long) f(3, 8));
         assertEquals(4, (long) f(3, 18));
+        assertEquals(4, (long) f(3, 4));
     }
 
     public static long f(long a, long b) {
