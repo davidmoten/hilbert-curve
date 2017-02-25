@@ -277,8 +277,10 @@ public class HilbertCurveTest {
         // s.t. a <x < b
         assertEquals(6, (long) f(5, 7));
         assertEquals(4, (long) f(3, 8));
-        assertEquals(4, (long) f(3, 18));
+        assertEquals(16, (long) f(3, 18));
         assertEquals(4, (long) f(3, 4));
+        assertEquals(8, (long) f(0, 16));
+        assertEquals(72, (long) f(71, 78));
     }
 
     public static long f(long a, long b) {
@@ -289,30 +291,16 @@ public class HilbertCurveTest {
             if ((x & (1 << bit)) == 0) {
                 bit++;
             } else {
-                bit++;
-                long y = x + 1 << bit;
-                if (y <b) {
+                long y = x + (1 << bit);
+                if (y < b) {
+                    bit++;
                     x = y;
-                }
-                else {
+                } else {
                     break;
                 }
             }
         }
         return x;
-    }
-
-    private static boolean set(long x, int index) {
-        return (x & (1 << index)) != 0;
-    }
-
-    private static int msbIndex(long x) {
-        return 63 - Long.numberOfLeadingZeros(x);
-    }
-
-    @Test
-    public void testMsbIndex() {
-        assertEquals(0, msbIndex(1));
     }
 
 }
