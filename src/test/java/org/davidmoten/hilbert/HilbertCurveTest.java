@@ -11,12 +11,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.BitSet;
-import java.util.Optional;
 
 import org.junit.Assert;
 import org.junit.Test;
-
-import com.github.davidmoten.guavamini.Preconditions;
 
 public class HilbertCurveTest {
 
