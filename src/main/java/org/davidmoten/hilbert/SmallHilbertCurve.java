@@ -89,20 +89,31 @@ public final class SmallHilbertCurve {
         return x;
     }
 
-    public List<Range> query(long[] point1, long[] point2, int maxRanges) {
-        // TODO
-        // Brute force is to travel the perimeter of the bounding box looking
-        // for max and min index values and return a single range. This method
-        // is potentially very wasteful because the Hilbert curve has locality
-        // discontinuities recursively at divisors of 2 in the domain and it is
-        // unnecessary to travel the whole perimeter as it can be solved more
-        // efficiently using a recursive technique.
-        //
-        // Minimal force is to recursively break the bounding box up into
-        // smaller boxes so that the discontinuities have progressively less
-        // effect. We stop the recursive process when we have split the interval
-        // into a maximum number of sub-intervals (`maxRanges`).
-
+    // TODO
+    // Brute force is to travel the perimeter of the bounding box looking
+    // for max and min index values and return a single range. This method
+    // is potentially very wasteful because the Hilbert curve has locality
+    // discontinuities recursively at divisors of 2 in the domain and it is
+    // unnecessary to travel the whole perimeter as it can be solved more
+    // efficiently using a recursive technique.
+    //
+    // Minimal force is to recursively break the bounding box up into
+    // smaller boxes so that the discontinuities have progressively less
+    // effect. We stop the recursive process when we have split the interval
+    public List<Range> query(long[] a, long[] b, int splitDepth) {
+        Preconditions.checkArgument(a.length == dimensions);
+        Preconditions.checkArgument(b.length == dimensions);
+        List<Range> indexRanges = Lists.newArrayList();
+        List<List<Range>> coordinateRanges = Lists.newArrayList();
+        for (int i = 0; i < dimensions; i++) {
+            coordinateRanges.add( //
+                    new Range(Math.min(a[i], b[i]), //
+                            Math.max(a[i], b[i])) //
+                                    .split(splitDepth));
+        }
+        // combine coordinate ranges from each dimension and from boxes
+        // determine the indexes of the corners of the boxes. The min max of the
+        // box corner indexes are the ranges returned by this method.
         return Lists.newArrayList();
     }
 
