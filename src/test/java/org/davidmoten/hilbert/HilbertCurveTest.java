@@ -11,9 +11,12 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.BitSet;
+import java.util.Optional;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import com.github.davidmoten.guavamini.Preconditions;
 
 public class HilbertCurveTest {
 
@@ -267,4 +270,48 @@ public class HilbertCurveTest {
         assertEquals(dimensions, point.length);
         return value == c.index(point);
     }
+
+    @Test
+    public void testBetween() {
+        // want to find the binary number with the most trailing zeroes x
+        // s.t. a <x < b
+        assertEquals(6, (long) f(5, 7));
+        assertEquals(4, (long) f(3, 8));
+        assertEquals(4, (long) f(3, 18));
+    }
+
+    public static long f(long a, long b) {
+        Preconditions.checkArgument(a < b);
+        long x = a + 1;
+        int bit = 0;
+        while (x < b) {
+            if ((x & (1 << bit)) == 0) {
+                bit++;
+            } else {
+                bit++;
+                long y = x + 1 << bit;
+                if (y <b) {
+                    x = y;
+                }
+                else {
+                    break;
+                }
+            }
+        }
+        return x;
+    }
+
+    private static boolean set(long x, int index) {
+        return (x & (1 << index)) != 0;
+    }
+
+    private static int msbIndex(long x) {
+        return 63 - Long.numberOfLeadingZeros(x);
+    }
+
+    @Test
+    public void testMsbIndex() {
+        assertEquals(0, msbIndex(1));
+    }
+
 }
