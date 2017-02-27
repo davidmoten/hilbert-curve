@@ -60,6 +60,7 @@ public final class SmallHilbertCurve {
         return HilbertCurve.transposedIndexToPoint(bits, transposeLong(index));
     }
 
+    //untranspose
     private long toIndex(long... transposedIndex) {
         long b = 0;
         int bIndex = length - 1;
