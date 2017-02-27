@@ -46,7 +46,7 @@ Add this to your maven pom.xml:
 Usage
 ---------
 ### Limits
-Maximum bits is 63, dimensions is not practically limited (sure you can specify 2<sup>25</sup> dimensions but that's a lot of data per point!).
+Maximum bits is 63, dimensions is not practically limited (sure you can specify 10<sup>9</sup> dimensions but that's a lot of data per point!).
 
 ### Small
 
