@@ -2,6 +2,7 @@ package org.davidmoten.hilbert;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 
 import com.github.davidmoten.guavamini.Lists;
 import com.github.davidmoten.guavamini.Preconditions;
@@ -60,7 +61,7 @@ public final class SmallHilbertCurve {
         return HilbertCurve.transposedIndexToPoint(bits, transposeLong(index));
     }
 
-    //untranspose
+    // untranspose
     private long toIndex(long... transposedIndex) {
         long b = 0;
         int bIndex = length - 1;
@@ -104,23 +105,44 @@ public final class SmallHilbertCurve {
     public List<Range> query(long[] a, long[] b, int splitDepth) {
         Preconditions.checkArgument(a.length == dimensions);
         Preconditions.checkArgument(b.length == dimensions);
-        List<List<Range>> coordinateRanges = Lists.newArrayList();
+        List<List<Range>> rangesByDimension = Lists.newArrayList();
         for (int i = 0; i < dimensions; i++) {
-            coordinateRanges.add( //
+            rangesByDimension.add( //
                     new Range(Math.min(a[i], b[i]), //
                             Math.max(a[i], b[i])) //
                                     .split(splitDepth));
         }
-        
+
         // combine coordinate ranges from each dimension and from boxes
         // determine the indexes of the corners of the boxes. The min max of the
         // box corner indexes are the ranges returned by this method.
-        List<List<Range>> combined = combine(coordinateRanges, dimensions);
+        List<List<Range>> combined = combine(rangesByDimension, dimensions);
         return Lists.newArrayList();
     }
 
-    private List<List<Range>> combine(List<List<Range>> coordinateRanges, int n) {
+    private List<List<Range>> combine(List<List<Range>> rangesByDimension, int n) {
+        Function<Integer, Integer> indexMax = i -> rangesByDimension.get(i).size();
+        int[] indexes = new int[dimensions];
+        do {
+            // do something with indexes
+            
+            // add one
+            for (int i = 0; i < dimensions; i++) {
+                indexes[i] = (indexes[i] + 1) % indexMax.apply(i);
+                if (indexes[i] != 0) {
+                    break;
+                }
+            }
+        } while (!allZero(indexes));
         return Lists.newArrayList();
+    }
+
+    private static boolean allZero(int[] a) {
+        for (int i = 0; i < a.length; i++) {
+            if (a[i] != 0)
+                return false;
+        }
+        return true;
     }
 
     public static final class Range {
