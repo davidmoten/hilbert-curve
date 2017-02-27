@@ -116,4 +116,8 @@ Primary credit goes to John Skilling for his article "Programming the Hilbert cu
 
 Thanks to Paul Chernoch for his [StackOverflow answer](http://stackoverflow.com/questions/499166/mapping-n-dimensional-value-to-a-point-on-hilbert-curve) which got me most of the way there.
 
-My contribution was to translate the C# code to java (use `long` instead of `uint`) and to write the bit manipulations between the transposed index (not sure why Skilling favoured this representation) and the `BigInteger` index.
+Dave Moten's contribution:
+
+* translate the C# code to java (use `long` instead of `uint`)
+* write the bit manipulations between the transposed index and the `BigInteger` index
+* lots of unit tests
