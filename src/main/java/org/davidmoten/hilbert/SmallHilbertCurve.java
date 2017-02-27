@@ -104,7 +104,6 @@ public final class SmallHilbertCurve {
     public List<Range> query(long[] a, long[] b, int splitDepth) {
         Preconditions.checkArgument(a.length == dimensions);
         Preconditions.checkArgument(b.length == dimensions);
-        List<Range> indexRanges = Lists.newArrayList();
         List<List<Range>> coordinateRanges = Lists.newArrayList();
         for (int i = 0; i < dimensions; i++) {
             coordinateRanges.add( //
@@ -112,9 +111,15 @@ public final class SmallHilbertCurve {
                             Math.max(a[i], b[i])) //
                                     .split(splitDepth));
         }
+        
         // combine coordinate ranges from each dimension and from boxes
         // determine the indexes of the corners of the boxes. The min max of the
         // box corner indexes are the ranges returned by this method.
+        List<List<Range>> combined = combine(coordinateRanges, dimensions);
+        return Lists.newArrayList();
+    }
+
+    private List<List<Range>> combine(List<List<Range>> coordinateRanges, int n) {
         return Lists.newArrayList();
     }
 
