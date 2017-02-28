@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import org.davidmoten.hilbert.HilbertCurveRenderer.Option;
 import org.davidmoten.hilbert.exceptions.IORuntimeException;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -23,7 +24,7 @@ public class HilbertCurveRendererTest {
     @Test
     public void testImageCreation() {
         for (int bits = 1; bits <= 8; bits++) {
-            HilbertCurveRenderer.renderToFile(bits, 1000, true, true, "target/hilbert-2d-bits-" + bits + ".png");
+            HilbertCurveRenderer.renderToFile(bits, 1000, "target/hilbert-2d-bits-" + bits + ".png", Option.COLORIZE, Option.LABEL);
         }
     }
 
@@ -33,7 +34,7 @@ public class HilbertCurveRendererTest {
         for (int bits = 2; bits <= 8; bits++) {
             BufferedImage expected = ImageIO.read(
                     HilbertCurveRendererTest.class.getResourceAsStream("/expected/hilbert-2d-bits-" + bits + ".png"));
-            BufferedImage b = HilbertCurveRenderer.render(bits, 800, true, true);
+            BufferedImage b = HilbertCurveRenderer.render(bits, 800, Option.COLORIZE, Option.LABEL);
             assertTrue(distance(expected, b) < 100);
         }
     }

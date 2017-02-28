@@ -18,8 +18,8 @@ public final class HilbertCurveRenderer {
         // prevent instantiation
     }
 
-    public static void renderToFile(int bits, int width,boolean colorize, boolean addLabels, String filename) {
-        BufferedImage b = render(bits, width, colorize, addLabels);
+    public static void renderToFile(int bits, int width, String filename, Option... options) {
+        BufferedImage b = render(bits, width, options);
         try {
             ImageIO.write(b, "PNG", new File(filename));
         } catch (IOException e) {
@@ -27,7 +27,11 @@ public final class HilbertCurveRenderer {
         }
     }
 
-    public static BufferedImage render(int bits, int width, boolean colorize, boolean addLabels) {
+    public static enum Option {
+        COLORIZE, LABEL;
+    }
+
+    public static BufferedImage render(int bits, int width, Option... options) {
         int dimensions = 2;
         HilbertCurve c = HilbertCurve.bits(bits).dimensions(dimensions);
         int n = 1 << bits;
@@ -41,7 +45,7 @@ public final class HilbertCurveRenderer {
         int margin = 10;
         int cellSize = (width - 2 * margin) / (n);
 
-        if (colorize) {
+        if (contains(options, Option.COLORIZE)) {
             int x = margin + cellSize / 2;
             int y = margin + cellSize / 2;
             for (long i = 0; i < n * n; i++) {
@@ -56,7 +60,7 @@ public final class HilbertCurveRenderer {
             }
             fill(n, g, cellSize, x, y, n * n);
         }
-        if (addLabels) {
+        if (contains(options, Option.LABEL)) {
             int x = margin + cellSize / 2;
             int y = margin + cellSize / 2;
             x = margin + cellSize / 2;
@@ -90,6 +94,15 @@ public final class HilbertCurveRenderer {
             y = y2;
         }
         return b;
+    }
+
+    private static boolean contains(Option[] options, Option option) {
+        for (Option o : options) {
+            if (o == option) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static void drawNumber(Graphics2D g, int x, int y, long i) {
