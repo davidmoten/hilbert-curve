@@ -31,7 +31,7 @@ A Hilbert curve can be used to index multiple dimensions and has useful locality
 |  <img src="src/docs/hilbert-2d-bits-3.png?raw=true" /> |  <img src="src/docs/hilbert-2d-bits-4.png?raw=true" />
 |  <img src="src/docs/hilbert-2d-bits-5.png?raw=true" /> |  <img src="src/docs/hilbert-2d-bits-6.png?raw=true" />
 
-**Figure 2. 2D Hilbert curves with 1 to 4 bits colorized and labelled
+**Figure 2. 2D Hilbert curves with 1 to 4 bits colorized and labelled**
 
 | | |
 | --- | --- |
