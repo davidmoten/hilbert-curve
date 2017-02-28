@@ -31,6 +31,10 @@ A Hilbert curve can be used to index multiple dimensions and has useful locality
 |  <img src="src/docs/hilbert-2d-bits-3.png?raw=true" /> |  <img src="src/docs/hilbert-2d-bits-4.png?raw=true" />
 |  <img src="src/docs/hilbert-2d-bits-5.png?raw=true" /> |  <img src="src/docs/hilbert-2d-bits-6.png?raw=true" />
 
+```java
+HilbertCurveRenderer.renderToFile(bits, 200, false, false, filename);
+```
+
 **Figure 2. 2D Hilbert curves with 1 to 4 bits colorized and labelled**
 
 | | |
@@ -38,9 +42,18 @@ A Hilbert curve can be used to index multiple dimensions and has useful locality
 |  <img src="src/docs/hilbert-color-1.png?raw=true" /> |  <img src="src/docs/hilbert-color-2.png?raw=true" />
 |  <img src="src/docs/hilbert-color-3.png?raw=true" /> |  <img src="src/docs/hilbert-color-4.png?raw=true" />
 
+```java
+HilbertCurveRenderer.renderToFile(bits, 600, true, true, filename);
+```
+
 **Figure 3. 2D Hilbert curves with 5 bits colorized and labelled**
 
 <img src="src/docs/hilbert-color-5.png?raw=true" />
+
+
+```java
+HilbertCurveRenderer.renderToFile(5, 1000, true, true, filename);
+```
 
 Getting started
 -----------------
