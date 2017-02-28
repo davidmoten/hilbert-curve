@@ -23,7 +23,7 @@ public class HilbertCurveRendererTest {
     @Test
     public void testImageCreation() {
         for (int bits = 1; bits <= 8; bits++) {
-            HilbertCurveRenderer.renderToFile(bits, 600, true, true, "target/hilbert-2d-bits-" + bits + ".png");
+            HilbertCurveRenderer.renderToFile(bits, 1000, true, true, "target/hilbert-2d-bits-" + bits + ".png");
         }
     }
 
