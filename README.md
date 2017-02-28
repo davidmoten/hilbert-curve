@@ -38,6 +38,10 @@ A Hilbert curve can be used to index multiple dimensions and has useful locality
 |  <img src="src/docs/hilbert-color-1.png?raw=true" /> |  <img src="src/docs/hilbert-color-2.png?raw=true" />
 |  <img src="src/docs/hilbert-color-3.png?raw=true" /> |  <img src="src/docs/hilbert-color-4.png?raw=true" />
 
+**Figure 3. 2D Hilbert curves with 5 bits colorized and labelled**
+
+<img src="src/docs/hilbert-color-5.png?raw=true" />
+
 Getting started
 -----------------
 Add this to your maven pom.xml:
