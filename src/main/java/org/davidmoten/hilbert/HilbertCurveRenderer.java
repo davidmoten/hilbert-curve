@@ -18,8 +18,8 @@ public final class HilbertCurveRenderer {
         // prevent instantiation
     }
 
-    public static void renderToFile(int bits, int width, String filename) {
-        BufferedImage b = render(bits, width);
+    public static void renderToFile(int bits, int width,boolean colorize, boolean addLabels, String filename) {
+        BufferedImage b = render(bits, width, colorize, addLabels);
         try {
             ImageIO.write(b, "PNG", new File(filename));
         } catch (IOException e) {
@@ -27,7 +27,7 @@ public final class HilbertCurveRenderer {
         }
     }
 
-    public static BufferedImage render(int bits, int width) {
+    public static BufferedImage render(int bits, int width, boolean colorize, boolean addLabels) {
         int dimensions = 2;
         HilbertCurve c = HilbertCurve.bits(bits).dimensions(dimensions);
         int n = 1 << bits;
@@ -40,35 +40,42 @@ public final class HilbertCurveRenderer {
         g.setStroke(new BasicStroke(0.5f));
         int margin = 10;
         int cellSize = (width - 2 * margin) / (n);
+
+        if (colorize) {
+            int x = margin + cellSize / 2;
+            int y = margin + cellSize / 2;
+            for (long i = 0; i < n * n; i++) {
+                fill(n, g, cellSize, x, y, i);
+                long[] point = c.point(BigInteger.valueOf(i));
+                int x2 = (int) Math.round((double) point[0] / (n - 1) * (width - 2 * margin - cellSize) + margin)
+                        + cellSize / 2;
+                int y2 = (int) Math.round((double) point[1] / (n - 1) * (height - 2 * margin - cellSize) + margin)
+                        + cellSize / 2;
+                x = x2;
+                y = y2;
+            }
+            fill(n, g, cellSize, x, y, n * n);
+        }
+        if (addLabels) {
+            int x = margin + cellSize / 2;
+            int y = margin + cellSize / 2;
+            x = margin + cellSize / 2;
+            y = margin + cellSize / 2;
+            g.setColor(Color.black);
+            for (long i = 0; i < n * n; i++) {
+                long[] point = c.point(BigInteger.valueOf(i));
+                int x2 = (int) Math.round((double) point[0] / (n - 1) * (width - 2 * margin - cellSize) + margin)
+                        + cellSize / 2;
+                int y2 = (int) Math.round((double) point[1] / (n - 1) * (height - 2 * margin - cellSize) + margin)
+                        + cellSize / 2;
+                x = x2;
+                y = y2;
+                drawNumber(g, x, y, i);
+            }
+        }
+
         int x = margin + cellSize / 2;
         int y = margin + cellSize / 2;
-        for (long i = 0; i < n * n; i++) {
-            fill(n, g, cellSize, x, y, i);
-            long[] point = c.point(BigInteger.valueOf(i));
-            int x2 = (int) Math.round((double) point[0] / (n - 1) * (width - 2 * margin - cellSize) + margin)
-                    + cellSize / 2;
-            int y2 = (int) Math.round((double) point[1] / (n - 1) * (height - 2 * margin - cellSize) + margin)
-                    + cellSize / 2;
-            x = x2;
-            y = y2;
-        }
-        fill(n, g, cellSize, x, y, n * n);
-
-        x = margin + cellSize / 2;
-        y = margin + cellSize / 2;
-        g.setColor(Color.black);
-        for (long i = 0; i < n * n; i++) {
-            drawNumber(g, x, y, i);
-            long[] point = c.point(BigInteger.valueOf(i));
-            int x2 = (int) Math.round((double) point[0] / (n - 1) * (width - 2 * margin - cellSize) + margin)
-                    + cellSize / 2;
-            int y2 = (int) Math.round((double) point[1] / (n - 1) * (height - 2 * margin - cellSize) + margin)
-                    + cellSize / 2;
-            x = x2;
-            y = y2;
-        }
-        drawNumber(g, x, y, n * n);
-
         x = margin + cellSize / 2;
         y = margin + cellSize / 2;
         g.setColor(Color.black);
@@ -90,7 +97,7 @@ public final class HilbertCurveRenderer {
     }
 
     private static void fill(int n, Graphics2D g, int cellSize, int x, int y, long i) {
-        Color color = Color.getHSBColor(((float) i) / n / n, 0.8f, 1.0f);
+        Color color = Color.getHSBColor(((float) i) / n / n, 0.5f, 1.0f);
         g.setColor(color);
         g.fillRect(x - cellSize / 2, y - cellSize / 2, cellSize + 1, cellSize + 1);
     }

@@ -14,7 +14,7 @@ import org.junit.Test;
 import com.github.davidmoten.junit.Asserts;
 
 public class HilbertCurveRendererTest {
-    
+
     @Test
     public void isUtilClass() {
         Asserts.assertIsUtilityClass(HilbertCurveRenderer.class);
@@ -23,7 +23,7 @@ public class HilbertCurveRendererTest {
     @Test
     public void testImageCreation() {
         for (int bits = 1; bits <= 8; bits++) {
-            HilbertCurveRenderer.renderToFile(bits, 1000, "target/hilbert-2d-bits-" + bits + ".png");
+            HilbertCurveRenderer.renderToFile(bits, 1000, true, true, "target/hilbert-2d-bits-" + bits + ".png");
         }
     }
 
@@ -31,18 +31,18 @@ public class HilbertCurveRendererTest {
     @Ignore
     public void compareImagesWithExpected() throws IOException {
         for (int bits = 2; bits <= 8; bits++) {
-            BufferedImage expected = ImageIO.read(HilbertCurveRendererTest.class
-                    .getResourceAsStream("/expected/hilbert-2d-bits-" + bits + ".png"));
-            BufferedImage b = HilbertCurveRenderer.render(bits, 800);
+            BufferedImage expected = ImageIO.read(
+                    HilbertCurveRendererTest.class.getResourceAsStream("/expected/hilbert-2d-bits-" + bits + ".png"));
+            BufferedImage b = HilbertCurveRenderer.render(bits, 800, true, true);
             assertTrue(distance(expected, b) < 100);
         }
     }
-    
+
     @Test
     public void testException() {
         new IORuntimeException(new IOException());
     }
-    
+
     private static double distance(BufferedImage imgA, BufferedImage imgB) {
         // The images must be the same size.
         if (imgA.getWidth() == imgB.getWidth() && imgA.getHeight() == imgB.getHeight()) {
