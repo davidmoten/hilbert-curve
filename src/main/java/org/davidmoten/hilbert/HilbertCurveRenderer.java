@@ -43,6 +43,36 @@ public final class HilbertCurveRenderer {
         int x = margin + cellSize / 2;
         int y = margin + cellSize / 2;
         for (long i = 0; i < n * n; i++) {
+            fill(n, g, cellSize, x, y, i);
+            long[] point = c.point(BigInteger.valueOf(i));
+            int x2 = (int) Math.round((double) point[0] / (n - 1) * (width - 2 * margin - cellSize) + margin)
+                    + cellSize / 2;
+            int y2 = (int) Math.round((double) point[1] / (n - 1) * (height - 2 * margin - cellSize) + margin)
+                    + cellSize / 2;
+            x = x2;
+            y = y2;
+        }
+        fill(n, g, cellSize, x, y, n * n);
+
+        x = margin + cellSize / 2;
+        y = margin + cellSize / 2;
+        g.setColor(Color.black);
+        for (long i = 0; i < n * n; i++) {
+            drawNumber(g, x, y, i);
+            long[] point = c.point(BigInteger.valueOf(i));
+            int x2 = (int) Math.round((double) point[0] / (n - 1) * (width - 2 * margin - cellSize) + margin)
+                    + cellSize / 2;
+            int y2 = (int) Math.round((double) point[1] / (n - 1) * (height - 2 * margin - cellSize) + margin)
+                    + cellSize / 2;
+            x = x2;
+            y = y2;
+        }
+        drawNumber(g, x, y, n * n);
+
+        x = margin + cellSize / 2;
+        y = margin + cellSize / 2;
+        g.setColor(Color.black);
+        for (long i = 0; i < n * n; i++) {
             long[] point = c.point(BigInteger.valueOf(i));
             int x2 = (int) Math.round((double) point[0] / (n - 1) * (width - 2 * margin - cellSize) + margin)
                     + cellSize / 2;
@@ -53,5 +83,15 @@ public final class HilbertCurveRenderer {
             y = y2;
         }
         return b;
+    }
+
+    private static void drawNumber(Graphics2D g, int x, int y, long i) {
+        g.drawString(i + "", x + 2, y - 2);
+    }
+
+    private static void fill(int n, Graphics2D g, int cellSize, int x, int y, long i) {
+        Color color = Color.getHSBColor(((float) i) / n / n, 0.8f, 1.0f);
+        g.setColor(color);
+        g.fillRect(x - cellSize / 2, y - cellSize / 2, cellSize + 1, cellSize + 1);
     }
 }
