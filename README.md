@@ -21,7 +21,7 @@ This library supports *approximations* to the Hilbert curve. *H<sub>n</sub>* is 
 
 A Hilbert curve can be used to index multiple dimensions and has useful locality properties. In short, 
 
-    Points with indexes close to an index will be close to the point corresponding to that index.
+* *Points with indexes close to an index will be close to the point corresponding to that index.*
 
 **Figure 1. 2D Hilbert curves with 1 to 6 bits (H<sub>1</sub> to H<sub>6</sub>)**
 
