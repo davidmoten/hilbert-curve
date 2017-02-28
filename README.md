@@ -145,3 +145,4 @@ Dave Moten's contribution:
 * translate the C# code to java (use `long` instead of `uint`)
 * write the bit manipulations between the transposed index and the `BigInteger` index
 * lots of unit tests
+* made a simple easy-to-read API
