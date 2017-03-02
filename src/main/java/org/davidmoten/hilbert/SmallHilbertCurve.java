@@ -1,8 +1,11 @@
 package org.davidmoten.hilbert;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.github.davidmoten.guavamini.Lists;
 import com.github.davidmoten.guavamini.Preconditions;
@@ -122,10 +125,23 @@ public final class SmallHilbertCurve {
 
     private List<List<Range>> combine(List<List<Range>> rangesByDimension, int n) {
         Function<Integer, Integer> indexMax = i -> rangesByDimension.get(i).size();
+        List<Range> ranges = new ArrayList<Range>();
         int[] indexes = new int[dimensions];
         do {
             // do something with indexes
-            
+            List<Range> rangesToCombine = new ArrayList<>();
+            for (int i = 0; i < dimensions; i++) {
+                rangesToCombine.add(rangesByDimension.get(i).get(indexes[i]));
+            }
+
+            // cross-product the point coordinates and calculate the min and max
+            // hilbert indexes to get the range for this hyperrectangle
+            for (int i = 0; i < Math.pow(2, dimensions); i++) {
+
+            }
+            for (int i = 0; i < dimensions; i++) {
+            }
+
             // add one
             for (int i = 0; i < dimensions; i++) {
                 indexes[i] = (indexes[i] + 1) % indexMax.apply(i);
@@ -135,6 +151,22 @@ public final class SmallHilbertCurve {
             }
         } while (!allZero(indexes));
         return Lists.newArrayList();
+    }
+
+    private static long[] lows(List<Range> list) {
+        long[] x = new long[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            x[i] = list.get(i).low();
+        }
+        return x;
+    }
+
+    private static long[] highs(List<Range> list) {
+        long[] x = new long[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            x[i] = list.get(i).high();
+        }
+        return x;
     }
 
     private static boolean allZero(int[] a) {
@@ -227,7 +259,8 @@ public final class SmallHilbertCurve {
         }
 
         public SmallHilbertCurve dimensions(int dimensions) {
-            Preconditions.checkArgument(bits * dimensions <= 63, "bits * dimensions must be less than or equal to 63");
+            Preconditions.checkArgument(bits * dimensions <= 63,
+                    "bits * dimensions must be less than or equal to 63");
             return new SmallHilbertCurve(bits, dimensions);
         }
 
