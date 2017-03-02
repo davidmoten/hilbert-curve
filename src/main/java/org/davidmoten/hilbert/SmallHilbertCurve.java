@@ -94,7 +94,6 @@ public final class SmallHilbertCurve {
         return x;
     }
 
-    // TODO
     // Brute force is to travel the bounding surface of the bounding
     // hyperrectangle looking for max and min index values and return a single
     // range. This method is potentially very wasteful because the Hilbert curve
@@ -104,7 +103,8 @@ public final class SmallHilbertCurve {
     //
     // Minimal force is to recursively break the bounding box up into
     // smaller boxes so that the discontinuities have progressively less
-    // effect. We stop the recursive process when we have split the interval
+    // effect. We stop the recursive process when the probability of missing an
+    // index is appropriately low (for further consideration).
     public List<Range> query(long[] a, long[] b, int splitDepth) {
         Preconditions.checkArgument(a.length == dimensions);
         Preconditions.checkArgument(b.length == dimensions);
@@ -134,11 +134,10 @@ public final class SmallHilbertCurve {
             }
 
             // cross-product the point coordinates and calculate the min and max
-            // hilbert indexes to get the range for this hyperrectangle
+            // hilbert indexes to get the range for this hyper-rectangle
             long min = Long.MAX_VALUE;
             long max = Long.MIN_VALUE;
             for (int i = 0; i < Math.pow(2, dimensions); i++) {
-                
                 long point[] = new long[dimensions];
                 for (int j = 0; j < dimensions; j++) {
                     Range r = rangesToCombine.get(j);
@@ -183,7 +182,7 @@ public final class SmallHilbertCurve {
             this.low = low;
             this.high = high;
         }
-        
+
         public static Range create(long low, long high) {
             return new Range(low, high);
         }
@@ -247,7 +246,7 @@ public final class SmallHilbertCurve {
                 return false;
             return true;
         }
-        
+
     }
 
     static long mostSignificantBetween(long a, long b) {
