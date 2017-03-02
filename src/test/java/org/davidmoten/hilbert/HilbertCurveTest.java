@@ -287,5 +287,15 @@ public class HilbertCurveTest {
     public void testRange() {
         new Range(100, 220).split(3).stream().forEach(System.out::println);
     }
+    
+    @Test
+    public void testQuery() {
+        SmallHilbertCurve c = HilbertCurve.small().bits(5).dimensions(2);
+        c.query(point(0,0), point(1,1), 0);
+    }
+    
+    private static long[] point(long... values) {
+        return values;
+    }
 
 }

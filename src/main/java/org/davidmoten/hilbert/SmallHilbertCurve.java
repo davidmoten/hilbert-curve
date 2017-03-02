@@ -138,9 +138,10 @@ public final class SmallHilbertCurve {
             long min = Long.MAX_VALUE;
             long max = Long.MIN_VALUE;
             for (int i = 0; i < Math.pow(2, dimensions); i++) {
-                Range r = rangesToCombine.get(i);
+                
                 long point[] = new long[dimensions];
                 for (int j = 0; j < dimensions; j++) {
+                    Range r = rangesToCombine.get(j);
                     long x = (i & (1 << j)) == 0 ? r.low() : r.high();
                     point[j] = x;
                 }
@@ -201,7 +202,9 @@ public final class SmallHilbertCurve {
         }
 
         public List<Range> split(int n) {
-            if (n <= 1) {
+            if (n == 0) {
+                return Collections.singletonList(this);
+            } else if (n == 1) {
                 return split();
             }
             List<Range> result = Lists.newArrayList();
