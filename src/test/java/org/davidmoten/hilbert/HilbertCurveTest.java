@@ -11,6 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.BitSet;
+import java.util.List;
 
 import org.davidmoten.hilbert.SmallHilbertCurve.Range;
 import org.junit.Assert;
@@ -287,13 +288,32 @@ public class HilbertCurveTest {
     public void testRange() {
         new Range(100, 220).split(3).stream().forEach(System.out::println);
     }
-    
+
     @Test
     public void testQuery() {
         SmallHilbertCurve c = HilbertCurve.small().bits(5).dimensions(2);
-        c.query(point(0,0), point(1,1), 0);
+        List<Range> r = c.query(point(0, 0), point(1, 1), 0);
+        assertEquals(1, r.size());
+        assertEquals(Range.create(0, 3), r.get(0));
     }
     
+    @Test
+    public void testQuery2() {
+        SmallHilbertCurve c = HilbertCurve.small().bits(5).dimensions(2);
+        List<Range> r = c.query(point(0, 3), point(4, 2), 0);
+        assertEquals(1, r.size());
+        assertEquals(Range.create(14, 54), r.get(0));
+    }
+    
+    @Test
+    public void testQuery3() {
+        SmallHilbertCurve c = HilbertCurve.small().bits(5).dimensions(2);
+        List<Range> r = c.query(point(0, 3), point(4, 2), 1);
+        System.out.println(r);
+        assertEquals(2, r.size());
+        assertEquals(Range.create(14, 54), r.get(0));
+    }
+
     private static long[] point(long... values) {
         return values;
     }
