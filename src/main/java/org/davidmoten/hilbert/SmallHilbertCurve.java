@@ -95,12 +95,12 @@ public final class SmallHilbertCurve {
     }
 
     // TODO
-    // Brute force is to travel the perimeter of the bounding box looking
-    // for max and min index values and return a single range. This method
-    // is potentially very wasteful because the Hilbert curve has locality
-    // discontinuities recursively at divisors of 2 in the domain and it is
-    // unnecessary to travel the whole perimeter as it can be solved more
-    // efficiently using a recursive technique.
+    // Brute force is to travel the bounding surface of the bounding
+    // hyperrectangle looking for max and min index values and return a single
+    // range. This method is potentially very wasteful because the Hilbert curve
+    // has locality discontinuities recursively at divisors of 2 in the domain
+    // and it is unnecessary to travel the whole bounding surface as it can be
+    // solved more efficiently using a recursive technique.
     //
     // Minimal force is to recursively break the bounding box up into
     // smaller boxes so that the discontinuities have progressively less
@@ -119,8 +119,7 @@ public final class SmallHilbertCurve {
         // combine coordinate ranges from each dimension and from boxes
         // determine the indexes of the corners of the boxes. The min max of the
         // box corner indexes are the ranges returned by this method.
-        List<Range> combined = combine(rangesByDimension, dimensions);
-        return Lists.newArrayList();
+        return combine(rangesByDimension, dimensions);
     }
 
     private List<Range> combine(List<List<Range>> rangesByDimension, int n) {
