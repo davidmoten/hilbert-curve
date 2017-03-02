@@ -119,11 +119,11 @@ public final class SmallHilbertCurve {
         // combine coordinate ranges from each dimension and from boxes
         // determine the indexes of the corners of the boxes. The min max of the
         // box corner indexes are the ranges returned by this method.
-        List<List<Range>> combined = combine(rangesByDimension, dimensions);
+        List<Range> combined = combine(rangesByDimension, dimensions);
         return Lists.newArrayList();
     }
 
-    private List<List<Range>> combine(List<List<Range>> rangesByDimension, int n) {
+    private List<Range> combine(List<List<Range>> rangesByDimension, int n) {
         Function<Integer, Integer> indexMax = i -> rangesByDimension.get(i).size();
         List<Range> ranges = new ArrayList<Range>();
         int[] indexes = new int[dimensions];
@@ -136,11 +136,23 @@ public final class SmallHilbertCurve {
 
             // cross-product the point coordinates and calculate the min and max
             // hilbert indexes to get the range for this hyperrectangle
+            long min = Long.MAX_VALUE;
+            long max = Long.MIN_VALUE;
             for (int i = 0; i < Math.pow(2, dimensions); i++) {
-
+                Range r = rangesToCombine.get(i);
+                long point[] = new long[dimensions];
+                for (int j = 0; j < dimensions; j++) {
+                    long x = (i & (1 << j)) == 0 ? r.low() : r.high();
+                    point[j] = x;
+                }
+                long h = index(point);
+                if (h < min) {
+                    min = h;
+                } else if (h > max) {
+                    max = h;
+                }
             }
-            for (int i = 0; i < dimensions; i++) {
-            }
+            ranges.add(new Range(min, max));
 
             // add one
             for (int i = 0; i < dimensions; i++) {
@@ -150,23 +162,8 @@ public final class SmallHilbertCurve {
                 }
             }
         } while (!allZero(indexes));
-        return Lists.newArrayList();
-    }
 
-    private static long[] lows(List<Range> list) {
-        long[] x = new long[list.size()];
-        for (int i = 0; i < list.size(); i++) {
-            x[i] = list.get(i).low();
-        }
-        return x;
-    }
-
-    private static long[] highs(List<Range> list) {
-        long[] x = new long[list.size()];
-        for (int i = 0; i < list.size(); i++) {
-            x[i] = list.get(i).high();
-        }
-        return x;
+        return ranges;
     }
 
     private static boolean allZero(int[] a) {
@@ -259,8 +256,7 @@ public final class SmallHilbertCurve {
         }
 
         public SmallHilbertCurve dimensions(int dimensions) {
-            Preconditions.checkArgument(bits * dimensions <= 63,
-                    "bits * dimensions must be less than or equal to 63");
+            Preconditions.checkArgument(bits * dimensions <= 63, "bits * dimensions must be less than or equal to 63");
             return new SmallHilbertCurve(bits, dimensions);
         }
 
