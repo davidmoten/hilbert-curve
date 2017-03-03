@@ -113,7 +113,7 @@ public final class SmallHilbertCurve {
                             Math.max(a[i], b[i])) //
                                     .split(splitDepth));
         }
-
+        System.out.println("byDim=" + rangesByDimension);
         // combine coordinate ranges from each dimension and from boxes
         // determine the indexes of the corners of the boxes. The min max of the
         // box corner indexes are the ranges returned by this method.
@@ -139,7 +139,8 @@ public final class SmallHilbertCurve {
                 long point[] = new long[dimensions];
                 for (int j = 0; j < dimensions; j++) {
                     Range r = rangesToCombine.get(j);
-                    long x = (i & (1 << j)) == 0 ? r.low() : r.high();
+                    long x = (i & (1 << j)) == 0 ? (r.low() == rangesByDimension.get(j).get(0).low()
+                            ? r.low() : r.low() + 1) : r.high();
                     point[j] = x;
                 }
                 long h = index(point);
@@ -285,7 +286,8 @@ public final class SmallHilbertCurve {
         }
 
         public SmallHilbertCurve dimensions(int dimensions) {
-            Preconditions.checkArgument(bits * dimensions <= 63, "bits * dimensions must be less than or equal to 63");
+            Preconditions.checkArgument(bits * dimensions <= 63,
+                    "bits * dimensions must be less than or equal to 63");
             return new SmallHilbertCurve(bits, dimensions);
         }
 
