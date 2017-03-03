@@ -62,11 +62,13 @@ public class HilbertCurveTest {
                 out.println();
             }
             out.close();
-            String actual = new String(Files.readAllBytes(new File("target/indexes-2d-bits-" + bits + ".txt").toPath()),
-                    StandardCharsets.UTF_8);
-            String expected = new String(
+            String actual = new String(
                     Files.readAllBytes(
-                            new File("src/test/resources/expected/indexes-2d-bits-" + bits + ".txt").toPath()),
+                            new File("target/indexes-2d-bits-" + bits + ".txt").toPath()),
+                    StandardCharsets.UTF_8);
+            String expected = new String(Files.readAllBytes(
+                    new File("src/test/resources/expected/indexes-2d-bits-" + bits + ".txt")
+                            .toPath()),
                     StandardCharsets.UTF_8);
             assertEquals(expected, actual);
         }
@@ -106,8 +108,8 @@ public class HilbertCurveTest {
             for (int dimensions = 2; dimensions <= 10; dimensions++)
                 for (long i = 0; i < Math.pow(2, bits + 1); i++) {
                     if (!checkRoundTrip(bits, dimensions, i)) {
-                        System.out.println(
-                                "failed round trip for bits=" + bits + ", dimensions=" + dimensions + ", index=" + i);
+                        System.out.println("failed round trip for bits=" + bits + ", dimensions="
+                                + dimensions + ", index=" + i);
                         failed = true;
                     }
                 }
@@ -124,8 +126,8 @@ public class HilbertCurveTest {
             for (int dimensions = 2; dimensions <= Math.min(5, 63 / bits); dimensions++)
                 for (long i = 0; i < Math.pow(2, bits + 1); i++) {
                     if (!checkRoundTripLong(bits, dimensions, i)) {
-                        System.out.println(
-                                "failed round trip for bits=" + bits + ", dimensions=" + dimensions + ", index=" + i);
+                        System.out.println("failed round trip for bits=" + bits + ", dimensions="
+                                + dimensions + ", index=" + i);
                         failed = true;
                     }
                 }
@@ -290,25 +292,35 @@ public class HilbertCurveTest {
     }
 
     @Test
-    public void testQuery() {
+    public void testSmallQuery() {
         SmallHilbertCurve c = HilbertCurve.small().bits(5).dimensions(2);
         List<Range> r = c.query(point(0, 0), point(1, 1), 0);
         assertEquals(1, r.size());
         assertEquals(Range.create(0, 3), r.get(0));
     }
-    
+
     @Test
-    public void testQuery2() {
+    public void testSmallQuery2() {
         SmallHilbertCurve c = HilbertCurve.small().bits(5).dimensions(2);
         List<Range> r = c.query(point(0, 3), point(4, 2), 0);
         assertEquals(1, r.size());
         assertEquals(Range.create(14, 54), r.get(0));
     }
-    
+
     @Test
-    public void testQuery3() {
+    public void testSmallQuery3() {
         SmallHilbertCurve c = HilbertCurve.small().bits(5).dimensions(2);
         List<Range> r = c.query(point(0, 3), point(4, 2), 1);
+        assertEquals(Arrays.asList(Range.create(8, 15), Range.create(53, 54)), r);
+    }
+    
+    @Test
+    public void testSmallQuery4() {
+        SmallHilbertCurve c = HilbertCurve.small().bits(5).dimensions(2);
+        List<Range> r = c.query(point(0, 2), point(6, 8), 2);
+        for (Range range: r) {
+            System.out.println(range);
+        }
         assertEquals(Arrays.asList(Range.create(8, 15), Range.create(53, 54)), r);
     }
 

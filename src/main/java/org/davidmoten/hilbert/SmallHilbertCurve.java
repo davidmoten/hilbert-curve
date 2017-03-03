@@ -2,6 +2,7 @@ package org.davidmoten.hilbert;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
 
@@ -117,7 +118,23 @@ public final class SmallHilbertCurve {
         // combine coordinate ranges from each dimension and from boxes
         // determine the indexes of the corners of the boxes. The min max of the
         // box corner indexes are the ranges returned by this method.
-        return combine(rangesByDimension, dimensions);
+        return simplify(combine(rangesByDimension, dimensions));
+    }
+
+    private List<Range> simplify(List<Range> list) {
+        //mutates list!
+        Collections.sort(list, (a, b) -> Long.compare(a.low(), b.low()));
+        int i = 1;
+        while (i < list.size()) {
+            Range previous = list.get(i - 1);
+            Range current = list.get(i);
+            if (previous.high() == current.low() - 1) {
+                list.set(i - 1, Range.create(previous.low(), current.high()));
+            } else {
+                i++;
+            }
+        }
+        return list;
     }
 
     private List<Range> combine(List<List<Range>> rangesByDimension, int n) {
