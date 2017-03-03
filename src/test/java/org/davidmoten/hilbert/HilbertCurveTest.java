@@ -309,9 +309,7 @@ public class HilbertCurveTest {
     public void testQuery3() {
         SmallHilbertCurve c = HilbertCurve.small().bits(5).dimensions(2);
         List<Range> r = c.query(point(0, 3), point(4, 2), 1);
-        System.out.println(r);
-        assertEquals(2, r.size());
-        assertEquals(Range.create(14, 54), r.get(0));
+        assertEquals(Arrays.asList(Range.create(8, 15), Range.create(53, 54)), r);
     }
 
     private static long[] point(long... values) {
