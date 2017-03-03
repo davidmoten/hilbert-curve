@@ -317,7 +317,7 @@ public class HilbertCurveTest {
     @Test
     public void testSmallQuery4() {
         SmallHilbertCurve c = HilbertCurve.small().bits(5).dimensions(2);
-        List<Range> r = c.query(point(0, 2), point(6, 8), 2);
+        List<Range> r = c.query(point(0, 2), point(6, 8), 3);
         for (Range range: r) {
             System.out.println(range);
         }

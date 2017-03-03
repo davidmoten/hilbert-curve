@@ -2,7 +2,6 @@ package org.davidmoten.hilbert;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
 
@@ -128,8 +127,9 @@ public final class SmallHilbertCurve {
         while (i < list.size()) {
             Range previous = list.get(i - 1);
             Range current = list.get(i);
-            if (previous.high() == current.low() - 1) {
+            if (previous.high() >= current.low() - 1) {
                 list.set(i - 1, Range.create(previous.low(), current.high()));
+                list.remove(i);
             } else {
                 i++;
             }
