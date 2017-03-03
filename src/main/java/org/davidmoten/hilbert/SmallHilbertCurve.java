@@ -121,7 +121,7 @@ public final class SmallHilbertCurve {
     }
 
     private List<Range> simplify(List<Range> list) {
-        //mutates list!
+        // mutates list!
         Collections.sort(list, (a, b) -> Long.compare(a.low(), b.low()));
         int i = 1;
         while (i < list.size()) {
@@ -156,8 +156,8 @@ public final class SmallHilbertCurve {
                 long point[] = new long[dimensions];
                 for (int j = 0; j < dimensions; j++) {
                     Range r = rangesToCombine.get(j);
-                    long x = (i & (1 << j)) == 0 ? (r.low() == rangesByDimension.get(j).get(0).low()
-                            ? r.low() : r.low() + 1) : r.high();
+                    long x = (i & (1 << j)) == 0
+                            ? (r.low() == rangesByDimension.get(j).get(0).low() ? r.low() : r.low() + 1) : r.high();
                     point[j] = x;
                 }
                 long h = index(point);
@@ -216,7 +216,7 @@ public final class SmallHilbertCurve {
             if (x == low || x == high) {
                 return Collections.singletonList(this);
             } else {
-                return Lists.newArrayList(new Range(low, x), new Range(x + 1, high));
+                return Lists.newArrayList(new Range(low, x - 1), new Range(x, high));
             }
         }
 
@@ -303,8 +303,7 @@ public final class SmallHilbertCurve {
         }
 
         public SmallHilbertCurve dimensions(int dimensions) {
-            Preconditions.checkArgument(bits * dimensions <= 63,
-                    "bits * dimensions must be less than or equal to 63");
+            Preconditions.checkArgument(bits * dimensions <= 63, "bits * dimensions must be less than or equal to 63");
             return new SmallHilbertCurve(bits, dimensions);
         }
 

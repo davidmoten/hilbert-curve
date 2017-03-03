@@ -17,7 +17,13 @@ import org.davidmoten.hilbert.SmallHilbertCurve.Range;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.github.davidmoten.guavamini.Lists;
+
 public class HilbertCurveTest {
+
+    private static final HilbertCurve c = HilbertCurve.bits(5).dimensions(2);
+
+    private static SmallHilbertCurve small = HilbertCurve.small().bits(5).dimensions(2);
 
     @Test
     public void testIndex1() {
@@ -27,13 +33,11 @@ public class HilbertCurveTest {
 
     @Test
     public void testIndex2() {
-        HilbertCurve c = HilbertCurve.bits(5).dimensions(2);
         assertEquals(256, c.index(0, 16).intValue());
     }
 
     @Test
     public void testToBigInteger() {
-        HilbertCurve c = HilbertCurve.bits(5).dimensions(2);
         long[] ti = { 0, 16 };
         assertEquals(256, c.toIndex(ti).intValue());
     }
@@ -62,13 +66,11 @@ public class HilbertCurveTest {
                 out.println();
             }
             out.close();
-            String actual = new String(
-                    Files.readAllBytes(
-                            new File("target/indexes-2d-bits-" + bits + ".txt").toPath()),
+            String actual = new String(Files.readAllBytes(new File("target/indexes-2d-bits-" + bits + ".txt").toPath()),
                     StandardCharsets.UTF_8);
-            String expected = new String(Files.readAllBytes(
-                    new File("src/test/resources/expected/indexes-2d-bits-" + bits + ".txt")
-                            .toPath()),
+            String expected = new String(
+                    Files.readAllBytes(
+                            new File("src/test/resources/expected/indexes-2d-bits-" + bits + ".txt").toPath()),
                     StandardCharsets.UTF_8);
             assertEquals(expected, actual);
         }
@@ -76,7 +78,6 @@ public class HilbertCurveTest {
 
     @Test
     public void testTranspose() {
-        HilbertCurve c = HilbertCurve.bits(5).dimensions(2);
         long[] ti = c.transpose(BigInteger.valueOf(256));
         assertEquals(2, ti.length);
         assertEquals(0, ti[0]);
@@ -85,7 +86,6 @@ public class HilbertCurveTest {
 
     @Test
     public void testTransposeZero() {
-        HilbertCurve c = HilbertCurve.bits(5).dimensions(2);
         long[] ti = c.transpose(BigInteger.valueOf(0));
         assertEquals(2, ti.length);
         assertEquals(0, ti[0]);
@@ -108,8 +108,8 @@ public class HilbertCurveTest {
             for (int dimensions = 2; dimensions <= 10; dimensions++)
                 for (long i = 0; i < Math.pow(2, bits + 1); i++) {
                     if (!checkRoundTrip(bits, dimensions, i)) {
-                        System.out.println("failed round trip for bits=" + bits + ", dimensions="
-                                + dimensions + ", index=" + i);
+                        System.out.println(
+                                "failed round trip for bits=" + bits + ", dimensions=" + dimensions + ", index=" + i);
                         failed = true;
                     }
                 }
@@ -126,8 +126,8 @@ public class HilbertCurveTest {
             for (int dimensions = 2; dimensions <= Math.min(5, 63 / bits); dimensions++)
                 for (long i = 0; i < Math.pow(2, bits + 1); i++) {
                     if (!checkRoundTripLong(bits, dimensions, i)) {
-                        System.out.println("failed round trip for bits=" + bits + ", dimensions="
-                                + dimensions + ", index=" + i);
+                        System.out.println(
+                                "failed round trip for bits=" + bits + ", dimensions=" + dimensions + ", index=" + i);
                         failed = true;
                     }
                 }
@@ -287,41 +287,45 @@ public class HilbertCurveTest {
     }
 
     @Test
-    public void testRange() {
-        new Range(100, 220).split(3).stream().forEach(System.out::println);
+    public void testSplit() {
+        List<Range> list = new Range(3, 8).split(1);
+        System.out.println(list);
+        assertEquals(Lists.newArrayList( //
+                Range.create(3, 3), //
+                Range.create(4, 8)), list);
     }
 
     @Test
     public void testSmallQuery() {
-        SmallHilbertCurve c = HilbertCurve.small().bits(5).dimensions(2);
-        List<Range> r = c.query(point(0, 0), point(1, 1), 0);
+        List<Range> r = small.query(point(0, 0), point(1, 1), 0);
         assertEquals(1, r.size());
         assertEquals(Range.create(0, 3), r.get(0));
     }
 
     @Test
     public void testSmallQuery2() {
-        SmallHilbertCurve c = HilbertCurve.small().bits(5).dimensions(2);
-        List<Range> r = c.query(point(0, 3), point(4, 2), 0);
+        List<Range> r = small.query(point(0, 3), point(4, 2), 0);
         assertEquals(1, r.size());
         assertEquals(Range.create(14, 54), r.get(0));
     }
 
     @Test
     public void testSmallQuery3() {
-        SmallHilbertCurve c = HilbertCurve.small().bits(5).dimensions(2);
-        List<Range> r = c.query(point(0, 3), point(4, 2), 1);
+        List<Range> r = small.query(point(0, 3), point(4, 2), 2);
+        System.out.println(r);
         assertEquals(Arrays.asList(Range.create(8, 15), Range.create(53, 54)), r);
     }
-    
+
     @Test
     public void testSmallQuery4() {
-        SmallHilbertCurve c = HilbertCurve.small().bits(5).dimensions(2);
-        List<Range> r = c.query(point(0, 2), point(6, 8), 3);
-        for (Range range: r) {
-            System.out.println(range);
-        }
-        assertEquals(Arrays.asList(Range.create(8, 15), Range.create(53, 54)), r);
+        List<Range> ranges = small.query(point(0, 2), point(6, 8), 0);
+        assertEquals(Arrays.asList(Range.create(14, 234)), ranges);
+    }
+
+    @Test
+    public void testSmallQuery5() {
+        List<Range> ranges = small.query(point(0, 2), point(6, 8), 1);
+        assertEquals(Arrays.asList(Range.create(14, 234)), ranges);
     }
 
     private static long[] point(long... values) {
