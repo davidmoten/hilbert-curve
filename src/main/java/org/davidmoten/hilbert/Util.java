@@ -22,4 +22,38 @@ final class Util {
             i++;
         }
     }
+
+    static boolean allZero(int[] a) {
+        for (int i = 0; i < a.length; i++) {
+            if (a[i] != 0)
+                return false;
+        }
+        return true;
+    }
+
+    static long mostSignificantBetween(long a, long b) {
+        if (a > b) {
+            return mostSignificantBetween(b, a);
+        } else if (a == b) {
+            return a;
+        } else {
+            long x = a == 0 ? 1 : a;
+            int bit = 0;
+            while (x < b) {
+                if ((x & (1 << bit)) == 0) {
+                    bit++;
+                } else {
+                    long y = x + (1 << bit);
+                    if (y < b) {
+                        bit++;
+                        x = y;
+                    } else {
+                        break;
+                    }
+                }
+            }
+            return x;
+        }
+    }
+
 }
