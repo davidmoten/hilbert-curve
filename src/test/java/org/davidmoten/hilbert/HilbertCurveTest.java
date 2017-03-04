@@ -342,7 +342,8 @@ public class HilbertCurveTest {
 
     @Test
     public void testSmallQuery5() {
-        List<Range> ranges = small.query(point(0, 2), point(6, 8), 1);
+        List<Range> ranges = small.query(point(0, 2), point(6, 8), 0);
+        System.out.println(ranges);
         assertEquals(Arrays.asList(Range.create(14, 234)), ranges);
     }
 
