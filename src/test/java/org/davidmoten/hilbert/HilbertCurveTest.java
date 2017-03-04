@@ -277,22 +277,23 @@ public class HilbertCurveTest {
         // want to find the binary number with the most trailing zeroes x
         // s.t. a < x < b
         assertEquals(6, (long) SmallHilbertCurve.mostSignificantBetween(5, 7));
-        assertEquals(4, (long) SmallHilbertCurve.mostSignificantBetween(3, 8));
+        assertEquals(4, (long) SmallHilbertCurve.mostSignificantBetween(3, 7));
+        assertEquals(8, (long) SmallHilbertCurve.mostSignificantBetween(3, 8));
         assertEquals(16, (long) SmallHilbertCurve.mostSignificantBetween(3, 18));
         assertEquals(4, (long) SmallHilbertCurve.mostSignificantBetween(3, 4));
-        assertEquals(8, (long) SmallHilbertCurve.mostSignificantBetween(0, 16));
+        assertEquals(16, (long) SmallHilbertCurve.mostSignificantBetween(0, 16));
         assertEquals(72, (long) SmallHilbertCurve.mostSignificantBetween(71, 78));
         assertEquals(2, (long) SmallHilbertCurve.mostSignificantBetween(2, 2));
-        assertEquals(8, (long) SmallHilbertCurve.mostSignificantBetween(16, 0));
+        assertEquals(16, (long) SmallHilbertCurve.mostSignificantBetween(16, 0));
     }
 
     @Test
     public void testSplit() {
-        List<Range> list = new Range(3, 8).split(1);
+        List<Range> list = new Range(3, 7).split(1);
         System.out.println(list);
         assertEquals(Lists.newArrayList( //
-                Range.create(3, 3), //
-                Range.create(4, 8)), list);
+                Range.create(3, 6), //
+                Range.create(7, 7)), list);
     }
 
     @Test

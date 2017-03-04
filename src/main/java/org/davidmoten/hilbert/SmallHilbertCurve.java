@@ -212,9 +212,12 @@ public final class SmallHilbertCurve {
         }
 
         public List<Range> split() {
-            long x = mostSignificantBetween(low, high);
-            if (x == low || x == high) {
+            if (low == high) {
                 return Collections.singletonList(this);
+            }
+            long x = mostSignificantBetween(low + 1, high + 1) - 1;
+            if (x == low) {
+                return Lists.newArrayList(new Range(low, low), new Range(low + 1, high));
             } else {
                 return Lists.newArrayList(new Range(low, x - 1), new Range(x, high));
             }
@@ -271,14 +274,14 @@ public final class SmallHilbertCurve {
         } else if (a == b) {
             return a;
         } else {
-            long x = a + 1;
+            long x = a == 0 ? 1 : a;
             int bit = 0;
-            while (x < b) {
+            while (x <= b) {
                 if ((x & (1 << bit)) == 0) {
                     bit++;
                 } else {
                     long y = x + (1 << bit);
-                    if (y < b) {
+                    if (y <= b) {
                         bit++;
                         x = y;
                     } else {
