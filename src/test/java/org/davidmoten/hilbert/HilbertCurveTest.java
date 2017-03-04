@@ -341,10 +341,18 @@ public class HilbertCurveTest {
     }
 
     @Test
-    public void testSmallQuery5() {
+    public void testSmallQueryLargerBoxDepthZero() {
         List<Range> ranges = small.query(point(0, 2), point(6, 8), 0);
-        System.out.println(ranges);
         assertEquals(Arrays.asList(Range.create(14, 234)), ranges);
+    }
+
+    @Test
+    public void testSmallQueryLargerBoxDepthMany() {
+        List<Range> ranges = small.query(point(0, 2), point(6, 8), 4);
+        System.out.println(ranges);
+        assertEquals(Arrays.asList(Range.create(8, 41), Range.create(45, 46), Range.create(50, 55),
+                Range.create(214, 214), Range.create(217, 218), Range.create(229, 230), Range.create(233, 234)),
+                ranges);
     }
 
     private static long[] point(long... values) {
