@@ -219,7 +219,7 @@ public final class SmallHilbertCurve {
             if (x == low) {
                 return Lists.newArrayList(new Range(low, low), new Range(low + 1, high));
             } else {
-                return Lists.newArrayList(new Range(low, x - 1), new Range(x, high));
+                return Lists.newArrayList(new Range(low, x), new Range(x + 1, high));
             }
         }
 
@@ -276,12 +276,12 @@ public final class SmallHilbertCurve {
         } else {
             long x = a == 0 ? 1 : a;
             int bit = 0;
-            while (x <= b) {
+            while (x < b) {
                 if ((x & (1 << bit)) == 0) {
                     bit++;
                 } else {
                     long y = x + (1 << bit);
-                    if (y <= b) {
+                    if (y < b) {
                         bit++;
                         x = y;
                     } else {

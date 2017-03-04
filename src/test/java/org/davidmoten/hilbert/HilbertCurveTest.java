@@ -278,22 +278,39 @@ public class HilbertCurveTest {
         // s.t. a < x < b
         assertEquals(6, (long) SmallHilbertCurve.mostSignificantBetween(5, 7));
         assertEquals(4, (long) SmallHilbertCurve.mostSignificantBetween(3, 7));
-        assertEquals(8, (long) SmallHilbertCurve.mostSignificantBetween(3, 8));
+        assertEquals(4, (long) SmallHilbertCurve.mostSignificantBetween(3, 8));
         assertEquals(16, (long) SmallHilbertCurve.mostSignificantBetween(3, 18));
-        assertEquals(4, (long) SmallHilbertCurve.mostSignificantBetween(3, 4));
-        assertEquals(16, (long) SmallHilbertCurve.mostSignificantBetween(0, 16));
+        assertEquals(3, (long) SmallHilbertCurve.mostSignificantBetween(3, 4));
+        assertEquals(8, (long) SmallHilbertCurve.mostSignificantBetween(0, 16));
         assertEquals(72, (long) SmallHilbertCurve.mostSignificantBetween(71, 78));
         assertEquals(2, (long) SmallHilbertCurve.mostSignificantBetween(2, 2));
-        assertEquals(16, (long) SmallHilbertCurve.mostSignificantBetween(16, 0));
+        assertEquals(8, (long) SmallHilbertCurve.mostSignificantBetween(16, 0));
     }
 
     @Test
-    public void testSplit() {
+    public void testSplitOnHigh() {
         List<Range> list = new Range(3, 7).split(1);
         System.out.println(list);
         assertEquals(Lists.newArrayList( //
-                Range.create(3, 6), //
-                Range.create(7, 7)), list);
+                Range.create(3, 3), Range.create(4, 7)), list);
+    }
+
+    @Test
+    public void testSplitOnLow() {
+        List<Range> list = new Range(3, 6).split(1);
+        System.out.println(list);
+        assertEquals(Lists.newArrayList( //
+                Range.create(3, 3), //
+                Range.create(4, 6)), list);
+    }
+
+    @Test
+    public void testSplitOnMiddle() {
+        List<Range> list = new Range(5, 10).split(1);
+        System.out.println(list);
+        assertEquals(Lists.newArrayList( //
+                Range.create(5, 7), //
+                Range.create(8, 10)), list);
     }
 
     @Test
