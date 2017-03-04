@@ -115,13 +115,14 @@ public final class SmallHilbertCurve {
         // combine coordinate ranges from each dimension and from boxes
         // determine the indexes of the corners of the boxes. The min max of the
         // box corner indexes are the ranges returned by this method.
-        return Range.simplify(combine(rangesByDimension, dimensions));
+        return Range.simplify(hilbertIndexRanges(rangesByDimension, dimensions));
     }
 
-    private List<Range> combine(List<List<Range>> rangesByDimension, int n) {
+    private List<Range> hilbertIndexRanges(List<List<Range>> rangesByDimension, int n) {
         Function<Integer, Integer> indexMax = i -> rangesByDimension.get(i).size();
         List<Range> ranges = new ArrayList<Range>();
         int[] indexes = new int[dimensions];
+        // for every combination of ranges
         do {
             // do something with indexes
             List<Range> rangesToCombine = new ArrayList<>();

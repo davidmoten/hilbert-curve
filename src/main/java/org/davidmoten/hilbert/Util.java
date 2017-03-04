@@ -31,6 +31,17 @@ final class Util {
         return true;
     }
 
+    /**
+     * Returns the least value x where min(a,b) <= x < max(a,b) and x has the
+     * maximum number of trailing zeroes in its binary representation.
+     * 
+     * @param a
+     *            first value
+     * @param b
+     *            second value
+     * @return most significant (in terms of divisors of powers of 2) between a
+     *         and b
+     */
     static long mostSignificantBetween(long a, long b) {
         if (a > b) {
             return mostSignificantBetween(b, a);
