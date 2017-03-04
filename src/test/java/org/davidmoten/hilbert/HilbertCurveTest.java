@@ -321,15 +321,15 @@ public class HilbertCurveTest {
     }
 
     @Test
-    public void testSmallQuery2() {
+    public void testSmallQueryNoSplit() {
         List<Range> r = small.query(point(0, 3), point(4, 2), 0);
         assertEquals(1, r.size());
         assertEquals(Range.create(14, 54), r.get(0));
     }
 
     @Test
-    public void testSmallQuery3() {
-        List<Range> r = small.query(point(0, 3), point(4, 2), 2);
+    public void testSmallQuerySplitDepth3() {
+        List<Range> r = small.query(point(0, 3), point(4, 2), 3);
         System.out.println(r);
         assertEquals(Arrays.asList(Range.create(8, 15), Range.create(53, 54)), r);
     }

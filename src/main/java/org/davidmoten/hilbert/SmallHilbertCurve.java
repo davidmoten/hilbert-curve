@@ -1,6 +1,7 @@
 package org.davidmoten.hilbert;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
@@ -156,11 +157,12 @@ public final class SmallHilbertCurve {
                 long point[] = new long[dimensions];
                 for (int j = 0; j < dimensions; j++) {
                     Range r = rangesToCombine.get(j);
-                    long x = (i & (1 << j)) == 0
-                            ? (r.low() == rangesByDimension.get(j).get(0).low() ? r.low() : r.low() + 1) : r.high();
+                    long x = (i & (1 << j)) == 0 ? (r.low() == rangesByDimension.get(j).get(0).low() ? r.low()
+                            : Math.min(r.high(), r.low() + 1)) : r.high();
                     point[j] = x;
                 }
                 long h = index(point);
+                System.out.println(Arrays.toString(point) + "->" + h);
                 if (h < min) {
                     min = h;
                 } else if (h > max) {
