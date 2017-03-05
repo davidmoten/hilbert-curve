@@ -9,9 +9,11 @@ import java.io.PrintStream;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.List;
+import java.util.Random;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -341,6 +343,29 @@ public class HilbertCurveTest {
 
     private static long[] point(long... values) {
         return values;
+    }
+
+    public static void main(String[] args) {
+        Random r = new Random();
+        long N = 10000000L;
+        long n = 0;
+        for (long i = 0; i < N; i++) {
+            double max = Double.MIN_VALUE;
+            int recentMaxCount = 0;
+            for (int j = 0; j < 100; j++) {
+                double d = r.nextGaussian();
+                if (d > max) {
+                    max = d;
+                    if (j >= 90) {
+                        recentMaxCount++;
+                    }
+                }
+            }
+            if (recentMaxCount >=3) {
+                n++;
+            }
+        }
+        System.out.println(new DecimalFormat("0.0000000").format((double) n / N));
     }
 
 }
