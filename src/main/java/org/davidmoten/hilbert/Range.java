@@ -45,13 +45,18 @@ public final class Range {
         } else if (n == 1) {
             return split();
         }
-        List<Range> result = Lists.newArrayList();
-        for (Range range : split()) {
-            result.addAll(range.split(n - 1));
+        List<Range> split = split();
+        if (split.size() == 1) {
+            return split;
+        } else {
+            List<Range> result = Lists.newArrayList();
+            for (Range range : split()) {
+                result.addAll(range.split(n - 1));
+            }
+            return result;
         }
-        return result;
     }
-    
+
     static List<Range> simplify(List<Range> list) {
         // mutates list!
         Collections.sort(list, (a, b) -> Long.compare(a.low(), b.low()));
@@ -68,7 +73,6 @@ public final class Range {
         }
         return list;
     }
-
 
     @Override
     public String toString() {
