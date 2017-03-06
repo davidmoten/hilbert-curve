@@ -345,27 +345,4 @@ public class HilbertCurveTest {
         return values;
     }
 
-    public static void main(String[] args) {
-        Random r = new Random();
-        long N = 10000000L;
-        long n = 0;
-        for (long i = 0; i < N; i++) {
-            double max = Double.MIN_VALUE;
-            int recentMaxCount = 0;
-            for (int j = 0; j < 100; j++) {
-                double d = r.nextGaussian();
-                if (d > max) {
-                    max = d;
-                    if (j >= 90) {
-                        recentMaxCount++;
-                    }
-                }
-            }
-            if (recentMaxCount >=3) {
-                n++;
-            }
-        }
-        System.out.println(new DecimalFormat("0.0000000").format((double) n / N));
-    }
-
 }

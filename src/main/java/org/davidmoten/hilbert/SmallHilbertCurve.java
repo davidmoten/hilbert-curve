@@ -138,8 +138,16 @@ public final class SmallHilbertCurve {
                 long point[] = new long[dimensions];
                 for (int j = 0; j < dimensions; j++) {
                     Range r = rangesToCombine.get(j);
-                    long x = (i & (1 << j)) == 0 ? (r.low() == rangesByDimension.get(j).get(0).low() ? r.low()
-                            : Math.min(r.high(), r.low() + 1)) : r.high();
+                    long x;
+                    if ((i & (1 << j)) == 0) {
+                        if (r.low() == rangesByDimension.get(j).get(0).low()) {
+                            x = r.low();
+                        } else {
+                            x = Math.min(r.high(), r.low() + 1);
+                        }
+                    } else {
+                        x = r.high();
+                    }
                     point[j] = x;
                 }
                 long h = index(point);
