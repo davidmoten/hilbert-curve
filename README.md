@@ -63,7 +63,7 @@ Add this to your maven pom.xml:
 <dependency>
     <groupId>com.github.davidmoten</groupId>
     <artifactId>hilbert-curve</artifactId>
-    <version>0.1.2</version>
+    <version>0.1.3</version>
 </dependency>
 ``` 
 

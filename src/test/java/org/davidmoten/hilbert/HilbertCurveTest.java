@@ -346,6 +346,11 @@ public class HilbertCurveTest {
         long index = Math.round(Math.pow(2, bits * dimensions - 1) + 1);
         assertTrue(checkRoundTripSmall(bits, dimensions, index));
     }
+    
+    @Test
+    public void testMore() {
+        SmallHilbertCurve h = HilbertCurve.small().bits(16).dimensions(3);
+    }
 
     private static long[] point(long... values) {
         return values;
