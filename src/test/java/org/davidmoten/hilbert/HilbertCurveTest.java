@@ -9,11 +9,9 @@ import java.io.PrintStream;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.List;
-import java.util.Random;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -121,12 +119,12 @@ public class HilbertCurveTest {
     }
 
     @Test
-    public void testRoundTripsLong() {
+    public void testRoundTripsSmall() {
         boolean failed = false;
         for (int bits = 1; bits <= 10; bits++) {
             for (int dimensions = 2; dimensions <= Math.min(5, 63 / bits); dimensions++)
                 for (long i = 0; i < Math.pow(2, bits + 1); i++) {
-                    if (!checkRoundTripLong(bits, dimensions, i)) {
+                    if (!checkRoundTripSmall(bits, dimensions, i)) {
                         System.out.println(
                                 "failed round trip for bits=" + bits + ", dimensions=" + dimensions + ", index=" + i);
                         failed = true;
@@ -266,7 +264,7 @@ public class HilbertCurveTest {
         return value == c.index(point).longValue();
     }
 
-    private static boolean checkRoundTripLong(int bits, int dimensions, long value) {
+    private static boolean checkRoundTripSmall(int bits, int dimensions, long value) {
         SmallHilbertCurve c = HilbertCurve.small().bits(bits).dimensions(dimensions);
         long[] point = c.point(value);
         assertEquals(dimensions, point.length);
@@ -339,6 +337,14 @@ public class HilbertCurveTest {
         assertEquals(Arrays.asList(Range.create(8, 41), Range.create(45, 46), Range.create(50, 55),
                 Range.create(214, 214), Range.create(217, 218), Range.create(229, 230), Range.create(233, 234)),
                 ranges);
+    }
+
+    @Test
+    public void testIssue1() {
+        int bits = 16;
+        int dimensions = 2;
+        long index = Math.round(Math.pow(2, bits * dimensions - 1) + 1);
+        assertTrue(checkRoundTripSmall(bits, dimensions, index));
     }
 
     private static long[] point(long... values) {

@@ -69,7 +69,7 @@ public final class SmallHilbertCurve {
         for (int i = 0; i < bits; i++) {
             for (int j = 0; j < transposedIndex.length; j++) {
                 if ((transposedIndex[j] & mask) != 0) {
-                    b |= 1 << bIndex;
+                    b |= 1L << bIndex;
                 }
                 bIndex--;
             }
