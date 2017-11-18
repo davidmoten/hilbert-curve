@@ -78,6 +78,9 @@ The maximum index on the Hilbert curve is 2<sup>bits * dimensions</sup> - 1. If 
 `bits * dimensions` is <= 63 then you can increase performance and reduce allocations by using the <b>small</b> option which uses `long` values for indexes rather than `BigInteger` values. 
 JMH benchmarks show up to 30% better throughput using `small`. 
 
+### Points
+The hilbert curve wiggles around your n-dimensional grid happily visiting each cell. The range of each ordinate in each dimension are the integers in the range 0 .. 2<sup>bits</sup>-1.
+ 
 ### Index from point
 
 Get the index (distance along the curve in integer units) for a 2-dimensional point:
