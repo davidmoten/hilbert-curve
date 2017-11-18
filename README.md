@@ -79,7 +79,7 @@ The maximum index on the Hilbert curve is 2<sup>bits * dimensions</sup> - 1. If 
 JMH benchmarks show up to 30% better throughput using `small`. 
 
 ### Points
-The hilbert curve wiggles around your n-dimensional grid happily visiting each cell. The range of each ordinate in each dimension are the integers in the range 0 .. 2<sup>bits</sup>-1.
+The hilbert curve wiggles around your n-dimensional grid happily visiting each cell. The ordinates in each dimension are integers in the range 0 .. 2<sup>bits</sup>-1.
  
 ### Index from point
 
