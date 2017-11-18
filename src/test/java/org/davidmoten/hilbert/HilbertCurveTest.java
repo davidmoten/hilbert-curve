@@ -12,11 +12,13 @@ import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 import com.github.davidmoten.guavamini.Lists;
+import com.github.davidmoten.guavamini.Preconditions;
 
 public class HilbertCurveTest {
 
@@ -65,11 +67,13 @@ public class HilbertCurveTest {
                 out.println();
             }
             out.close();
-            String actual = new String(Files.readAllBytes(new File("target/indexes-2d-bits-" + bits + ".txt").toPath()),
-                    StandardCharsets.UTF_8);
-            String expected = new String(
+            String actual = new String(
                     Files.readAllBytes(
-                            new File("src/test/resources/expected/indexes-2d-bits-" + bits + ".txt").toPath()),
+                            new File("target/indexes-2d-bits-" + bits + ".txt").toPath()),
+                    StandardCharsets.UTF_8);
+            String expected = new String(Files.readAllBytes(
+                    new File("src/test/resources/expected/indexes-2d-bits-" + bits + ".txt")
+                            .toPath()),
                     StandardCharsets.UTF_8);
             assertEquals(expected, actual);
         }
@@ -107,8 +111,8 @@ public class HilbertCurveTest {
             for (int dimensions = 2; dimensions <= 10; dimensions++)
                 for (long i = 0; i < Math.pow(2, bits + 1); i++) {
                     if (!checkRoundTrip(bits, dimensions, i)) {
-                        System.out.println(
-                                "failed round trip for bits=" + bits + ", dimensions=" + dimensions + ", index=" + i);
+                        System.out.println("failed round trip for bits=" + bits + ", dimensions="
+                                + dimensions + ", index=" + i);
                         failed = true;
                     }
                 }
@@ -125,8 +129,8 @@ public class HilbertCurveTest {
             for (int dimensions = 2; dimensions <= Math.min(5, 63 / bits); dimensions++)
                 for (long i = 0; i < Math.pow(2, bits + 1); i++) {
                     if (!checkRoundTripSmall(bits, dimensions, i)) {
-                        System.out.println(
-                                "failed round trip for bits=" + bits + ", dimensions=" + dimensions + ", index=" + i);
+                        System.out.println("failed round trip for bits=" + bits + ", dimensions="
+                                + dimensions + ", index=" + i);
                         failed = true;
                     }
                 }
@@ -335,8 +339,8 @@ public class HilbertCurveTest {
         List<Range> ranges = small.query(point(0, 2), point(6, 8), 4);
         System.out.println(ranges);
         assertEquals(Arrays.asList(Range.create(8, 41), Range.create(45, 46), Range.create(50, 55),
-                Range.create(214, 214), Range.create(217, 218), Range.create(229, 230), Range.create(233, 234)),
-                ranges);
+                Range.create(214, 214), Range.create(217, 218), Range.create(229, 230),
+                Range.create(233, 234)), ranges);
     }
 
     @Test
@@ -346,10 +350,37 @@ public class HilbertCurveTest {
         long index = Math.round(Math.pow(2, bits * dimensions - 1) + 1);
         assertTrue(checkRoundTripSmall(bits, dimensions, index));
     }
-    
+
     @Test
-    public void testMore() {
-        SmallHilbertCurve h = HilbertCurve.small().bits(16).dimensions(3);
+    public void testSydneyHarbourRangesForOneHourInADay() {
+        int bits = 20;
+        SmallHilbertCurve h = HilbertCurve.small().bits(bits).dimensions(3);
+        long max = 1 << bits - 1;
+        // top left -33.806477, 151.181767, t = 0
+        // bottom right -33.882896, 151.281330, t = TimeUnit.HOURS.toMillis(1)
+        List<Range> ranges = h.query(scalePoint(-33.806477, 151.181767, 0, max),
+                scalePoint(-33.882896, 151.281330, TimeUnit.HOURS.toMillis(1), max), 0);
+        System.out.println(ranges.size());
+        ranges.forEach(System.out::println);
+        System.out.println("maxIndex = "+ (1L<<bits*3));
+        System.out.println((114172123465024476L - 114157502019852442L)/(double)(1L<<bits*3));
+    }
+
+    private long[] scalePoint(double lat, double lon, long time, long max) {
+        long x = scale((lat + 90.0) / 180, max);
+        long y = scale((lon + 180.0) / 360, max);
+        long millisPerDay = TimeUnit.DAYS.toMillis(1);
+        long z = scale(((double) time + millisPerDay / 2) / millisPerDay, max);
+        return new long[] { x, y, z };
+    }
+
+    private long scale(double d, long max) {
+        Preconditions.checkArgument(d >= 0 && d <= 1);
+        if (d == 1) {
+            return max;
+        } else {
+            return Math.round(Math.floor(d * (max + 1)));
+        }
     }
 
     private static long[] point(long... values) {

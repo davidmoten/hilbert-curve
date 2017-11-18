@@ -69,7 +69,7 @@ public final class HilbertCurve {
      * Converts a point to its Hilbert curve index.
      * 
      * @param point
-     *            an array of {@code long}. Each coordinate can be between 0 and
+     *            an array of {@code long}. Each ordinate can be between 0 and
      *            2<sup>bits</sup>-1.
      * @return index (nonnegative {@link BigInteger})
      * @throws IllegalArgumentException
