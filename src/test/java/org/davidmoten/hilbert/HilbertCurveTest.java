@@ -357,8 +357,8 @@ public class HilbertCurveTest {
         long max = 1 << bits - 1;
         // top left -33.806477, 151.181767, t = 0
         // bottom right -33.882896, 151.281330, t = TimeUnit.HOURS.toMillis(1)
-        List<Range> ranges = h.query(scalePoint(-33.806477, 151.181767, 0, max),
-                scalePoint(-33.882896, 151.281330, TimeUnit.HOURS.toMillis(1), max), 0);
+        List<Range> ranges = h.query2(scalePoint(-33.806477, 151.181767, 0, max),
+                scalePoint(-33.882896, 151.281330, TimeUnit.HOURS.toMillis(1), max), 4);
         System.out.println(ranges.size());
         ranges.forEach(System.out::println);
         System.out.println("maxIndex = " + (1L << bits * 3));
