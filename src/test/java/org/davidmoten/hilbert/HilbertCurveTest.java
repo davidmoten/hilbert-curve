@@ -401,6 +401,14 @@ public class HilbertCurveTest {
                 , x);
     }
 
+    @Test
+    public void testToRange() {
+        Box b = Box.a(0, 0).b(15, 15);
+        SmallHilbertCurve h = HilbertCurve.small().bits(4).dimensions(2);
+        Range r = h.toRange(b);
+        assertEquals(Range.create(0, 255), r);
+    }
+
     private static long[] scalePoint(double lat, double lon, long time, long max) {
         long x = scale((lat + 90.0) / 180, max);
         long y = scale((lon + 180.0) / 360, max);

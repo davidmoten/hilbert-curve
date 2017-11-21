@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import com.github.davidmoten.guavamini.Lists;
 import com.github.davidmoten.guavamini.Preconditions;
+import com.github.davidmoten.guavamini.annotations.VisibleForTesting;
 
 /**
  * Converts between Hilbert index ({@code BigInteger}) and N-dimensional points.
@@ -181,13 +183,41 @@ public final class SmallHilbertCurve {
         Preconditions.checkArgument(b.length == dimensions);
         Preconditions.checkArgument(splitDepth >= 0);
         List<Box> boxes = split(a, b, splitDepth);
+        List<Range> ranges = boxes.stream().map(x -> toRange(x)).collect(Collectors.toList());
         boxes.size();
         // combine coordinate ranges from each dimension and from boxes
         // determine the indexes of the corners of the boxes. The min max of the
         // box corner indexes are the ranges returned by this method.
 
         // TODO
-        return null;
+        return ranges;
+    }
+
+    @VisibleForTesting
+    Range toRange(Box box) {
+        int dimensions = box.a.length;
+        // get min and max index value using all the corners of the box
+        Long min = null;
+        Long max = null;
+        for (long i = 0; i < 1 << dimensions; i++) {
+            long[] x = new long[box.a.length];
+            for (int j = 0; j < dimensions; j++) {
+                if ((i & (1L << j)) != 0) {
+                    // if jth bit set
+                    x[j] = box.a[j];
+                } else {
+                    x[j] = box.b[j];
+                }
+            }
+            long index = index(x);
+            if (min == null || index < min) {
+                min = index;
+            }
+            if (max == null || index > max) {
+                max = index;
+            }
+        }
+        return new Range(min, max);
     }
 
     static List<Box> split(long[] a, long[] b, int splitDepth) {
