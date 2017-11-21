@@ -3,6 +3,7 @@ package org.davidmoten.hilbert;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -214,21 +215,37 @@ public final class SmallHilbertCurve {
     }
 
     @VisibleForTesting
-    Range toRange(Box box) {
+    void visitVertices(Box box, Consumer<long[]> visitor) {
         int dimensions = box.a.length;
-        // get min and max index value using all the corners of the box
-        Long min = null;
-        Long max = null;
-        for (long i = 0; i < 1L << dimensions; i++) {
+        for (long i = 0; i < (1L << dimensions); i++) {
             long[] x = new long[box.a.length];
             for (int j = 0; j < dimensions; j++) {
                 if ((i & (1L << j)) != 0) {
                     // if jth bit set
-                    x[j] = box.a[j];
-                } else {
                     x[j] = box.b[j];
+                } else {
+                    x[j] = box.a[j];
                 }
             }
+            visitor.accept(x);
+        }
+    }
+
+    @VisibleForTesting
+    Range toRange(Box box) {
+        Visitor visitor = new Visitor();
+        visitVertices(box, visitor);
+        return visitor.getRange();
+    }
+
+    final class Visitor implements Consumer<long[]> {
+
+        // get min and max index value using all the corners of the box
+        Long min = null;
+        Long max = null;
+
+        @Override
+        public void accept(long[] x) {
             long index = index(x);
             if (min == null || index < min) {
                 min = index;
@@ -237,7 +254,11 @@ public final class SmallHilbertCurve {
                 max = index;
             }
         }
-        return new Range(min, max);
+        
+        Range getRange() {
+            return Range.create(min, max);
+        }
+
     }
 
     static List<Box> split(long[] a, long[] b, int splitDepth) {
@@ -291,10 +312,10 @@ public final class SmallHilbertCurve {
         }
 
         public SmallHilbertCurve dimensions(int dimensions) {
-            Preconditions.checkArgument(bits * dimensions <= 63,
-                    "bits * dimensions must be less than or equal to 63");
+            Preconditions.checkArgument(bits * dimensions <= 63, "bits * dimensions must be less than or equal to 63");
             return new SmallHilbertCurve(bits, dimensions);
         }
 
     }
+
 }
