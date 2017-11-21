@@ -8,12 +8,12 @@ import org.junit.Test;
 import com.github.davidmoten.junit.Asserts;
 
 public class UtilTest {
-    
+
     @Test
     public void isUtilClass() {
         Asserts.assertIsUtilityClass(Util.class);
     }
-    
+
     @Test
     public void testReverseOddNumberOfElements() {
         byte[] bytes = { 1, 2, 3, 4, 5 };
@@ -27,12 +27,12 @@ public class UtilTest {
         Util.reverse(bytes);
         assertArrayEquals(new byte[] { 6, 5, 4, 3, 2, 1 }, bytes);
     }
-    
+
     @Test
     public void testReverseOfNullDoesNotThrow() {
         Util.reverse(null);
     }
-    
+
     @Test
     public void testMostSignificantBetweenLong() {
         // want to find the binary number with the most trailing zeroes x
@@ -45,6 +45,7 @@ public class UtilTest {
         assertEquals(8, (long) Util.mostSignificantBetween(0, 16));
         assertEquals(72, (long) Util.mostSignificantBetween(71, 78));
         assertEquals(2, (long) Util.mostSignificantBetween(2, 2));
+        assertEquals(3, (long) Util.mostSignificantBetween(3, 3));
         assertEquals(8, (long) Util.mostSignificantBetween(16, 0));
     }
 
