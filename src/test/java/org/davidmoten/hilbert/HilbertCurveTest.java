@@ -430,6 +430,12 @@ public class HilbertCurveTest {
         List<Range> list = Lists.newArrayList(Range.create(0, 5), Range.create(7, 10));
         assertEquals(list, SmallHilbertCurve.reduce(list));
     }
+    
+    @Test
+    public void testReduceWhenFirstHasHighGreaterThanSecond() {
+        List<Range> list = Lists.newArrayList(Range.create(0, 10), Range.create(3, 5));
+        assertEquals(Lists.newArrayList(Range.create(0,10)), SmallHilbertCurve.reduce(list));
+    }
 
     @Test
     public void testReduceWhenContiguousJoins() {

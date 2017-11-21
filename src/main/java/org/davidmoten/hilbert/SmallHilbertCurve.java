@@ -198,7 +198,7 @@ public final class SmallHilbertCurve {
             if (previous != null) {
                 if (previous.high() >= r.low() - 1) {
                     // combine with previous because overlapping or contiguous
-                    previous = new Range(previous.low(), r.high());
+                    previous = new Range(previous.low(), Math.max(previous.high(), r.high()));
                 } else {
                     list.add(previous);
                     previous = r;
