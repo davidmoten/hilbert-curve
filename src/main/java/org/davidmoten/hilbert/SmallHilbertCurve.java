@@ -183,14 +183,34 @@ public final class SmallHilbertCurve {
         Preconditions.checkArgument(b.length == dimensions);
         Preconditions.checkArgument(splitDepth >= 0);
         List<Box> boxes = split(a, b, splitDepth);
-        List<Range> ranges = boxes.stream().map(x -> toRange(x)).collect(Collectors.toList());
-        boxes.size();
-        // combine coordinate ranges from each dimension and from boxes
-        // determine the indexes of the corners of the boxes. The min max of the
-        // box corner indexes are the ranges returned by this method.
+        List<Range> ranges = boxes.stream() //
+                .map(x -> toRange(x)) //
+                .sorted((x, y) -> Long.compare(x.low(), y.low())) //
+                .collect(Collectors.toList());
+        return reduce(ranges);
+    }
 
-        // TODO
-        return ranges;
+    @VisibleForTesting
+    static List<Range> reduce(List<Range> ranges) {
+        List<Range> list = Lists.newArrayList();
+        Range previous = null;
+        for (Range r : ranges) {
+            if (previous != null) {
+                if (previous.high() >= r.low() - 1) {
+                    // combine with previous because overlapping or contiguous
+                    previous = new Range(previous.low(), r.high());
+                } else {
+                    list.add(previous);
+                    previous = r;
+                }
+            } else {
+                previous = r;
+            }
+        }
+        if (previous != null) {
+            list.add(previous);
+        }
+        return list;
     }
 
     @VisibleForTesting
