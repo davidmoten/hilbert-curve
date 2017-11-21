@@ -375,6 +375,32 @@ public class HilbertCurveTest {
                 x);
     }
 
+    @Test
+    public void testSplitIntoBoxesDepth2() {
+        long[] a = new long[] { 0, 0 };
+        long[] b = new long[] { 15, 15 };
+        List<Box> x = SmallHilbertCurve.split(a, b, 2);
+        x.stream().forEach(System.out::println);
+
+        assertEquals(Lists.newArrayList(Box.a(0, 0).b(3, 3), //
+                Box.a(0, 4).b(3, 7), //
+                Box.a(4, 0).b(7, 3), //
+                Box.a(4, 4).b(7, 7), //
+                Box.a(0, 8).b(3, 11), //
+                Box.a(0, 12).b(3, 15), //
+                Box.a(4, 8).b(7, 11), //
+                Box.a(4, 12).b(7, 15), //
+                Box.a(8, 0).b(11, 3), //
+                Box.a(8, 4).b(11, 7), //
+                Box.a(12, 0).b(15, 3), //
+                Box.a(12, 4).b(15, 7), //
+                Box.a(8, 8).b(11, 11), //
+                Box.a(8, 12).b(11, 15), //
+                Box.a(12, 8).b(15, 11), //
+                Box.a(12, 12).b(15, 15)) //
+                , x);
+    }
+
     private static long[] scalePoint(double lat, double lon, long time, long max) {
         long x = scale((lat + 90.0) / 180, max);
         long y = scale((lon + 180.0) / 360, max);
