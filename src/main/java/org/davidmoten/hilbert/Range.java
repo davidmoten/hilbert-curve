@@ -11,8 +11,8 @@ public final class Range {
     private final long high;
 
     public Range(long low, long high) {
-        this.low = low;
-        this.high = high;
+        this.low = Math.min(low, high);
+        this.high = Math.max(low, high);
     }
 
     public static Range create(long low, long high) {
