@@ -1,6 +1,7 @@
 package org.davidmoten.hilbert;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
@@ -35,8 +36,8 @@ public final class SmallHilbertCurve {
      * @param point
      *            an array of {@code long}. Each coordinate can be between 0 and
      *            2<sup>bits</sup>-1.
-     * @return index {@code long} in the range 0 to 2<sup>bits *
-     *         dimensions</sup> - 1
+     * @return index {@code long} in the range 0 to 2<sup>bits * dimensions</sup> -
+     *         1
      * @throws IllegalArgumentException
      *             if length of point array is not equal to the number of
      *             dimensions.
@@ -47,12 +48,12 @@ public final class SmallHilbertCurve {
     }
 
     /**
-     * Converts a {@code long} index (distance along the Hilbert Curve from 0)
-     * to a point of dimensions defined in the constructor of {@code this}.
+     * Converts a {@code long} index (distance along the Hilbert Curve from 0) to a
+     * point of dimensions defined in the constructor of {@code this}.
      * 
      * @param index
-     *            index along the Hilbert Curve from 0. Maximum value 2
-     *            <sup>bits * dimensions</sup>-1.
+     *            index along the Hilbert Curve from 0. Maximum value 2 <sup>bits *
+     *            dimensions</sup>-1.
      * @return array of longs being the point
      * @throws IllegalArgumentException
      *             if index is negative
@@ -169,6 +170,59 @@ public final class SmallHilbertCurve {
         } while (!Util.allZero(indexes));
 
         return ranges;
+    }
+
+    public List<Range> query2(long[] a, long[] b, int splitDepth) {
+        // we split into 2^splitDepth parts (boxes)
+        // map each box to a Range based on the hilbert index of the corners of the box
+        // sort the ranges by lower()
+        // combine overlapping or contiguous ranges
+        Preconditions.checkArgument(a.length == dimensions);
+        Preconditions.checkArgument(b.length == dimensions);
+        Preconditions.checkArgument(splitDepth >= 0);
+        List<Box> boxes = split(a, b, splitDepth);
+        boxes.size();
+        // combine coordinate ranges from each dimension and from boxes
+        // determine the indexes of the corners of the boxes. The min max of the
+        // box corner indexes are the ranges returned by this method.
+
+        // TODO
+        return null;
+    }
+
+    static List<Box> split(long[] a, long[] b, int splitDepth) {
+        int dimensions = a.length;
+        List<Box> boxes = Lists.newArrayList();
+        boxes.add(new Box(a, b));
+        for (int depth = 1; depth <= splitDepth; depth++) {
+            for (int i = 0; i < dimensions; i++) {
+                List<Box> boxes2 = Lists.newArrayList();
+                for (Box box : boxes) {
+                    long low = Math.min(box.a[i], box.b[i]);
+                    long high = Math.max(box.a[i], box.b[i]);
+                    long sigBetween = Util.mostSignificantBetween(low + 1, high + 1) - 1;
+                    {
+                        long[] a2 = copy(box.a);
+                        long[] b2 = copy(box.b);
+                        a2[i] = low;
+                        b2[i] = sigBetween;
+
+                        long[] a3 = copy(box.a);
+                        long[] b3 = copy(box.b);
+                        a3[i] = Math.min(sigBetween + 1, high);
+                        b3[i] = high;
+                        boxes2.add(new Box(a2, b2));
+                        boxes2.add(new Box(a3, b3));
+                    }
+                }
+                boxes = boxes2;
+            }
+        }
+        return boxes;
+    }
+
+    private static long[] copy(long[] a) {
+        return Arrays.copyOf(a, a.length);
     }
 
     public static final class Builder {

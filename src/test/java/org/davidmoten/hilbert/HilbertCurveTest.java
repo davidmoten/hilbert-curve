@@ -67,13 +67,11 @@ public class HilbertCurveTest {
                 out.println();
             }
             out.close();
-            String actual = new String(
-                    Files.readAllBytes(
-                            new File("target/indexes-2d-bits-" + bits + ".txt").toPath()),
+            String actual = new String(Files.readAllBytes(new File("target/indexes-2d-bits-" + bits + ".txt").toPath()),
                     StandardCharsets.UTF_8);
-            String expected = new String(Files.readAllBytes(
-                    new File("src/test/resources/expected/indexes-2d-bits-" + bits + ".txt")
-                            .toPath()),
+            String expected = new String(
+                    Files.readAllBytes(
+                            new File("src/test/resources/expected/indexes-2d-bits-" + bits + ".txt").toPath()),
                     StandardCharsets.UTF_8);
             assertEquals(expected, actual);
         }
@@ -111,8 +109,8 @@ public class HilbertCurveTest {
             for (int dimensions = 2; dimensions <= 10; dimensions++)
                 for (long i = 0; i < Math.pow(2, bits + 1); i++) {
                     if (!checkRoundTrip(bits, dimensions, i)) {
-                        System.out.println("failed round trip for bits=" + bits + ", dimensions="
-                                + dimensions + ", index=" + i);
+                        System.out.println(
+                                "failed round trip for bits=" + bits + ", dimensions=" + dimensions + ", index=" + i);
                         failed = true;
                     }
                 }
@@ -129,8 +127,8 @@ public class HilbertCurveTest {
             for (int dimensions = 2; dimensions <= Math.min(5, 63 / bits); dimensions++)
                 for (long i = 0; i < Math.pow(2, bits + 1); i++) {
                     if (!checkRoundTripSmall(bits, dimensions, i)) {
-                        System.out.println("failed round trip for bits=" + bits + ", dimensions="
-                                + dimensions + ", index=" + i);
+                        System.out.println(
+                                "failed round trip for bits=" + bits + ", dimensions=" + dimensions + ", index=" + i);
                         failed = true;
                     }
                 }
@@ -339,8 +337,8 @@ public class HilbertCurveTest {
         List<Range> ranges = small.query(point(0, 2), point(6, 8), 4);
         System.out.println(ranges);
         assertEquals(Arrays.asList(Range.create(8, 41), Range.create(45, 46), Range.create(50, 55),
-                Range.create(214, 214), Range.create(217, 218), Range.create(229, 230),
-                Range.create(233, 234)), ranges);
+                Range.create(214, 214), Range.create(217, 218), Range.create(229, 230), Range.create(233, 234)),
+                ranges);
     }
 
     @Test
@@ -362,11 +360,22 @@ public class HilbertCurveTest {
                 scalePoint(-33.882896, 151.281330, TimeUnit.HOURS.toMillis(1), max), 0);
         System.out.println(ranges.size());
         ranges.forEach(System.out::println);
-        System.out.println("maxIndex = "+ (1L<<bits*3));
-        System.out.println((114172123465024476L - 114157502019852442L)/(double)(1L<<bits*3));
+        System.out.println("maxIndex = " + (1L << bits * 3));
+        System.out.println((114172123465024476L - 114157502019852442L) / (double) (1L << bits * 3));
     }
 
-    private long[] scalePoint(double lat, double lon, long time, long max) {
+    @Test
+    public void testSplitIntoBoxesDepth1() {
+        long[] a = new long[] { 1, 1 };
+        long[] b = new long[] { 3, 2 };
+        List<Box> x = SmallHilbertCurve.split(a, b, 1);
+        System.out.println(x);
+        assertEquals(
+                Lists.newArrayList(Box.a(1, 1).b(1, 1), Box.a(1, 2).b(1, 2), Box.a(2, 1).b(3, 1), Box.a(2, 2).b(3, 2)),
+                x);
+    }
+
+    private static long[] scalePoint(double lat, double lon, long time, long max) {
         long x = scale((lat + 90.0) / 180, max);
         long y = scale((lon + 180.0) / 360, max);
         long millisPerDay = TimeUnit.DAYS.toMillis(1);
@@ -374,7 +383,7 @@ public class HilbertCurveTest {
         return new long[] { x, y, z };
     }
 
-    private long scale(double d, long max) {
+    private static long scale(double d, long max) {
         Preconditions.checkArgument(d >= 0 && d <= 1);
         if (d == 1) {
             return max;
