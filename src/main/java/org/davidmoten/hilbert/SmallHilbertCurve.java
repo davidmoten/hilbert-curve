@@ -219,7 +219,7 @@ public final class SmallHilbertCurve {
         // get min and max index value using all the corners of the box
         Long min = null;
         Long max = null;
-        for (long i = 0; i < 1 << dimensions; i++) {
+        for (long i = 0; i < 1L << dimensions; i++) {
             long[] x = new long[box.a.length];
             for (int j = 0; j < dimensions; j++) {
                 if ((i & (1L << j)) != 0) {
@@ -251,6 +251,9 @@ public final class SmallHilbertCurve {
                     long low = Math.min(box.a[i], box.b[i]);
                     long high = Math.max(box.a[i], box.b[i]);
                     long sigBetween = Util.mostSignificantBetween(low + 1, high + 1) - 1;
+                    if (low > sigBetween || high < sigBetween) {
+                        throw new RuntimeException("sigBetween out of range");
+                    }
                     {
                         long[] a2 = copy(box.a);
                         long[] b2 = copy(box.b);
@@ -288,7 +291,8 @@ public final class SmallHilbertCurve {
         }
 
         public SmallHilbertCurve dimensions(int dimensions) {
-            Preconditions.checkArgument(bits * dimensions <= 63, "bits * dimensions must be less than or equal to 63");
+            Preconditions.checkArgument(bits * dimensions <= 63,
+                    "bits * dimensions must be less than or equal to 63");
             return new SmallHilbertCurve(bits, dimensions);
         }
 

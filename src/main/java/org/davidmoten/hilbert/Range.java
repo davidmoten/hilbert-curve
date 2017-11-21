@@ -27,6 +27,10 @@ public final class Range {
         return high;
     }
 
+    public boolean contains(long value) {
+        return low <= value && value <= high;
+    }
+
     public List<Range> split() {
         if (low == high) {
             return Collections.singletonList(this);
