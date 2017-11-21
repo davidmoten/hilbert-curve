@@ -358,6 +358,14 @@ public class HilbertCurveTest {
         h.visitVertices(Box.a(1, 2, 3).b(4, 5, 6), x -> list.add(x[0] + "," + x[1] + "," + x[2]));
         assertEquals(Lists.newArrayList("1,2,3", "4,2,3", "1,5,3", "4,5,3", "1,2,6", "4,2,6", "1,5,6", "4,5,6"), list);
     }
+    
+    @Test
+    public void testVisitBox() {
+        SmallHilbertCurve h = HilbertCurve.small().bits(16).dimensions(3);
+        List<String> list = new ArrayList<>();
+        h.visitBox(Box.a(1,2,3).b(2, 3, 4), x -> list.add(x[0] + "," + x[1] + "," + x[2]));
+        assertEquals(Lists.newArrayList("1,2,3", "1,2,4", "1,3,3", "1,3,4", "2,2,3", "2,2,4", "2,3,3", "2,3,4"), list);
+    }
 
     @Test
     public void testTotalRangeExpandingWithIncreasingSplitDepth() {
@@ -479,7 +487,7 @@ public class HilbertCurveTest {
         List<Range> list = Collections.emptyList();
         assertEquals(list, SmallHilbertCurve.reduce(list));
     }
-
+    
     private static long[] scalePoint(float lat, float lon, long time, long minTime, long maxTime, long max) {
         long x = scale((lat + 90.0f) / 180, max);
         long y = scale((lon + 180.0f) / 360, max);

@@ -215,6 +215,45 @@ public final class SmallHilbertCurve {
     }
 
     @VisibleForTesting
+    void visitBox(Box box, Consumer<long[]> visitor) {
+        int dimensions = box.a.length;
+        long[] p = new long[dimensions];
+        for (int i = 0; i < dimensions; i++) {
+            p[i] = Math.min(box.a[i], box.b[i]);
+        }
+        visitBox(box, p, 0, visitor);
+    }
+
+    private void visitBox(Box box, long[] p, int dimension, Consumer<long[]> visitor) {
+        long upper = Math.max(box.a[dimension], box.b[dimension]);
+        long lower = Math.min(box.a[dimension], box.b[dimension]);
+        for (long i = lower; i <= upper; i++) {
+            p[dimension] = i;
+            if (dimension == box.a.length - 1) {
+                visitor.accept(p);
+            } else {
+                visitBox(box, p, dimension + 1, visitor);
+            }
+        }
+    }
+
+    void visitPerimeter(Box box, Consumer<long[]> visitor) {
+        int dimensions = box.a.length;
+        for (long i = 0; i < (1L << dimensions); i++) {
+            long[] x = new long[box.a.length];
+            for (int j = 0; j < dimensions; j++) {
+                if ((i & (1L << j)) != 0) {
+                    // if jth bit set
+                    x[j] = box.b[j];
+                } else {
+                    x[j] = box.a[j];
+                }
+            }
+            visitor.accept(x);
+        }
+    }
+
+    @VisibleForTesting
     void visitVertices(Box box, Consumer<long[]> visitor) {
         int dimensions = box.a.length;
         for (long i = 0; i < (1L << dimensions); i++) {
@@ -254,7 +293,7 @@ public final class SmallHilbertCurve {
                 max = index;
             }
         }
-        
+
         Range getRange() {
             return Range.create(min, max);
         }
