@@ -391,7 +391,7 @@ public class HilbertCurveTest {
         int dimensions = 3;
         SmallHilbertCurve h = HilbertCurve.small().bits(bits).dimensions(dimensions);
         long maxOrdinates = 1L << bits;
-        List<Range> ranges = h.query2(scalePoint(lat1, lon1, t1, minTime, maxTime, maxOrdinates),
+        h.query2(scalePoint(lat1, lon1, t1, minTime, maxTime, maxOrdinates),
                 scalePoint(lat2, lon2, t2, minTime, maxTime, maxOrdinates), splits);
     }
 
