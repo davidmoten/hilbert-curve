@@ -287,7 +287,13 @@ public final class SmallHilbertCurve {
     @VisibleForTesting
     Range toRange(Box box) {
         Visitor visitor = new Visitor();
+        // brute force method of finding min and max values within box
+        // min and max values must be on the perimeter of the box
         visitPerimeter(box, visitor);
+        // TODO ideally don't use brute force but this method not working yet
+        // not a problem with visitVertices I don't think but perhaps the choice of
+        // split indices
+        // visitVertices(box, visitor);
         return visitor.getRange();
     }
 
