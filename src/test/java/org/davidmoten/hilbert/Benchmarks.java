@@ -6,7 +6,7 @@ import org.openjdk.jmh.infra.Blackhole;
 public class Benchmarks {
 
     private static final int BITS = 10;
-    private static final long N = Math.round(Math.pow(2, BITS)) - 1;
+    private static final long N = 1L << BITS - 1;
     private static final HilbertCurve c = HilbertCurve.bits(BITS).dimensions(5);
     private static final SmallHilbertCurve small = HilbertCurve.small().bits(BITS).dimensions(5);
 
