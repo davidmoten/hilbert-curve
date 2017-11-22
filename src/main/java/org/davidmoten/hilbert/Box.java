@@ -2,6 +2,8 @@ package org.davidmoten.hilbert;
 
 import java.util.Arrays;
 
+import com.github.davidmoten.guavamini.Preconditions;
+
 final class Box {
 
     @Override
@@ -33,8 +35,13 @@ final class Box {
     final long[] b;
 
     Box(long[] a, long[] b) {
+        Preconditions.checkArgument(a.length == b.length);
         this.a = a;
         this.b = b;
+    }
+
+    public int dimensions() {
+        return a.length;
     }
 
     @Override
@@ -58,5 +65,23 @@ final class Box {
             this.b = values;
             return new Box(a, b);
         }
+    }
+
+    public Box dropDimension(int dimension) {
+        long[] x = dropDimension(a, dimension);
+        long[] y = dropDimension(b, dimension);
+        return new Box(x, y);
+    }
+
+    private static long[] dropDimension(long[] x, int dimension) {
+        long[] y = new long[x.length - 1];
+        for (int i = 0; i < x.length; i++) {
+            if (i < dimension) {
+                y[i] = x[i];
+            } else if (i > dimension) {
+                y[i - 1] = x[i];
+            }
+        }
+        return y;
     }
 }

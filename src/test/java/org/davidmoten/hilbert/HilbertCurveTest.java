@@ -366,6 +366,14 @@ public class HilbertCurveTest {
         h.visitBox(Box.a(1,2,3).b(2, 3, 4), x -> list.add(x[0] + "," + x[1] + "," + x[2]));
         assertEquals(Lists.newArrayList("1,2,3", "1,2,4", "1,3,3", "1,3,4", "2,2,3", "2,2,4", "2,3,3", "2,3,4"), list);
     }
+    
+    @Test
+    public void testVisitPerimiter() {
+        SmallHilbertCurve h = HilbertCurve.small().bits(16).dimensions(2);
+        List<String> list = new ArrayList<>();
+        h.visitPerimeter(Box.a(0,0).b(2,2), x -> list.add(x[0] + "," + x[1]));
+        list.stream().forEach(System.out::println);
+    }
 
     @Test
     public void testTotalRangeExpandingWithIncreasingSplitDepth() {
@@ -379,7 +387,7 @@ public class HilbertCurveTest {
         float lon2 = 151.281330f;
         long t2 = t1 + TimeUnit.HOURS.toMillis(1);
         int splits = 1;
-        int bits = 20;
+        int bits = 10;
         int dimensions = 3;
         SmallHilbertCurve h = HilbertCurve.small().bits(bits).dimensions(dimensions);
         long maxOrdinates = 1L << bits;

@@ -215,6 +215,37 @@ public final class SmallHilbertCurve {
     }
 
     @VisibleForTesting
+    void visitPerimeter(Box box, Consumer<long[]> visitor) {
+        for (int i = 0; i < box.dimensions(); i++) {
+            visitPerimeter(box, i, visitor);
+        }
+    }
+
+    private void visitPerimeter(Box box, int dimension, Consumer<long[]> visitor) {
+        Box b = box.dropDimension(dimension);
+        visitPerimeter(box, dimension, b, box.a[dimension], visitor);
+        if (box.a[dimension] != box.b[dimension]) {
+            visitPerimeter(box, dimension, b, box.b[dimension], visitor);
+        }
+    }
+
+    private void visitPerimeter(Box box, int dimension, Box b, long val, Consumer<long[]> visitor) {
+        visitBox(b, p -> {
+            long[] x = new long[box.dimensions()];
+            for (int i = 0; i < x.length; i++) {
+                if (i == dimension) {
+                    x[i] = val;
+                } else if (i < dimension) {
+                    x[i] = p[i];
+                } else {
+                    x[i] = p[i - 1];
+                }
+            }
+            visitor.accept(x);
+        });
+    }
+
+    @VisibleForTesting
     void visitBox(Box box, Consumer<long[]> visitor) {
         int dimensions = box.a.length;
         long[] p = new long[dimensions];
@@ -229,7 +260,7 @@ public final class SmallHilbertCurve {
         long lower = Math.min(box.a[dimension], box.b[dimension]);
         for (long i = lower; i <= upper; i++) {
             p[dimension] = i;
-            if (dimension == box.a.length - 1) {
+            if (dimension == box.dimensions() - 1) {
                 visitor.accept(p);
             } else {
                 visitBox(box, p, dimension + 1, visitor);
@@ -237,28 +268,11 @@ public final class SmallHilbertCurve {
         }
     }
 
-    void visitPerimeter(Box box, Consumer<long[]> visitor) {
-        int dimensions = box.a.length;
-        for (long i = 0; i < (1L << dimensions); i++) {
-            long[] x = new long[box.a.length];
-            for (int j = 0; j < dimensions; j++) {
-                if ((i & (1L << j)) != 0) {
-                    // if jth bit set
-                    x[j] = box.b[j];
-                } else {
-                    x[j] = box.a[j];
-                }
-            }
-            visitor.accept(x);
-        }
-    }
-
     @VisibleForTesting
     void visitVertices(Box box, Consumer<long[]> visitor) {
-        int dimensions = box.a.length;
         for (long i = 0; i < (1L << dimensions); i++) {
             long[] x = new long[box.a.length];
-            for (int j = 0; j < dimensions; j++) {
+            for (int j = 0; j < box.dimensions(); j++) {
                 if ((i & (1L << j)) != 0) {
                     // if jth bit set
                     x[j] = box.b[j];
@@ -273,7 +287,7 @@ public final class SmallHilbertCurve {
     @VisibleForTesting
     Range toRange(Box box) {
         Visitor visitor = new Visitor();
-        visitVertices(box, visitor);
+        visitPerimeter(box, visitor);
         return visitor.getRange();
     }
 
