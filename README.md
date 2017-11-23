@@ -128,6 +128,8 @@ long[] x = new long[dimensions];
 c.point(index, x);
 ```
 
+Benchmarks indicate that throughput is increased about 25% using this method.
+
 ### Render a curve
 
 To render a curve (for 2 dimensions only) to a PNG of 800x800 pixels:
@@ -142,6 +144,20 @@ To run benchmarks:
 
 ```bash
 mvn clean install -P benchmark
+```
+
+Result 23/11/2017
+```
+Benchmark                                         Mode  Cnt     Score     Error  Units
+Benchmarks.pointSmallTimes1000                   thrpt   10  7035.676 ± 303.699  ops/s
+Benchmarks.pointSmallTimes1000LowAllocation      thrpt   10  9134.077 ± 439.232  ops/s
+Benchmarks.pointTimes1000                        thrpt   10  6346.989 ±  32.957  ops/s
+Benchmarks.pointTimes1000LowAllocation           thrpt   10  6451.754 ±  30.435  ops/s
+Benchmarks.roundTripSmallTimes1000               thrpt   10  4008.059 ± 197.650  ops/s
+Benchmarks.roundTripSmallTimes1000LowAllocation  thrpt   10  5136.638 ±  22.340  ops/s
+Benchmarks.roundTripTimes1000                    thrpt   10  3138.075 ±  20.720  ops/s
+Benchmarks.roundTripTimes1000LowAllocation       thrpt   10  3261.835 ±  11.208  ops/s
+
 ```
 
 Credits
