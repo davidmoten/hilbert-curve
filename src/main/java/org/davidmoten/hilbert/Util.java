@@ -1,5 +1,7 @@
 package org.davidmoten.hilbert;
 
+import java.util.Arrays;
+
 final class Util {
 
     private Util() {
@@ -21,14 +23,6 @@ final class Util {
             j--;
             i++;
         }
-    }
-
-    static boolean allZero(int[] a) {
-        for (int i = 0; i < a.length; i++) {
-            if (a[i] != 0)
-                return false;
-        }
-        return true;
     }
 
     /**
@@ -68,9 +62,7 @@ final class Util {
     }
 
     public static void zero(long[] x) {
-        for (int i = 0; i < x.length; i++) {
-            x[i] = 0;
-        }
+        Arrays.fill(x, 0);
     }
 
 }
