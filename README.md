@@ -151,25 +151,25 @@ This is one of the very useful applications of the Hilbert curve. By mapping n-d
 SmallHilbertCurve c = HilbertCurve.small().bits(5).dimensions(2);
 long[] point1 = new long[] {3, 3};
 long[] point2 = new long[] {8, 10};
-int numSplits = 0;
-List<Range> ranges = c.query(point1, point2, numSplits);
+int splitDepth = 0;
+List<Range> ranges = c.query(point1, point2, splitDepth);
 ranges.stream().forEach(System.out::println);
 ```
 Result:
 ```
 Range [low=10, high=229]
 ```
-We can improve the ranges by increasing `numSplits`.
+We can improve the ranges by increasing `splitDepth`.
 
 
-`numSplits` is 1
+`splitDepth` is 1
 ```java
 Range [low=10, high=53]
 Range [low=69, high=132]
 Range [low=210, high=229]
 ```
 
-`numSplits` is 2
+`splitDepth` is 2
 ```java
 Range [low=10, high=10]
 Range [low=26, high=53]
@@ -179,7 +179,7 @@ Range [low=210, high=221]
 Range [low=227, high=229]
 ```
 
-`numSplits` is 3
+`splitDepth` is 3
 ```java
 Range [low=10, high=10]
 Range [low=26, high=53]
@@ -190,7 +190,7 @@ Range [low=210, high=221]
 Range [low=227, high=229]
 ```
 
-`numSplits` is 4
+`splitDepth` is 4
 ```java
 Range [low=10, high=10]
 Range [low=26, high=28]
