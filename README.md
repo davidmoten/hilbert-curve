@@ -205,7 +205,7 @@ Range [low=227, high=229]
 
 When using querying do experiments with the number of bits and `splitDepth` to get your ideal run time. 
 
-The perimeter traversal used by the `query` method is O(2<sup>splitDepth + bits*(dimensions-1)</sup>). In a recent experiment with spatio-temporal data (3 dimensions) I found that 10 bits and splitDepth=4 looked promising. Ranges were returned in about 60ms and the `splitDepth` of 4 gave me a 66% hit rate with 20 or so ranges (which could be queried in parallel). 
+The perimeter traversal used by the `query` method is O(2<sup>splitDepth + bits*(dimensions-1)</sup>). In a recent experiment with spatio-temporal data (3 dimensions) I found that 10 bits and `splitDepth` of 4 looked promising. Ranges were returned in about 60ms and the `splitDepth` of 4 gave me a 66% hit rate with 20 or so ranges (which could be queried in parallel). 
 
 ## Benchmarks
 
