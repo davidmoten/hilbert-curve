@@ -31,12 +31,12 @@ public final class HilbertCurve {
     }
 
     /**
-     * Returns a builder for and object that performs transformations for a
-     * Hilbert curve with the given number of bits.
+     * Returns a builder for and object that performs transformations for a Hilbert
+     * curve with the given number of bits.
      * 
      * @param bits
-     *            depth of the Hilbert curve. If bits is one, this is the
-     *            top-level Hilbert curve
+     *            depth of the Hilbert curve. If bits is one, this is the top-level
+     *            Hilbert curve
      * @return builder for object to do transformations with the Hilbert Curve
      */
     public static Builder bits(int bits) {
@@ -82,13 +82,12 @@ public final class HilbertCurve {
     }
 
     /**
-     * Converts a {@link BigInteger} index (distance along the Hilbert Curve
-     * from 0) to a point of dimensions defined in the constructor of
-     * {@code this}.
+     * Converts a {@link BigInteger} index (distance along the Hilbert Curve from 0)
+     * to a point of dimensions defined in the constructor of {@code this}.
      * 
      * @param index
-     *            index along the Hilbert Curve from 0. Maximum value 2
-     *            <sup>bits * dimensions</sup>-1.
+     *            index along the Hilbert Curve from 0. Maximum value 2 <sup>bits *
+     *            dimensions</sup>-1.
      * @return array of longs being the point
      * @throws NullPointerException
      *             if index is null
@@ -101,9 +100,16 @@ public final class HilbertCurve {
         return transposedIndexToPoint(bits, transpose(index));
     }
 
+    public void point(BigInteger index, long[] x) {
+        Preconditions.checkNotNull(index);
+        Preconditions.checkArgument(index.signum() != -1, "index cannot be negative");
+        transpose(index, x);
+        transposedIndexToPoint(bits, x);
+    }
+
     /**
-     * Converts a {@code long} index (distance along the Hilbert Curve from 0)
-     * to a point of dimensions defined in the constructor of {@code this}.
+     * Converts a {@code long} index (distance along the Hilbert Curve from 0) to a
+     * point of dimensions defined in the constructor of {@code this}.
      * 
      * @param index
      *            index along the Hilbert Curve from 0. Maximum value 2
@@ -138,8 +144,13 @@ public final class HilbertCurve {
      */
     @VisibleForTesting
     long[] transpose(BigInteger index) {
-        byte[] b = index.toByteArray();
         long[] x = new long[dimensions];
+        transpose(index, x);
+        return x;
+    }
+
+    private void transpose(BigInteger index, long[] x) {
+        byte[] b = index.toByteArray();
         for (int idx = 0; idx < 8 * b.length; idx++) {
             if ((b[b.length - 1 - idx / 8] & (1L << (idx % 8))) != 0) {
                 int dim = (length - idx - 1) % dimensions;
@@ -147,7 +158,6 @@ public final class HilbertCurve {
                 x[dim] |= 1L << shift;
             }
         }
-        return x;
     }
 
     /**
@@ -201,15 +211,15 @@ public final class HilbertCurve {
     }
 
     /**
-     * Converts the Hilbert transposed index into an N-dimensional point
-     * expressed as a vector of {@code long}.
+     * Converts the Hilbert transposed index into an N-dimensional point expressed
+     * as a vector of {@code long}.
      * 
      * In Skilling's paper this function is named {@code TransposeToAxes}
      * 
      * @param transposedIndex
      *            distance along the Hilbert curve in transposed form
-     * @return the coordinates of the point represented by the transposed index
-     *         on the Hilbert curve
+     * @return the coordinates of the point represented by the transposed index on
+     *         the Hilbert curve
      */
     static long[] transposedIndexToPoint(int bits, long... x) {
         final long N = 2L << (bits - 1);

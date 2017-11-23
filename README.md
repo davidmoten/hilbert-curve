@@ -121,6 +121,13 @@ SmallHilbertCurve c =
 long[] point = c.point(22);
 ```
 
+You can save allocations if you use this method (available on `HilbertCurve` and `SmallHilbertCurve`) to calculate a point:
+
+```java
+long[] x = new long[dimensions];
+c.point(index, x);
+```
+
 ### Render a curve
 
 To render a curve (for 2 dimensions only) to a PNG of 800x800 pixels:

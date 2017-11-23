@@ -63,6 +63,11 @@ public final class SmallHilbertCurve {
         return HilbertCurve.transposedIndexToPoint(bits, transposeLong(index));
     }
 
+    public void point(long index, long[] x) {
+        transposeLong(index, x);
+        HilbertCurve.transposedIndexToPoint(bits, x);
+    }
+
     // untranspose
     private long toIndex(long... transposedIndex) {
         long b = 0;
@@ -81,8 +86,7 @@ public final class SmallHilbertCurve {
         return b;
     }
 
-    private long[] transposeLong(long index) {
-        long[] x = new long[dimensions];
+    private void transposeLong(long index, long[] x) {
         for (int idx = 0; idx < 64; idx++) {
             if ((index & (1L << idx)) != 0) {
                 int dim = (length - idx - 1) % dimensions;
@@ -90,6 +94,11 @@ public final class SmallHilbertCurve {
                 x[dim] |= 1L << shift;
             }
         }
+    }
+
+    private long[] transposeLong(long index) {
+        long[] x = new long[dimensions];
+        transposeLong(index, x);
         return x;
     }
 
@@ -101,7 +110,8 @@ public final class SmallHilbertCurve {
         return query(a, b, splitDepth, BoxMinMaxIndexEstimationStrategy.SCAN_ENTIRE_PERIMETER);
     }
 
-    public List<Range> query(long[] a, long[] b, int splitDepth, BoxMinMaxIndexEstimationStrategy strategy) {
+    public List<Range> query(long[] a, long[] b, int splitDepth,
+            BoxMinMaxIndexEstimationStrategy strategy) {
         // we split into 2^splitDepth parts (boxes)
         // map each box to a Range based on the hilbert index of the corners of the box
         // sort the ranges by lower()
@@ -306,7 +316,8 @@ public final class SmallHilbertCurve {
         }
 
         public SmallHilbertCurve dimensions(int dimensions) {
-            Preconditions.checkArgument(bits * dimensions <= 63, "bits * dimensions must be less than or equal to 63");
+            Preconditions.checkArgument(bits * dimensions <= 63,
+                    "bits * dimensions must be less than or equal to 63");
             return new SmallHilbertCurve(bits, dimensions);
         }
 
