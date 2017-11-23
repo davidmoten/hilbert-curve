@@ -128,7 +128,7 @@ long[] x = new long[dimensions];
 c.point(index, x);
 ```
 
-Benchmarks indicate that throughput is increased about 25% using this method.
+Benchmarks indicate that throughput is increased about 25% using this method but only with the `small()` option.
 
 ### Render a curve
 
