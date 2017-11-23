@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.davidmoten.hilbert.SmallHilbertCurve.BoxMinMaxIndexEstimationStrategy;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -450,7 +451,7 @@ public class HilbertCurveTest {
     public void testToRange() {
         Box b = Box.a(0, 0).b(15, 15);
         SmallHilbertCurve h = HilbertCurve.small().bits(4).dimensions(2);
-        Range r = h.toRange(b);
+        Range r = h.toRange(b, BoxMinMaxIndexEstimationStrategy.SCAN_ENTIRE_PERIMETER);
         assertEquals(Range.create(0, 255), r);
     }
 

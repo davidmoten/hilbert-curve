@@ -92,14 +92,16 @@ public final class SmallHilbertCurve {
         }
         return x;
     }
-    
-    
+
     /////////////////////////////////////////////////
     // Query support
     ////////////////////////////////////////////////
-    
-    
+
     public List<Range> query(long[] a, long[] b, int splitDepth) {
+        return query(a, b, splitDepth, BoxMinMaxIndexEstimationStrategy.SCAN_ENTIRE_PERIMETER);
+    }
+
+    public List<Range> query(long[] a, long[] b, int splitDepth, BoxMinMaxIndexEstimationStrategy strategy) {
         // we split into 2^splitDepth parts (boxes)
         // map each box to a Range based on the hilbert index of the corners of the box
         // sort the ranges by lower()
@@ -109,7 +111,7 @@ public final class SmallHilbertCurve {
         Preconditions.checkArgument(splitDepth >= 0);
         List<Box> boxes = split(a, b, splitDepth);
         List<Range> ranges = boxes.stream() //
-                .map(x -> toRange(x)) //
+                .map(x -> toRange(x, strategy)) //
                 .sorted((x, y) -> Long.compare(x.low(), y.low())) //
                 .collect(Collectors.toList());
         return reduce(ranges);
@@ -209,18 +211,14 @@ public final class SmallHilbertCurve {
     }
 
     public enum BoxMinMaxIndexEstimationStrategy {
-        PERIMETER_BRUTE_FORCE;
+        SCAN_ENTIRE_PERIMETER;
     }
 
     @VisibleForTesting
-    Range toRange(Box box) {
-        return toRange(box, BoxMinMaxIndexEstimationStrategy.PERIMETER_BRUTE_FORCE);
-    }
-    
     Range toRange(Box box, BoxMinMaxIndexEstimationStrategy strategy) {
         Preconditions.checkNotNull(strategy, "strategy cannot be null");
         Visitor visitor = new Visitor();
-        if (strategy == BoxMinMaxIndexEstimationStrategy.PERIMETER_BRUTE_FORCE) {
+        if (strategy == BoxMinMaxIndexEstimationStrategy.SCAN_ENTIRE_PERIMETER) {
             // brute force method of finding min and max values within box
             // min and max values must be on the perimeter of the box
             visitPerimeter(box, visitor);
