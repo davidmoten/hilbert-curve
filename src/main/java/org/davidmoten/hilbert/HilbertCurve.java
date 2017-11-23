@@ -107,6 +107,10 @@ public final class HilbertCurve {
         transposedIndexToPoint(bits, x);
     }
 
+    public void point(long i, long[] x) {
+        point(BigInteger.valueOf(i), x);
+    }
+
     /**
      * Converts a {@code long} index (distance along the Hilbert Curve from 0) to a
      * point of dimensions defined in the constructor of {@code this}.
