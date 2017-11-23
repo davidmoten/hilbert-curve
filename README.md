@@ -3,9 +3,15 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.davidmoten/hilbert-curve/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/com.github.davidmoten/hilbert-curve)<br/>
 [![codecov](https://codecov.io/gh/davidmoten/hilbert-curve/branch/master/graph/badge.svg)](https://codecov.io/gh/davidmoten/hilbert-curve)<br/>
 
-Java utilities for transforming distance along an N-dimensional Hilbert Curve to a point and back.
+Java utilities for 
 
-* supports N dimensions
+* transforming distance along an N-dimensional Hilbert Curve to a point and back.
+* bounding box (N-dimensional) query support (bounding box is mapped to a number of intervals on the hilbert index for single column lookup)
+
+Features
+
+* supports multiple dimensions
+* method chaining
 * renders in 2-dimensions
 * benchmarked with `jmh`
 
@@ -137,6 +143,67 @@ To render a curve (for 2 dimensions only) to a PNG of 800x800 pixels:
 ```java
 HilbertCurveRenderer.renderToFile(bits, 800, "target/image.png");
 ```
+
+### Querying N-dimensional space
+
+```java
+SmallHilbertCurve c = HilbertCurve.small().bits(5).dimensions(2);
+long[] point1 = new long[] {3, 3};
+long[] point2 = new long[] {8, 10};
+int numSplits = 0;
+List<Range> ranges = c.query(point1, point2, numSplits);
+ranges.stream().forEach(System.out::println);
+```
+Result:
+```
+Range [low=10, high=229]
+```
+We can improve the ranges by increasing `numSplits`.
+
+
+`numSplits` is 1
+```java
+Range [low=10, high=53]
+Range [low=69, high=132]
+Range [low=210, high=229]
+```
+
+`numSplits` is 2
+```java
+Range [low=10, high=10]
+Range [low=26, high=53]
+Range [low=69, high=69]
+Range [low=122, high=132]
+Range [low=210, high=221]
+Range [low=227, high=229]
+```
+
+`numSplits` is 3
+```java
+Range [low=10, high=10]
+Range [low=26, high=53]
+Range [low=69, high=69]
+Range [low=122, high=128]
+Range [low=131, high=132]
+Range [low=210, high=221]
+Range [low=227, high=229]
+```
+
+`numSplits` is 4
+```java
+Range [low=10, high=10]
+Range [low=26, high=28]
+Range [low=31, high=48]
+Range [low=51, high=53]
+Range [low=69, high=69]
+Range [low=122, high=124]
+Range [low=127, high=128]
+Range [low=131, high=132]
+Range [low=210, high=221]
+Range [low=227, high=229]
+```
+
+When using querying do experiments with the number of bits and `splitDepth` to get your ideal run time. The perimeter traversal used by the `query` method is O(2<sup>bits*(dimensions-1)</sup>.
 
 ## Benchmarks
 
