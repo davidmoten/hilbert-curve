@@ -512,6 +512,7 @@ public class HilbertCurveTest {
         assertEquals(31L, x[0]);
         assertEquals(31L, x[1]);
     }
+
     @Test
     public void testPointSaveAllocations() {
         long[] x = new long[2];
@@ -519,6 +520,15 @@ public class HilbertCurveTest {
         c.point(BigInteger.valueOf(682L), x);
         assertEquals(31L, x[0]);
         assertEquals(31L, x[1]);
+    }
+
+    @Test
+    public void testForReadMe() {
+        SmallHilbertCurve c = HilbertCurve.small().bits(5).dimensions(2);
+        long[] point1 = new long[] { 3, 3 };
+        long[] point2 = new long[] { 8, 10 };
+        List<Range> ranges = c.query(point1, point2, 4);
+        ranges.stream().forEach(System.out::println);
     }
 
     private static long[] scalePoint(float lat, float lon, long time, long minTime, long maxTime,
