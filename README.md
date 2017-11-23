@@ -203,7 +203,9 @@ Range [low=210, high=221]
 Range [low=227, high=229]
 ```
 
-When using querying do experiments with the number of bits and `splitDepth` to get your ideal run time. The perimeter traversal used by the `query` method is O(2<sup>bits*(dimensions-1)</sup>).
+When using querying do experiments with the number of bits and `splitDepth` to get your ideal run time. 
+
+The perimeter traversal used by the `query` method is O(2<sup>splitDepth + bits*(dimensions-1)</sup>).
 
 ## Benchmarks
 
