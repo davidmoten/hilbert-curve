@@ -312,7 +312,7 @@ public class HilbertCurveTest {
     public void testSmallQueryNoSplit() {
         List<Range> r = small.query(point(0, 3), point(4, 2), 0);
         assertEquals(1, r.size());
-        assertEquals(Range.create(14, 54), r.get(0));
+        assertEquals(Range.create(8, 54), r.get(0));
     }
 
     @Test
@@ -325,13 +325,13 @@ public class HilbertCurveTest {
     @Test
     public void testSmallQuery4() {
         List<Range> ranges = small.query(point(0, 2), point(6, 8), 0);
-        assertEquals(Arrays.asList(Range.create(14, 234)), ranges);
+        assertEquals(Arrays.asList(Range.create(8, 234)), ranges);
     }
 
     @Test
     public void testSmallQueryLargerBoxDepthZero() {
         List<Range> ranges = small.query(point(0, 2), point(6, 8), 0);
-        assertEquals(Arrays.asList(Range.create(14, 234)), ranges);
+        assertEquals(Arrays.asList(Range.create(8, 234)), ranges);
     }
 
     @Test
@@ -391,7 +391,7 @@ public class HilbertCurveTest {
         int dimensions = 3;
         SmallHilbertCurve h = HilbertCurve.small().bits(bits).dimensions(dimensions);
         long maxOrdinates = 1L << bits;
-        h.query2(scalePoint(lat1, lon1, t1, minTime, maxTime, maxOrdinates),
+        h.query(scalePoint(lat1, lon1, t1, minTime, maxTime, maxOrdinates),
                 scalePoint(lat2, lon2, t2, minTime, maxTime, maxOrdinates), splits);
     }
 
@@ -438,7 +438,7 @@ public class HilbertCurveTest {
         SmallHilbertCurve h = HilbertCurve.small().bits(bits).dimensions(2);
         long maxIndex = (1L << bits) - 1;
         for (int splits = 1; splits <= 5; splits++) {
-            List<Range> ranges = h.query2(point(0, 0), point(maxIndex, maxIndex), splits);
+            List<Range> ranges = h.query(point(0, 0), point(maxIndex, maxIndex), splits);
             for (long i = 0; i < 1 << bits; i++) {
                 final long x = i;
                 assertTrue(ranges.stream().filter(r -> r.contains(x)).findFirst().isPresent());

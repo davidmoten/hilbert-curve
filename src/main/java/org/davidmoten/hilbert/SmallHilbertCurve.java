@@ -1,10 +1,8 @@
 package org.davidmoten.hilbert;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.github.davidmoten.guavamini.Lists;
@@ -94,88 +92,14 @@ public final class SmallHilbertCurve {
         }
         return x;
     }
-
-    // Brute force is to travel the bounding surface of the bounding
-    // hyperrectangle looking for max and min index values and return a single
-    // range. This method is potentially very wasteful because the Hilbert curve
-    // has locality discontinuities recursively at divisors of 2 in the domain
-    // and it is unnecessary to travel the whole bounding surface as it can be
-    // solved more efficiently using an analytical recursive technique.
-    //
-    // Minimal force is to recursively break the bounding box up into
-    // smaller boxes so that the discontinuities have progressively less
-    // effect. We stop the recursive process when the probability of missing an
-    // index is appropriately low (for further consideration).
+    
+    
+    /////////////////////////////////////////////////
+    // Query support
+    ////////////////////////////////////////////////
+    
+    
     public List<Range> query(long[] a, long[] b, int splitDepth) {
-        Preconditions.checkArgument(a.length == dimensions);
-        Preconditions.checkArgument(b.length == dimensions);
-        List<List<Range>> rangesByDimension = Lists.newArrayList();
-        for (int i = 0; i < dimensions; i++) {
-            rangesByDimension.add( //
-                    new Range(Math.min(a[i], b[i]), //
-                            Math.max(a[i], b[i])) //
-                                    .split(splitDepth));
-        }
-        // combine coordinate ranges from each dimension and from boxes
-        // determine the indexes of the corners of the boxes. The min max of the
-        // box corner indexes are the ranges returned by this method.
-        return Range.simplify(hilbertIndexRanges(rangesByDimension, dimensions));
-    }
-
-    private List<Range> hilbertIndexRanges(List<List<Range>> rangesByDimension, int n) {
-        Function<Integer, Integer> indexMax = i -> rangesByDimension.get(i).size();
-        List<Range> ranges = new ArrayList<Range>();
-        int[] indexes = new int[dimensions];
-        // for every combination of ranges
-        do {
-            // do something with indexes
-            List<Range> rangesToCombine = new ArrayList<>();
-            for (int i = 0; i < dimensions; i++) {
-                rangesToCombine.add(rangesByDimension.get(i).get(indexes[i]));
-            }
-
-            // cross-product the point coordinates and calculate the min and max
-            // hilbert indexes to get the range for this hyper-rectangle
-            long min = Long.MAX_VALUE;
-            long max = Long.MIN_VALUE;
-            for (int i = 0; i < Math.pow(2, dimensions); i++) {
-                long point[] = new long[dimensions];
-                for (int j = 0; j < dimensions; j++) {
-                    Range r = rangesToCombine.get(j);
-                    long x;
-                    if ((i & (1 << j)) == 0) {
-                        if (r.low() == rangesByDimension.get(j).get(0).low()) {
-                            x = r.low();
-                        } else {
-                            x = Math.min(r.high(), r.low() + 1);
-                        }
-                    } else {
-                        x = r.high();
-                    }
-                    point[j] = x;
-                }
-                long h = index(point);
-                if (h < min) {
-                    min = h;
-                } else if (h > max) {
-                    max = h;
-                }
-            }
-            ranges.add(new Range(min, max));
-
-            // add one
-            for (int i = 0; i < dimensions; i++) {
-                indexes[i] = (indexes[i] + 1) % indexMax.apply(i);
-                if (indexes[i] != 0) {
-                    break;
-                }
-            }
-        } while (!Util.allZero(indexes));
-
-        return ranges;
-    }
-
-    public List<Range> query2(long[] a, long[] b, int splitDepth) {
         // we split into 2^splitDepth parts (boxes)
         // map each box to a Range based on the hilbert index of the corners of the box
         // sort the ranges by lower()
@@ -284,16 +208,29 @@ public final class SmallHilbertCurve {
         }
     }
 
+    public enum BoxMinMaxIndexEstimationStrategy {
+        PERIMETER_BRUTE_FORCE;
+    }
+
     @VisibleForTesting
     Range toRange(Box box) {
+        return toRange(box, BoxMinMaxIndexEstimationStrategy.PERIMETER_BRUTE_FORCE);
+    }
+    
+    Range toRange(Box box, BoxMinMaxIndexEstimationStrategy strategy) {
+        Preconditions.checkNotNull(strategy, "strategy cannot be null");
         Visitor visitor = new Visitor();
-        // brute force method of finding min and max values within box
-        // min and max values must be on the perimeter of the box
-        visitPerimeter(box, visitor);
-        // TODO ideally don't use brute force but this method not working yet
-        // not a problem with visitVertices I don't think but perhaps the choice of
-        // split indices
-        // visitVertices(box, visitor);
+        if (strategy == BoxMinMaxIndexEstimationStrategy.PERIMETER_BRUTE_FORCE) {
+            // brute force method of finding min and max values within box
+            // min and max values must be on the perimeter of the box
+            visitPerimeter(box, visitor);
+        } else {
+            // TODO ideally don't use brute force but this method not working yet
+            // not a problem with visitVertices I don't think but perhaps the choice of
+            // split indices
+            // visitVertices(box, visitor);
+            throw new RuntimeException("Unsupported strategy: " + strategy);
+        }
         return visitor.getRange();
     }
 
