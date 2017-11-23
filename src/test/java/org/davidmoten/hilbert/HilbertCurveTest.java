@@ -511,15 +511,23 @@ public class HilbertCurveTest {
         c.point(682, x);
         assertEquals(31L, x[0]);
         assertEquals(31L, x[1]);
+        
+        c.point(100L, x);
+        assertEquals(14L, x[0]);
+        assertEquals(4L, x[1]);
     }
 
     @Test
     public void testPointSaveAllocations() {
         long[] x = new long[2];
         HilbertCurve c = HilbertCurve.bits(5).dimensions(2);
-        c.point(BigInteger.valueOf(682L), x);
+        c.point(682L, x);
         assertEquals(31L, x[0]);
         assertEquals(31L, x[1]);
+        
+        c.point(100L, x);
+        assertEquals(14L, x[0]);
+        assertEquals(4L, x[1]);
     }
 
     @Test

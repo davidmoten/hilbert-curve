@@ -39,8 +39,8 @@ final class Util {
      *            first value
      * @param b
      *            second value
-     * @return most significant (in terms of divisors of powers of 2) between a
-     *         and b
+     * @return most significant (in terms of divisors of powers of 2) between a and
+     *         b
      */
     static long mostSignificantBetween(long a, long b) {
         if (a > b) {
@@ -64,6 +64,12 @@ final class Util {
                 }
             }
             return x;
+        }
+    }
+
+    public static void zero(long[] x) {
+        for (int i = 0; i < x.length; i++) {
+            x[i] = 0;
         }
     }
 

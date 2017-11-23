@@ -64,6 +64,7 @@ public final class SmallHilbertCurve {
     }
 
     public void point(long index, long[] x) {
+        Util.zero(x);
         transposeLong(index, x);
         HilbertCurve.transposedIndexToPoint(bits, x);
     }

@@ -103,6 +103,7 @@ public final class HilbertCurve {
     public void point(BigInteger index, long[] x) {
         Preconditions.checkNotNull(index);
         Preconditions.checkArgument(index.signum() != -1, "index cannot be negative");
+        Util.zero(x);
         transpose(index, x);
         transposedIndexToPoint(bits, x);
     }
