@@ -242,4 +242,4 @@ Dave Moten's contribution:
 * write the bit manipulations between the transposed index and the `BigInteger` index
 * lots of unit tests
 * made a simple easy-to-read API (hopefully)
-* TODO supplement with utilities for using a Hilbert Index with bounding box searches
+* supplement with utilities for using a Hilbert Index with bounding box searches
