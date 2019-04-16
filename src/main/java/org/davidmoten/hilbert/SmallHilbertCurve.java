@@ -152,13 +152,13 @@ public final class SmallHilbertCurve {
     }
 
     @VisibleForTesting
-    void visitPerimeter(Box box, Consumer<long[]> visitor) {
+    static void visitPerimeter(Box box, Consumer<long[]> visitor) {
         for (int i = 0; i < box.dimensions(); i++) {
             visitPerimeter(box, i, visitor);
         }
     }
 
-    private void visitPerimeter(Box box, int dimension, Consumer<long[]> visitor) {
+    private static void visitPerimeter(Box box, int dimension, Consumer<long[]> visitor) {
         Box b = box.dropDimension(dimension);
         visitPerimeter(box, dimension, b, box.a[dimension], visitor);
         if (box.a[dimension] != box.b[dimension]) {
@@ -166,7 +166,7 @@ public final class SmallHilbertCurve {
         }
     }
 
-    private void visitPerimeter(Box box, int dimension, Box b, long val, Consumer<long[]> visitor) {
+    private static void visitPerimeter(Box box, int dimension, Box b, long val, Consumer<long[]> visitor) {
         visitBox(b, p -> {
             long[] x = new long[box.dimensions()];
             for (int i = 0; i < x.length; i++) {
@@ -183,7 +183,7 @@ public final class SmallHilbertCurve {
     }
 
     @VisibleForTesting
-    void visitBox(Box box, Consumer<long[]> visitor) {
+    static void visitBox(Box box, Consumer<long[]> visitor) {
         int dimensions = box.a.length;
         long[] p = new long[dimensions];
         for (int i = 0; i < dimensions; i++) {
@@ -192,7 +192,7 @@ public final class SmallHilbertCurve {
         visitBox(box, p, 0, visitor);
     }
 
-    private void visitBox(Box box, long[] p, int dimension, Consumer<long[]> visitor) {
+    private static void visitBox(Box box, long[] p, int dimension, Consumer<long[]> visitor) {
         long upper = Math.max(box.a[dimension], box.b[dimension]);
         long lower = Math.min(box.a[dimension], box.b[dimension]);
         for (long i = lower; i <= upper; i++) {
@@ -222,7 +222,7 @@ public final class SmallHilbertCurve {
     }
 
     public enum BoxMinMaxIndexEstimationStrategy {
-        SCAN_ENTIRE_PERIMETER;
+        SCAN_ENTIRE_PERIMETER, SCAN_ENTIRE_REGION;
     }
 
     @VisibleForTesting
@@ -233,12 +233,11 @@ public final class SmallHilbertCurve {
             // brute force method of finding min and max values within box
             // min and max values must be on the perimeter of the box
             visitPerimeter(box, visitor);
+        } else if (strategy == BoxMinMaxIndexEstimationStrategy.SCAN_ENTIRE_REGION) {
+            // brute force
+            box.visitCells(visitor);
         } else {
-            // TODO ideally don't use brute force but this method not working yet
-            // not a problem with visitVertices I don't think but perhaps the choice of
-            // split indices
-            // visitVertices(box, visitor);
-            throw new RuntimeException("Unsupported strategy: " + strategy);
+            throw new UnsupportedOperationException("strategy not supported yet: " + strategy);
         }
         return visitor.getRange();
     }

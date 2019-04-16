@@ -1,8 +1,10 @@
 package org.davidmoten.hilbert;
 
 import java.util.Arrays;
+import java.util.function.Consumer;
 
 import com.github.davidmoten.guavamini.Preconditions;
+import com.github.davidmoten.guavamini.annotations.VisibleForTesting;
 
 final class Box {
 
@@ -83,5 +85,57 @@ final class Box {
             }
         }
         return y;
+    }
+
+    public void visitCells(Consumer<long[]> visitor) {
+        long[] maxes = maxes(a, b);
+        long[] mins = mins(a, b);
+        long[] x = Arrays.copyOf(mins, mins.length);
+        while (true) {
+            visitor.accept(x);
+            if (equals(x, maxes)) {
+                break;
+            } else {
+                addOne(x, mins, maxes);
+            }
+        }
+    }
+    
+    @VisibleForTesting
+    static void addOne(long[] x,long[] mins, long[] maxes) {
+        for (int i = x.length - 1; i>=0;i--) {
+            if (x[i] != maxes[i]) {
+                x[i]++;
+                break;
+            } else {
+                x[i] = mins[i];
+            }
+        }
+    }
+
+    @VisibleForTesting
+    static boolean equals(long[] a, long[] b) {
+        for (int i = 0; i < a.length; i++) {
+            if (a[i] != b[i]) {
+                return false;
+            }
+        } 
+        return true;
+    }
+
+    private static long[] mins(long[] a, long[] b) {
+        long[] c = new long[a.length];
+        for (int i = 0; i < a.length; i++) {
+            c[i] = Math.min(a[i], b[i]);
+        }
+        return c;
+    }
+
+    private static long[] maxes(long[] a, long[] b) {
+        long[] c = new long[a.length];
+        for (int i = 0; i < a.length; i++) {
+            c[i] = Math.max(a[i], b[i]);
+        }
+        return c;
     }
 }
