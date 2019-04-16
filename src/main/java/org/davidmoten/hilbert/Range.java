@@ -18,6 +18,10 @@ public final class Range {
     public static Range create(long low, long high) {
         return new Range(low, high);
     }
+    
+    public static Range create(long value) {
+        return new Range(value,value);
+    }
 
     public long low() {
         return low;
