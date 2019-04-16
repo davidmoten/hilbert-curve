@@ -20,14 +20,21 @@ public class Benchmarks {
     public void roundTripTimes512(Blackhole b) {
         for (long i = 0; i < N; i++) {
             long[] point = c.point(i);
-            b.consume(i == c.index(point).longValue());
+            b.consume(c.index(point).longValue());
         }
     }
     
     @Benchmark
     public void toIndexTimes512(Blackhole b) {
         for (int i = 0; i < N; i++) {
-            b.consume(i == c.index(points.get(i)).longValue());
+            b.consume(c.index(points.get(i)).longValue());
+        }
+    }
+    
+    @Benchmark
+    public void toIndexTimes512Small(Blackhole b) {
+        for (int i = 0; i < N; i++) {
+            b.consume(small.index(points.get(i)));
         }
     }
 
@@ -42,7 +49,7 @@ public class Benchmarks {
     public void roundTripSmallTimes512(Blackhole b) {
         for (long i = 0; i < N; i++) {
             long[] point = small.point(i);
-            b.consume(i == small.index(point));
+            b.consume(small.index(point));
         }
     }
 
@@ -57,7 +64,7 @@ public class Benchmarks {
     public void roundTripTimes512LowAllocation(Blackhole b) {
         for (long i = 0; i < N; i++) {
             c.point(i, point);
-            b.consume(i == c.index(point).longValue());
+            b.consume(c.index(point).longValue());
         }
     }
 
@@ -73,7 +80,7 @@ public class Benchmarks {
     public void roundTripSmallTimes512LowAllocation(Blackhole b) {
         for (long i = 0; i < N; i++) {
             small.point(i, point);
-            b.consume(i == small.index(point));
+            b.consume(small.index(point));
         }
     }
 
@@ -92,6 +99,4 @@ public class Benchmarks {
         }
         return list;
     }
-
-    
 }
