@@ -110,6 +110,19 @@ public final class SmallHilbertCurve {
     public List<Range> query(long[] a, long[] b, int splitDepth) {
         return query(a, b, splitDepth, BoxMinMaxIndexEstimationStrategy.SCAN_ENTIRE_PERIMETER);
     }
+    
+    /**
+     * Returns a list of index ranges by calculating the index for every point in
+     * the region bounded by {@code a} and {@code b}.
+     * 
+     * @param a
+     *            one vertex of the region
+     * @param b
+     *            the opposing vertex to a
+     */
+    public List<Range> query(long[] a, long[] b) {
+        return query(a, b, 0, BoxMinMaxIndexEstimationStrategy.SCAN_ENTIRE_REGION);
+    }
 
     public List<Range> query(long[] a, long[] b, int splitDepth,
             BoxMinMaxIndexEstimationStrategy strategy) {
