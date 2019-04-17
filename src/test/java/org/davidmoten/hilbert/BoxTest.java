@@ -1,10 +1,13 @@
 package org.davidmoten.hilbert;
 
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -41,7 +44,11 @@ public class BoxTest {
 
     @Test
     public void testCellVisitor() {
-        Box box = new Box(new long[] { 1, 2, 3 }, new long[] { 3, 0, 2 });
+        List<String> list = new ArrayList<>();
+        Box box = new Box(new long[] { 1, 6, 3 }, new long[] { 2, 7, 2 });
+        box.visitCells(x -> list.add(Arrays.toString(x)));
         box.visitCells(x -> System.out.println(Arrays.toString(x)));
+        assertEquals(8, list.size());
+        
     }
 }

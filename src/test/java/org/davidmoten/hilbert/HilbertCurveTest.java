@@ -516,6 +516,32 @@ public class HilbertCurveTest {
         assertEquals(14L, x[0]);
         assertEquals(4L, x[1]);
     }
+    
+    @Test
+    public void testSmallQueryVisitWholeRegion() {
+        SmallHilbertCurve c = HilbertCurve.small().bits(5).dimensions(2);
+        long[] a = new long[] { 0, 0 };
+        long[] b = new long[] { 31, 31 };
+        Ranges r = c.query(a, b);
+        assertEquals(Lists.newArrayList(Range.create(0, 1023)), r.get());
+    }
+    
+    @Test
+    public void testSmallQueryVisitWholeRegionMultipleRanges() {
+        SmallHilbertCurve c = HilbertCurve.small().bits(4).dimensions(2);
+        long[] a = new long[] { 1, 1 };
+        long[] b = new long[] { 7, 4 };
+        Ranges result = c.query(a, b);
+        Ranges expected = Ranges.create() //
+                .add(2, 2) //
+                .add(6,13) //
+                .add(17, 18) //
+                .add(22, 32) //
+                .add(35, 37) //
+                .add(53,  54) //
+                .add(57, 57);
+        assertEquals(expected.get(), result.get());
+    }
 
     @Test
     public void testPointSaveAllocations() {

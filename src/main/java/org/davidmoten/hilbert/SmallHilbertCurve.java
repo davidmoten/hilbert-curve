@@ -120,10 +120,13 @@ public final class SmallHilbertCurve {
      * @param b
      *            the opposing vertex to a
      */
-    public List<Range> query(long[] a, long[] b) {
-        return query(a, b, 0, BoxMinMaxIndexEstimationStrategy.SCAN_ENTIRE_REGION);
+    public Ranges query(long[] a, long[] b) {
+        Ranges.Builder builder = Ranges.builder();
+        Box box = new Box(a, b);
+        box.visitCells(cell -> builder.add(index(cell)));
+        return builder.build();
     }
-
+    
     public List<Range> query(long[] a, long[] b, int splitDepth,
             BoxMinMaxIndexEstimationStrategy strategy) {
         // we split into 2^splitDepth parts (boxes)
@@ -235,7 +238,7 @@ public final class SmallHilbertCurve {
     }
 
     public enum BoxMinMaxIndexEstimationStrategy {
-        SCAN_ENTIRE_PERIMETER, SCAN_ENTIRE_REGION;
+        SCAN_ENTIRE_PERIMETER;
     }
 
     @VisibleForTesting
@@ -246,9 +249,6 @@ public final class SmallHilbertCurve {
             // brute force method of finding min and max values within box
             // min and max values must be on the perimeter of the box
             visitPerimeter(box, visitor);
-        } else if (strategy == BoxMinMaxIndexEstimationStrategy.SCAN_ENTIRE_REGION) {
-            // brute force
-            box.visitCells(visitor);
         } else {
             throw new UnsupportedOperationException("strategy not supported yet: " + strategy);
         }
