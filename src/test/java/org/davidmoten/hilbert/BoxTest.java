@@ -47,7 +47,6 @@ public class BoxTest {
         List<String> list = new ArrayList<>();
         Box box = new Box(new long[] { 1, 6, 3 }, new long[] { 2, 7, 2 });
         box.visitCells(x -> list.add(Arrays.toString(x)));
-        box.visitCells(x -> System.out.println(Arrays.toString(x)));
         assertEquals(8, list.size());
         assertEquals("[1, 6, 2]", list.get(0));
         assertEquals("[1, 6, 3]", list.get(1));
@@ -57,5 +56,76 @@ public class BoxTest {
         assertEquals("[2, 6, 3]", list.get(5));
         assertEquals("[2, 7, 2]", list.get(6));
         assertEquals("[2, 7, 3]", list.get(7));
+    }
+
+    @Test
+    public void testPerimeterVisitor2D() {
+        Box box = new Box(new long[] { 1, 1 }, new long[] { 3, 4 });
+        List<long[]> list = new ArrayList<>();
+        box.visitPerimeter(cell -> list.add(Arrays.copyOf(cell, cell.length)));
+        assertEquals(8, list.size());
+        assertContains(list, 1L, 1L);
+        assertContains(list, 1L, 2L);
+        assertContains(list, 1L, 3L);
+        assertContains(list, 1L, 4L);
+        assertContains(list, 3L, 1L);
+        assertContains(list, 3L, 2L);
+        assertContains(list, 3L, 3L);
+        assertContains(list, 3L, 4L);
+    }
+    
+    @Test
+    public void testPerimeterVisitor2DPointOnly() {
+        Box box = new Box(new long[] { 1, 1 }, new long[] { 1, 1 });
+        List<long[]> list = new ArrayList<>();
+        box.visitPerimeter(cell -> list.add(Arrays.copyOf(cell, cell.length)));
+        assertEquals(1, list.size());
+        assertContains(list, 1L, 1L);
+    }
+    
+    @Test
+    public void testPerimeterVisitor2DSmall() {
+        Box box = new Box(new long[] { 1, 1 }, new long[] { 2, 1 });
+        List<long[]> list = new ArrayList<>();
+        box.visitPerimeter(cell -> list.add(Arrays.copyOf(cell, cell.length)));
+        assertEquals(2, list.size());
+        assertContains(list, 1L, 1L);
+        assertContains(list, 2L, 1L);
+    }
+    
+    @Test
+    public void testPerimeterVisitor2DSmall2() {
+        Box box = new Box(new long[] { 1, 2 }, new long[] { 1, 1 });
+        List<long[]> list = new ArrayList<>();
+        box.visitPerimeter(cell -> list.add(Arrays.copyOf(cell, cell.length)));
+        assertEquals(2, list.size());
+        assertContains(list, 1L, 1L);
+        assertContains(list, 1L, 2L);
+    }
+
+    @Test
+    public void testPerimeterVisitor3D() {
+        Box box = new Box(new long[] { 1, 1, 1 }, new long[] { 3, 4, 1 });
+        List<long[]> list = new ArrayList<>();
+        box.visitPerimeter(cell -> list.add(Arrays.copyOf(cell, cell.length)));
+        list.stream().forEach(x -> System.out.println(Arrays.toString(x)));
+        assertEquals(8, list.size());
+        assertContains(list, 1L, 1L);
+        assertContains(list, 1L, 2L);
+        assertContains(list, 1L, 3L);
+        assertContains(list, 1L, 4L);
+        assertContains(list, 3L, 1L);
+        assertContains(list, 3L, 2L);
+        assertContains(list, 3L, 3L);
+        assertContains(list, 3L, 4L);
+    }
+    
+    private static void assertContains(List<long[]> list, long... v) {
+        for (long[] x : list) {
+            if (Arrays.equals(v, x)) {
+                return;
+            }
+        }
+        throw new AssertionError("value not found: " + Arrays.toString(v));
     }
 }

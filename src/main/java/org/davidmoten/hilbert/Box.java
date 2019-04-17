@@ -1,6 +1,9 @@
 package org.davidmoten.hilbert;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.function.Consumer;
 
 import com.github.davidmoten.guavamini.Preconditions;
@@ -87,9 +90,9 @@ final class Box {
         return y;
     }
 
-    public void visitCells(Consumer<long[]> visitor) {
-        long[] maxes = maxes(a, b);
+    public void visitCells(Consumer<? super long[]> visitor) {
         long[] mins = mins(a, b);
+        long[] maxes = maxes(a, b);
         long[] x = Arrays.copyOf(mins, mins.length);
         while (true) {
             visitor.accept(x);
@@ -100,10 +103,87 @@ final class Box {
             }
         }
     }
-    
+
+    static final class Cell {
+        final long[] point;
+
+        Cell(long[] point) {
+            this.point = point;
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + Arrays.hashCode(point);
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            Cell other = (Cell) obj;
+            if (!Arrays.equals(point, other.point))
+                return false;
+            return true;
+        }
+
+    }
+
+    public void visitPerimeter(Consumer<? super long[]> visitor) {
+        long[] mins = mins(a, b);
+        long[] maxes = maxes(a, b);
+        for (int i = 0; i < dimensions(); i++) {
+            long[] x = Arrays.copyOf(mins, mins.length);
+            while (true) {
+                visitor.accept(x);
+                if (equals(x, maxes)) {
+                    break;
+                } else if (!addOne(x, mins, maxes, i)) {
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
+     * Returns true if and only if the value x is changed. x is incremented (with
+     * carry over propagating left along the array). Once carryover hits the special
+     * index position and the special index position already has max value (it can
+     * only have min or max value, nothing in between) then false is returned (and x
+     * is unchanged).
+     * 
+     * @param x
+     * @param mins
+     * @param maxes
+     * @param specialIndex
+     * @return true iff x is changed
+     */
     @VisibleForTesting
-    static void addOne(long[] x,long[] mins, long[] maxes) {
-        for (int i = x.length - 1; i>=0;i--) {
+    static boolean addOne(long[] x, long[] mins, long[] maxes, int specialIndex) {
+        for (int i = x.length - 1; i >= specialIndex; i--) {
+            if (x[i] != maxes[i]) {
+                if (i == specialIndex) {
+                    x[i] = maxes[i];
+                } else {
+                    x[i]++;
+                }
+                return true;
+            } else {
+                x[i] = mins[i];
+            }
+        }
+        return false;
+    }
+
+    @VisibleForTesting
+    static void addOne(long[] x, long[] mins, long[] maxes) {
+        for (int i = x.length - 1; i >= 0; i--) {
             if (x[i] != maxes[i]) {
                 x[i]++;
                 break;
@@ -119,7 +199,7 @@ final class Box {
             if (a[i] != b[i]) {
                 return false;
             }
-        } 
+        }
         return true;
     }
 
