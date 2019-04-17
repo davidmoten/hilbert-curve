@@ -49,6 +49,13 @@ public class BoxTest {
         box.visitCells(x -> list.add(Arrays.toString(x)));
         box.visitCells(x -> System.out.println(Arrays.toString(x)));
         assertEquals(8, list.size());
-        
+        assertEquals("[1, 6, 2]", list.get(0));
+        assertEquals("[1, 6, 3]", list.get(1));
+        assertEquals("[1, 7, 2]", list.get(2));
+        assertEquals("[1, 7, 3]", list.get(3));
+        assertEquals("[2, 6, 2]", list.get(4));
+        assertEquals("[2, 6, 3]", list.get(5));
+        assertEquals("[2, 7, 2]", list.get(6));
+        assertEquals("[2, 7, 3]", list.get(7));
     }
 }
