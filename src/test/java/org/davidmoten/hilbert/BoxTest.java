@@ -63,6 +63,7 @@ public class BoxTest {
         Box box = new Box(new long[] { 1, 1 }, new long[] { 3, 4 });
         List<long[]> list = new ArrayList<>();
         box.visitPerimeter(cell -> list.add(Arrays.copyOf(cell, cell.length)));
+        list.stream().forEach(x -> System.out.println(Arrays.toString(x)));
         assertEquals(8, list.size());
         assertContains(list, 1L, 1L);
         assertContains(list, 1L, 2L);

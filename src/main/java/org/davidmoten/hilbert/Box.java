@@ -138,16 +138,42 @@ final class Box {
     public void visitPerimeter(Consumer<? super long[]> visitor) {
         long[] mins = mins(a, b);
         long[] maxes = maxes(a, b);
-        for (int i = 0; i < dimensions(); i++) {
+        visitor.accept(mins);
+        for (int specialIndex = dimensions() - 1; specialIndex >0; specialIndex--) {
             long[] x = Arrays.copyOf(mins, mins.length);
-            while (true) {
-                visitor.accept(x);
-                if (equals(x, maxes)) {
-                    break;
-                } else if (!addOne(x, mins, maxes, i)) {
+            visitPerimeter(mins, maxes, x, specialIndex, visitor);
+            if (mins[specialIndex] != maxes[specialIndex]) {
+                long[] y = Arrays.copyOf(mins, mins.length);
+                y[specialIndex] = maxes[specialIndex];
+                visitPerimeter(mins, maxes, y, specialIndex, visitor);
+            } else {
+                break;
+            }
+        }
+    }
+
+    private static void visitPerimeter(long[] mins, long[] maxes, long[] x, int specialIndex,
+            Consumer<? super long[]> visitor) {
+        // freely increment indexes left of specialIndex
+        // until incrementing first index beyond maximum
+        long[] y = Arrays.copyOf(x, x.length);
+        while (true) {
+            //try to increment
+            for (int i = specialIndex; i >= 0; i--) {
+                if (y[i] == maxes[i]) {
+                    if (i == 0) {
+                        // we are at end
+                        return;
+                    } 
+                    // else continue loop to increment next index instead and set this value to min
+                    y[i] = mins[i];
+                } else {
+                    // not at max so can add one at index i and we are done with increment
+                    y[i] += 1;
                     break;
                 }
             }
+            visitor.accept(y);
         }
     }
 
