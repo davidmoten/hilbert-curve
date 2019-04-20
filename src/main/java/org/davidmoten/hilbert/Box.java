@@ -1,9 +1,6 @@
 package org.davidmoten.hilbert;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
 import java.util.function.Consumer;
 
 import com.github.davidmoten.guavamini.Preconditions;
