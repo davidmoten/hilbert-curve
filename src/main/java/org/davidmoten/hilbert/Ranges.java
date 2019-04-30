@@ -11,7 +11,7 @@ public final class Ranges {
     Ranges(List<Range> ranges) {
         this.ranges = ranges;
     }
-    
+
     public static Ranges create() {
         return new Ranges(new ArrayList<>());
     }
@@ -19,7 +19,7 @@ public final class Ranges {
     static Builder builder() {
         return new Builder(new ArrayList<>());
     }
-    
+
     static final class Builder {
 
         private List<Range> ranges;
@@ -60,7 +60,7 @@ public final class Ranges {
                 }
             }
         }
-        
+
         Ranges build() {
             return new Ranges(ranges);
         }
@@ -69,14 +69,18 @@ public final class Ranges {
     public List<Range> get() {
         return ranges;
     }
-    
+
     public Ranges add(long low, long high) {
         Builder b = new Ranges.Builder(ranges);
-        //TODO this is inefficient (but only used in unit tests)
-        for (long i = low; i <=high; i++) {
+        // TODO this is inefficient (but only used in unit tests)
+        for (long i = low; i <= high; i++) {
             b.add(i);
         }
         return b.build();
+    }
+
+    public int size() {
+        return ranges.size();
     }
 
 }

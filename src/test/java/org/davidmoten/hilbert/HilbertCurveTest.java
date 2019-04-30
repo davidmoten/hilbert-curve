@@ -305,6 +305,13 @@ public class HilbertCurveTest {
     }
 
     @Test
+    public void testSmallQueryPerimeterAlgorithm() {
+        Ranges r = small.query2(point(0, 0), point(1, 1));
+        assertEquals(1, r.size());
+        assertEquals(Range.create(0, 3), r.get().get(0));
+    }
+    
+    @Test
     public void testSmallQuery() {
         List<Range> r = small.query(point(0, 0), point(1, 1), 0);
         assertEquals(1, r.size());
@@ -365,9 +372,8 @@ public class HilbertCurveTest {
 
     @Test
     public void testVisitBox() {
-        SmallHilbertCurve h = HilbertCurve.small().bits(16).dimensions(3);
         List<String> list = new ArrayList<>();
-        h.visitBox(Box.a(1, 2, 3).b(2, 3, 4), x -> list.add(x[0] + "," + x[1] + "," + x[2]));
+        SmallHilbertCurve.visitBox(Box.a(1, 2, 3).b(2, 3, 4), x -> list.add(x[0] + "," + x[1] + "," + x[2]));
         assertEquals(Lists.newArrayList("1,2,3", "1,2,4", "1,3,3", "1,3,4", "2,2,3", "2,2,4",
                 "2,3,3", "2,3,4"), list);
     }

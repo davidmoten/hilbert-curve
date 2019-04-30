@@ -1,6 +1,8 @@
 package org.davidmoten.hilbert;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.Consumer;
 
 import com.github.davidmoten.guavamini.Preconditions;
@@ -150,6 +152,12 @@ final class Box {
         }
     }
 
+    public List<long[]> perimeter() {
+        List<long[]> list = new ArrayList<>();
+        visitPerimeter(x -> list.add(x));
+        return list;
+    }
+
     @VisibleForTesting
     static void visitPerimeter(long[] mins, long[] maxes, long[] x, int specialIndex,
             Consumer<? super long[]> visitor) {
@@ -265,7 +273,7 @@ final class Box {
 
     public boolean contains(long[] point) {
         Preconditions.checkArgument(a.length == point.length);
-        for (int i = 0;i < a.length; i++) {
+        for (int i = 0; i < a.length; i++) {
             if (point[i] < Math.min(a[i], b[i]) || point[i] > Math.max(a[i], b[i])) {
                 return false;
             }
