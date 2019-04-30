@@ -262,4 +262,14 @@ final class Box {
         }
         return c;
     }
+
+    public boolean contains(long[] point) {
+        Preconditions.checkArgument(a.length == point.length);
+        for (int i = 0;i < a.length; i++) {
+            if (point[i] < Math.min(a[i], b[i]) || point[i] > Math.max(a[i], b[i])) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

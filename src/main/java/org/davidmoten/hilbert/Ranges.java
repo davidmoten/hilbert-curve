@@ -60,7 +60,7 @@ public final class Ranges {
                 }
             }
         }
-
+        
         Ranges build() {
             return new Ranges(ranges);
         }

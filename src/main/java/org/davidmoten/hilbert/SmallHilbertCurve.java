@@ -1,7 +1,11 @@
 package org.davidmoten.hilbert;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -34,14 +38,12 @@ public final class SmallHilbertCurve {
     /**
      * Converts a point to its Hilbert curve index.
      * 
-     * @param point
-     *            an array of {@code long}. Each coordinate can be between 0 and
-     *            2<sup>bits</sup>-1.
+     * @param point an array of {@code long}. Each coordinate can be between 0 and
+     *              2<sup>bits</sup>-1.
      * @return index {@code long} in the range 0 to 2<sup>bits * dimensions</sup> -
      *         1
-     * @throws IllegalArgumentException
-     *             if length of point array is not equal to the number of
-     *             dimensions.
+     * @throws IllegalArgumentException if length of point array is not equal to the
+     *                                  number of dimensions.
      */
     public long index(long... point) {
         Preconditions.checkArgument(point.length == dimensions);
@@ -52,12 +54,10 @@ public final class SmallHilbertCurve {
      * Converts a {@code long} index (distance along the Hilbert Curve from 0) to a
      * point of dimensions defined in the constructor of {@code this}.
      * 
-     * @param index
-     *            index along the Hilbert Curve from 0. Maximum value 2 <sup>bits *
-     *            dimensions</sup>-1.
+     * @param index index along the Hilbert Curve from 0. Maximum value 2 <sup>bits
+     *              * dimensions</sup>-1.
      * @return array of longs being the point
-     * @throws IllegalArgumentException
-     *             if index is negative
+     * @throws IllegalArgumentException if index is negative
      */
     public long[] point(long index) {
         return HilbertCurve.transposedIndexToPoint(bits, transposeLong(index));
@@ -110,15 +110,13 @@ public final class SmallHilbertCurve {
     public List<Range> query(long[] a, long[] b, int splitDepth) {
         return query(a, b, splitDepth, BoxMinMaxIndexEstimationStrategy.SCAN_ENTIRE_PERIMETER);
     }
-    
+
     /**
      * Returns a list of index ranges by calculating the index for every point in
      * the region bounded by {@code a} and {@code b}.
      * 
-     * @param a
-     *            one vertex of the region
-     * @param b
-     *            the opposing vertex to a
+     * @param a one vertex of the region
+     * @param b the opposing vertex to a
      */
     public Ranges query(long[] a, long[] b) {
         Ranges.Builder builder = Ranges.builder();
@@ -126,7 +124,47 @@ public final class SmallHilbertCurve {
         box.visitCells(cell -> builder.add(index(cell)));
         return builder.build();
     }
-    
+
+    public Ranges query2(long[] a, long[] b) {
+        Box box = new Box(a, b);
+        SortedSet<Long> set = new TreeSet<>();
+        box.visitPerimeter(cell -> {
+            long n = index(cell);
+            set.add(n);
+        });
+        List<Long> list = new ArrayList<>(set);
+        int i = 0;
+        List<Range> ranges = new ArrayList<>();
+        while (true) {
+            if (i == list.size()) {
+                break;
+            }
+            long rangeStart = list.get(i);
+            while (i < list.size() - 1 && list.get(i + 1) == list.get(i) + 1) {
+                i++;
+            }
+            if (i == list.size()) {
+                ranges.add(Range.create(rangeStart, list.get(i)));
+                break;
+            }
+            long[] point = point(list.get(i) + 1);
+            final Range range;
+            if (box.contains(point)) {
+                // is not on the perimeter (would have been caught in previous while loop)
+                // so is internal to the box which means the next value in the sorted hilbert
+                // curve indexes for the perimiter must be where it exits
+                range = Range.create(rangeStart, list.get(i + 1));
+                i += 2;
+            } else {
+                range = Range.create(rangeStart, list.get(i));
+                i++;
+            }
+            ranges.add(range);
+
+        }
+        return new Ranges(ranges);
+    }
+
     public List<Range> query(long[] a, long[] b, int splitDepth,
             BoxMinMaxIndexEstimationStrategy strategy) {
         // we split into 2^splitDepth parts (boxes)
@@ -182,7 +220,8 @@ public final class SmallHilbertCurve {
         }
     }
 
-    private static void visitPerimeter(Box box, int dimension, Box b, long val, Consumer<long[]> visitor) {
+    private static void visitPerimeter(Box box, int dimension, Box b, long val,
+            Consumer<long[]> visitor) {
         visitBox(b, p -> {
             long[] x = new long[box.dimensions()];
             for (int i = 0; i < x.length; i++) {
