@@ -149,7 +149,7 @@ final class Box {
             }
         }
     }
-    
+
     @VisibleForTesting
     static void visitPerimeter(long[] mins, long[] maxes, long[] x, int specialIndex,
             Consumer<? super long[]> visitor) {
@@ -162,27 +162,21 @@ final class Box {
         }
         visitor.accept(y);
         while (true) {
-            System.out.println("y=" + Arrays.toString(y));
             // try to increment once
             for (int i = y.length - 1; i >= 0; i--) {
-                // start at right of number to increment (y[y.length - 1])
-                // for i > specialIndex increment with values z: min[i] < z < max[i]
-                // once z is max - 1 then rotate through to min + 1 and continue
-                // loop (visit next index to the left (i - 1))
-                // if i == specialIndex leave unchanged and continue loop
-                // if i < specialIndex then
-                // -- if y[i] == max[i] set y[i] = min[i] and continue loop
-                // -- else set y[i]=y[i]+1 and break
-                //
                 if (i > specialIndex) {
+                    // to the right of specialIndex we only allow values between min + 1 and max -1
+                    // inclusive
                     if (y[i] == maxes[i] - 1) {
                         y[i] = mins[i] + 1;
                         // continue looping to increment at the next index to the left
                     } else {
+                        // increment happened without carryover so we break and report y
                         y[i] += 1;
                         break;
                     }
                 } else if (i < specialIndex) {
+                    // to the left of specialIndex we allow all values
                     if (y[i] == maxes[i]) {
                         if (i == 0) {
                             return;
