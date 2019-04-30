@@ -112,24 +112,12 @@ public final class SmallHilbertCurve {
     }
 
     /**
-     * Returns a list of index ranges by calculating the index for every point in
-     * the region bounded by {@code a} and {@code b}.
+     * Returns a list of index ranges exactly covering the region bounded by {@code a} and {@code b}.
      * 
      * @param a one vertex of the region
      * @param b the opposing vertex to a
      */
     public Ranges query(long[] a, long[] b) {
-        if (false) {
-            Ranges.Builder builder = Ranges.builder();
-            Box box = new Box(a, b);
-            box.visitCells(cell -> builder.add(index(cell)));
-            return builder.build();
-        } else {
-            return queryUsingPerimeterAlgorithm(a, b);
-        }
-    }
-
-    private Ranges queryUsingPerimeterAlgorithm(long[] a, long[] b) {
         Box box = new Box(a, b);
         SortedSet<Long> set = new TreeSet<>();
         box.visitPerimeter(cell -> {
