@@ -135,8 +135,7 @@ final class Box {
     public void visitPerimeter(Consumer<? super long[]> visitor) {
         long[] mins = mins(a, b);
         long[] maxes = maxes(a, b);
-        visitor.accept(mins);
-        for (int specialIndex = dimensions() - 1; specialIndex > 0; specialIndex--) {
+        for (int specialIndex = dimensions() - 1; specialIndex >= 0; specialIndex--) {
             long[] x = Arrays.copyOf(mins, mins.length);
             // visit for the minimum at specialIndex
             visitPerimeter(mins, maxes, x, specialIndex, visitor);
@@ -150,12 +149,18 @@ final class Box {
             }
         }
     }
-
-    private static void visitPerimeter(long[] mins, long[] maxes, long[] x, int specialIndex,
+    
+    @VisibleForTesting
+    static void visitPerimeter(long[] mins, long[] maxes, long[] x, int specialIndex,
             Consumer<? super long[]> visitor) {
-        // freely increment indexes left of specialIndex
-        // until incrementing first index beyond maximum
         long[] y = Arrays.copyOf(x, x.length);
+        for (int i = specialIndex + 1; i < y.length; i++) {
+            if (mins[i] >= maxes[i] - 1) {
+                return;
+            }
+            y[i] = mins[i] + 1;
+        }
+        visitor.accept(y);
         while (true) {
             System.out.println("y=" + Arrays.toString(y));
             // try to increment once
@@ -170,10 +175,7 @@ final class Box {
                 // -- else set y[i]=y[i]+1 and break
                 //
                 if (i > specialIndex) {
-                    if (mins[i] >= maxes[i] - 1) {
-                        // no values between min and max
-                        return;
-                    } else if (y[i] == maxes[i] - 1) {
+                    if (y[i] == maxes[i] - 1) {
                         y[i] = mins[i] + 1;
                         // continue looping to increment at the next index to the left
                     } else {

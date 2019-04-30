@@ -43,6 +43,31 @@ public class BoxTest {
     }
 
     @Test
+    public void testVisitPerimeter() {
+        long[] mins = new long[] { 1, 1, 1 };
+        long[] maxes = new long[] { 3, 3, 3 };
+        long[] x = new long[] { 1, 1, 1 };
+
+        {
+            List<String> list = new ArrayList<>();
+            Box.visitPerimeter(mins, maxes, x, 2, y -> list.add(Arrays.toString(y)));
+            assertEquals("[[1, 1, 1], [1, 2, 1], [1, 3, 1], [2, 1, 1], [2, 2, 1], [2, 3, 1], [3, 1, 1], [3, 2, 1], [3, 3, 1]]", list.toString());
+        }
+        {
+            List<String> list = new ArrayList<>();
+            Box.visitPerimeter(mins, maxes, x, 1, y -> list.add(Arrays.toString(y)));
+            assertEquals("[[1, 1, 2], [2, 1, 2], [3, 1, 2]]", list.toString());
+        }
+        {
+            List<String> list = new ArrayList<>();
+            Box.visitPerimeter(mins, maxes, x, 0, y -> list.add(Arrays.toString(y)));
+            assertEquals("[[1, 2, 2]]", list.toString());
+        }
+        
+        
+    }
+
+    @Test
     public void testCellVisitor() {
         List<String> list = new ArrayList<>();
         Box box = new Box(new long[] { 1, 6, 3 }, new long[] { 2, 7, 2 });
@@ -64,17 +89,19 @@ public class BoxTest {
         List<long[]> list = new ArrayList<>();
         box.visitPerimeter(cell -> list.add(Arrays.copyOf(cell, cell.length)));
         list.stream().forEach(x -> System.out.println(Arrays.toString(x)));
-        assertEquals(8, list.size());
+        assertEquals(10, list.size());
         assertContains(list, 1L, 1L);
+        assertContains(list, 2L, 1L);
+        assertContains(list, 3L, 1L);
+        assertContains(list, 1L, 4L);
+        assertContains(list, 2L, 4L);
+        assertContains(list, 3L, 4L);
         assertContains(list, 1L, 2L);
         assertContains(list, 1L, 3L);
-        assertContains(list, 1L, 4L);
-        assertContains(list, 3L, 1L);
         assertContains(list, 3L, 2L);
         assertContains(list, 3L, 3L);
-        assertContains(list, 3L, 4L);
     }
-    
+
     @Test
     public void testPerimeterVisitor2DPointOnly() {
         Box box = new Box(new long[] { 1, 1 }, new long[] { 1, 1 });
@@ -83,7 +110,7 @@ public class BoxTest {
         assertEquals(1, list.size());
         assertContains(list, 1L, 1L);
     }
-    
+
     @Test
     public void testPerimeterVisitor2DSmall() {
         Box box = new Box(new long[] { 1, 1 }, new long[] { 2, 1 });
@@ -93,7 +120,7 @@ public class BoxTest {
         assertContains(list, 1L, 1L);
         assertContains(list, 2L, 1L);
     }
-    
+
     @Test
     public void testPerimeterVisitor2DSmall2() {
         Box box = new Box(new long[] { 1, 2 }, new long[] { 1, 1 });
@@ -110,17 +137,22 @@ public class BoxTest {
         List<long[]> list = new ArrayList<>();
         box.visitPerimeter(cell -> list.add(Arrays.copyOf(cell, cell.length)));
         list.stream().forEach(x -> System.out.println(Arrays.toString(x)));
-        assertEquals(8, list.size());
-        assertContains(list, 1L, 1L);
-        assertContains(list, 1L, 2L);
-        assertContains(list, 1L, 3L);
-        assertContains(list, 1L, 4L);
-        assertContains(list, 3L, 1L);
-        assertContains(list, 3L, 2L);
-        assertContains(list, 3L, 3L);
-        assertContains(list, 3L, 4L);
+        assertEquals(12, list.size());
+        System.out.println(list);
+        assertContains(list, 1L, 1L, 1L);
+        assertContains(list, 1L, 2L, 1L);
+        assertContains(list, 1L, 3L, 1L);
+        assertContains(list, 1L, 4L, 1L);
+        assertContains(list, 2L, 1L, 1L);
+        assertContains(list, 2L, 2L, 1L);
+        assertContains(list, 2L, 3L, 1L);
+        assertContains(list, 2L, 4L, 1L);
+        assertContains(list, 3L, 1L, 1L);
+        assertContains(list, 3L, 2L, 1L);
+        assertContains(list, 3L, 3L, 1L);
+        assertContains(list, 3L, 4L, 1L);
     }
-    
+
     private static void assertContains(List<long[]> list, long... v) {
         for (long[] x : list) {
             if (Arrays.equals(v, x)) {
