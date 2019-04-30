@@ -337,52 +337,6 @@ public class HilbertCurveTest {
     }
 
     @Test
-    public void testReduceWhenNoOverlapStaysSame() {
-        List<Range> list = Lists.newArrayList(Range.create(0, 5), Range.create(7, 10));
-        assertEquals(list, SmallHilbertCurve.reduce(list));
-    }
-
-    @Test
-    public void testReduceWhenFirstHasHighGreaterThanSecond() {
-        List<Range> list = Lists.newArrayList(Range.create(0, 10), Range.create(3, 5));
-        assertEquals(Lists.newArrayList(Range.create(0, 10)), SmallHilbertCurve.reduce(list));
-    }
-
-    @Test
-    public void testReduceWhenContiguousJoins() {
-        List<Range> list = Lists.newArrayList(Range.create(0, 5), Range.create(6, 10));
-        assertEquals(Lists.newArrayList(Range.create(0, 10)), SmallHilbertCurve.reduce(list));
-    }
-
-    @Test
-    public void testReduceWhenOverlapJoins() {
-        List<Range> list = Lists.newArrayList(Range.create(0, 5), Range.create(4, 10));
-        assertEquals(Lists.newArrayList(Range.create(0, 10)), SmallHilbertCurve.reduce(list));
-    }
-
-    @Test
-    public void testReduceWhenOneOverlapThenGap() {
-        List<Range> list = Lists.newArrayList(Range.create(0, 5), Range.create(4, 10),
-                Range.create(12, 13));
-        assertEquals(Lists.newArrayList(Range.create(0, 10), Range.create(12, 13)),
-                SmallHilbertCurve.reduce(list));
-    }
-
-    @Test
-    public void testReduceWhenGapThenOverlap() {
-        List<Range> list = Lists.newArrayList(Range.create(0, 5), Range.create(7, 10),
-                Range.create(11, 13));
-        assertEquals(Lists.newArrayList(Range.create(0, 5), Range.create(7, 13)),
-                SmallHilbertCurve.reduce(list));
-    }
-
-    @Test
-    public void testReduceEmpty() {
-        List<Range> list = Collections.emptyList();
-        assertEquals(list, SmallHilbertCurve.reduce(list));
-    }
-
-    @Test
     public void testPointSaveAllocationsSmall() {
         long[] x = new long[2];
         SmallHilbertCurve c = HilbertCurve.small().bits(5).dimensions(2);

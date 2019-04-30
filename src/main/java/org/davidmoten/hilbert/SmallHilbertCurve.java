@@ -152,29 +152,6 @@ public final class SmallHilbertCurve {
         return new Ranges(ranges);
     }
 
-    @VisibleForTesting
-    static List<Range> reduce(List<Range> ranges) {
-        List<Range> list = Lists.newArrayList();
-        Range previous = null;
-        for (Range r : ranges) {
-            if (previous != null) {
-                if (previous.high() >= r.low() - 1) {
-                    // combine with previous because overlapping or contiguous
-                    previous = new Range(previous.low(), Math.max(previous.high(), r.high()));
-                } else {
-                    list.add(previous);
-                    previous = r;
-                }
-            } else {
-                previous = r;
-            }
-        }
-        if (previous != null) {
-            list.add(previous);
-        }
-        return list;
-    }
-
     public static final class Builder {
         private int bits;
 
