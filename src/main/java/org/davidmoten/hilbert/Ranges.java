@@ -3,6 +3,8 @@ package org.davidmoten.hilbert;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.davidmoten.guavamini.Preconditions;
+
 //immutable
 public final class Ranges {
 
@@ -78,8 +80,20 @@ public final class Ranges {
         }
         return b.build();
     }
-    
-    public Ranges joinClosestRangePair() {
+
+    public Ranges join(int n) {
+        Preconditions.checkArgument(n > 0);
+
+        // TODO replace this with an efficient algorithm like a Max Heap which is kept
+        // at size k so runtime complexity is O(n + klogk)
+        Ranges r = this;
+        for (int i = 0; i < n; i++) {
+            r = r.joinOnePair();
+        }
+        return r;
+    }
+
+    private Ranges joinOnePair() {
         // find the smallest gap and join those ranges
         int smallestGapIndex = -1;
         {
