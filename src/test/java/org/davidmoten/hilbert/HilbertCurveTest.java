@@ -9,14 +9,12 @@ import java.io.PrintStream;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.davidmoten.hilbert.SmallHilbertCurve.BoxMinMaxIndexEstimationStrategy;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -312,77 +310,11 @@ public class HilbertCurveTest {
     }
     
     @Test
-    public void testSmallQuery() {
-        List<Range> r = small.query(point(0, 0), point(1, 1), 0);
-        assertEquals(1, r.size());
-        assertEquals(Range.create(0, 3), r.get(0));
-    }
-
-    @Test
-    public void testSmallQueryNoSplit() {
-        List<Range> r = small.query(point(0, 3), point(4, 2), 0);
-        assertEquals(1, r.size());
-        assertEquals(Range.create(8, 54), r.get(0));
-    }
-
-    @Test
-    public void testSmallQuerySplitDepth3() {
-        List<Range> r = small.query(point(0, 3), point(4, 2), 3);
-        System.out.println(r);
-        assertEquals(Arrays.asList(Range.create(8, 15), Range.create(53, 54)), r);
-    }
-
-    @Test
-    public void testSmallQuery4() {
-        List<Range> ranges = small.query(point(0, 2), point(6, 8), 0);
-        assertEquals(Arrays.asList(Range.create(8, 234)), ranges);
-    }
-
-    @Test
-    public void testSmallQueryLargerBoxDepthZero() {
-        List<Range> ranges = small.query(point(0, 2), point(6, 8), 0);
-        assertEquals(Arrays.asList(Range.create(8, 234)), ranges);
-    }
-
-    @Test
-    public void testSmallQueryLargerBoxDepthMany() {
-        List<Range> ranges = small.query(point(0, 2), point(6, 8), 4);
-        System.out.println(ranges);
-        assertEquals(Arrays.asList(Range.create(8, 41), Range.create(45, 46), Range.create(50, 55),
-                Range.create(214, 214), Range.create(217, 218), Range.create(229, 230),
-                Range.create(233, 234)), ranges);
-    }
-
-    @Test
     public void testIssue1() {
         int bits = 16;
         int dimensions = 2;
         long index = Math.round(Math.pow(2, bits * dimensions - 1) + 1);
         assertTrue(checkRoundTripSmall(bits, dimensions, index));
-    }
-
-    @Test
-    public void testVertexVisitor() {
-        SmallHilbertCurve h = HilbertCurve.small().bits(16).dimensions(3);
-        List<String> list = new ArrayList<>();
-        h.visitVertices(Box.a(1, 2, 3).b(4, 5, 6), x -> list.add(x[0] + "," + x[1] + "," + x[2]));
-        assertEquals(Lists.newArrayList("1,2,3", "4,2,3", "1,5,3", "4,5,3", "1,2,6", "4,2,6",
-                "1,5,6", "4,5,6"), list);
-    }
-
-    @Test
-    public void testVisitBox() {
-        List<String> list = new ArrayList<>();
-        SmallHilbertCurve.visitBox(Box.a(1, 2, 3).b(2, 3, 4), x -> list.add(x[0] + "," + x[1] + "," + x[2]));
-        assertEquals(Lists.newArrayList("1,2,3", "1,2,4", "1,3,3", "1,3,4", "2,2,3", "2,2,4",
-                "2,3,3", "2,3,4"), list);
-    }
-
-    @Test
-    public void testVisitPerimeter() {
-        List<String> list = new ArrayList<>();
-        SmallHilbertCurve.visitPerimeter(Box.a(0, 0).b(2, 2), x -> list.add(x[0] + "," + x[1]));
-        list.stream().forEach(System.out::println);
     }
 
     @Test
@@ -396,71 +328,12 @@ public class HilbertCurveTest {
         float lat2 = -33.882896f;
         float lon2 = 151.281330f;
         long t2 = t1 + TimeUnit.HOURS.toMillis(1);
-        int splits = 1;
         int bits = 10;
         int dimensions = 3;
         SmallHilbertCurve h = HilbertCurve.small().bits(bits).dimensions(dimensions);
         long maxOrdinates = 1L << bits;
         h.query(scalePoint(lat1, lon1, t1, minTime, maxTime, maxOrdinates),
-                scalePoint(lat2, lon2, t2, minTime, maxTime, maxOrdinates), splits);
-    }
-
-    @Test
-    public void testSplitIntoBoxesDepth1() {
-        long[] a = new long[] { 1, 1 };
-        long[] b = new long[] { 3, 2 };
-        List<Box> x = SmallHilbertCurve.split(a, b, 1);
-        System.out.println(x);
-        assertEquals(Lists.newArrayList(Box.a(1, 1).b(1, 1), Box.a(1, 2).b(1, 2),
-                Box.a(2, 1).b(3, 1), Box.a(2, 2).b(3, 2)), x);
-    }
-
-    @Test
-    public void testSplitIntoBoxesDepth2() {
-        long[] a = new long[] { 0, 0 };
-        long[] b = new long[] { 15, 15 };
-        List<Box> x = SmallHilbertCurve.split(a, b, 2);
-        x.stream().forEach(System.out::println);
-
-        assertEquals(Lists.newArrayList(Box.a(0, 0).b(3, 3), //
-                Box.a(0, 4).b(3, 7), //
-                Box.a(4, 0).b(7, 3), //
-                Box.a(4, 4).b(7, 7), //
-                Box.a(0, 8).b(3, 11), //
-                Box.a(0, 12).b(3, 15), //
-                Box.a(4, 8).b(7, 11), //
-                Box.a(4, 12).b(7, 15), //
-                Box.a(8, 0).b(11, 3), //
-                Box.a(8, 4).b(11, 7), //
-                Box.a(12, 0).b(15, 3), //
-                Box.a(12, 4).b(15, 7), //
-                Box.a(8, 8).b(11, 11), //
-                Box.a(8, 12).b(11, 15), //
-                Box.a(12, 8).b(15, 11), //
-                Box.a(12, 12).b(15, 15)) //
-                , x);
-    }
-
-    @Test
-    public void testSplitWholeDomain() {
-        int bits = 6;
-        SmallHilbertCurve h = HilbertCurve.small().bits(bits).dimensions(2);
-        long maxIndex = (1L << bits) - 1;
-        for (int splits = 1; splits <= 5; splits++) {
-            List<Range> ranges = h.query(point(0, 0), point(maxIndex, maxIndex), splits);
-            for (long i = 0; i < 1 << bits; i++) {
-                final long x = i;
-                assertTrue(ranges.stream().filter(r -> r.contains(x)).findFirst().isPresent());
-            }
-        }
-    }
-
-    @Test
-    public void testToRange() {
-        Box b = Box.a(0, 0).b(15, 15);
-        SmallHilbertCurve h = HilbertCurve.small().bits(4).dimensions(2);
-        Range r = h.toRange(b, BoxMinMaxIndexEstimationStrategy.SCAN_ENTIRE_PERIMETER);
-        assertEquals(Range.create(0, 255), r);
+                scalePoint(lat2, lon2, t2, minTime, maxTime, maxOrdinates));
     }
 
     @Test
@@ -559,15 +432,6 @@ public class HilbertCurveTest {
         c.point(100L, x);
         assertEquals(14L, x[0]);
         assertEquals(4L, x[1]);
-    }
-
-    @Test
-    public void testForReadMe() {
-        SmallHilbertCurve c = HilbertCurve.small().bits(5).dimensions(2);
-        long[] point1 = new long[] { 3, 3 };
-        long[] point2 = new long[] { 8, 10 };
-        List<Range> ranges = c.query(point1, point2, 4);
-        ranges.stream().forEach(System.out::println);
     }
 
     private static long[] scalePoint(float lat, float lon, long time, long minTime, long maxTime,
