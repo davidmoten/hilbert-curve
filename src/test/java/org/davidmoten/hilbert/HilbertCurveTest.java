@@ -306,7 +306,7 @@ public class HilbertCurveTest {
 
     @Test
     public void testSmallQueryPerimeterAlgorithm() {
-        Ranges r = small.query2(point(0, 0), point(1, 1));
+        Ranges r = small.query(point(0, 0), point(1, 1));
         assertEquals(1, r.size());
         assertEquals(Range.create(0, 3), r.get().get(0));
     }
@@ -379,10 +379,9 @@ public class HilbertCurveTest {
     }
 
     @Test
-    public void testVisitPerimiter() {
-        SmallHilbertCurve h = HilbertCurve.small().bits(16).dimensions(2);
+    public void testVisitPerimeter() {
         List<String> list = new ArrayList<>();
-        h.visitPerimeter(Box.a(0, 0).b(2, 2), x -> list.add(x[0] + "," + x[1]));
+        SmallHilbertCurve.visitPerimeter(Box.a(0, 0).b(2, 2), x -> list.add(x[0] + "," + x[1]));
         list.stream().forEach(System.out::println);
     }
 

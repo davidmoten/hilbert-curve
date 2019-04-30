@@ -119,13 +119,17 @@ public final class SmallHilbertCurve {
      * @param b the opposing vertex to a
      */
     public Ranges query(long[] a, long[] b) {
-        Ranges.Builder builder = Ranges.builder();
-        Box box = new Box(a, b);
-        box.visitCells(cell -> builder.add(index(cell)));
-        return builder.build();
+        if (false) {
+            Ranges.Builder builder = Ranges.builder();
+            Box box = new Box(a, b);
+            box.visitCells(cell -> builder.add(index(cell)));
+            return builder.build();
+        } else {
+            return queryUsingPerimeterAlgorithm(a, b);
+        }
     }
 
-    public Ranges query2(long[] a, long[] b) {
+    private Ranges queryUsingPerimeterAlgorithm(long[] a, long[] b) {
         Box box = new Box(a, b);
         SortedSet<Long> set = new TreeSet<>();
         box.visitPerimeter(cell -> {
@@ -135,32 +139,32 @@ public final class SmallHilbertCurve {
         List<Long> list = new ArrayList<>(set);
         int i = 0;
         List<Range> ranges = new ArrayList<>();
+        long rangeStart = -1;
         while (true) {
             if (i == list.size()) {
                 break;
             }
-            long rangeStart = list.get(i);
+            if (rangeStart == -1) {
+                rangeStart = list.get(i);
+            }
             while (i < list.size() - 1 && list.get(i + 1) == list.get(i) + 1) {
                 i++;
             }
-            if (i == list.size()) {
+            if (i == list.size() - 1) {
                 ranges.add(Range.create(rangeStart, list.get(i)));
                 break;
             }
             long[] point = point(list.get(i) + 1);
-            final Range range;
             if (box.contains(point)) {
                 // is not on the perimeter (would have been caught in previous while loop)
                 // so is internal to the box which means the next value in the sorted hilbert
                 // curve indexes for the perimiter must be where it exits
-                range = Range.create(rangeStart, list.get(i + 1));
-                i += 2;
+                i += 1;
             } else {
-                range = Range.create(rangeStart, list.get(i));
+                ranges.add(Range.create(rangeStart, list.get(i)));
+                rangeStart = -1;
                 i++;
             }
-            ranges.add(range);
-
         }
         return new Ranges(ranges);
     }
