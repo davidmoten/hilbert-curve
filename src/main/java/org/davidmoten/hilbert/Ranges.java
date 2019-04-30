@@ -78,19 +78,19 @@ public final class Ranges {
         }
         return b.build();
     }
-
-    public Ranges shrink() {
+    
+    public Ranges joinClosestRangePair() {
         // find the smallest gap and join those ranges
         int smallestGapIndex = -1;
         {
-        long smallestGap = Long.MAX_VALUE;
-        for (int i = 1; i < ranges.size(); i++) {
-            long gap = ranges.get(i).low() - ranges.get(i - 1).high();
-            if (gap < smallestGap) {
-                smallestGap = gap;
-                smallestGapIndex = i - 1;
+            long smallestGap = Long.MAX_VALUE;
+            for (int i = 1; i < ranges.size(); i++) {
+                long gap = ranges.get(i).low() - ranges.get(i - 1).high();
+                if (gap < smallestGap) {
+                    smallestGap = gap;
+                    smallestGapIndex = i - 1;
+                }
             }
-        }
         }
         if (smallestGapIndex != -1) {
             List<Range> list = new ArrayList<>(ranges.size() - 1);
