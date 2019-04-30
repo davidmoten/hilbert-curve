@@ -24,6 +24,11 @@ public class BoxTest {
     }
 
     @Test
+    public void testToString() {
+        assertEquals("Box [[1, 2], [3, 4]]", new Box(new long[] { 1, 2 }, new long[] { 3, 4 }).toString());
+    }
+
+    @Test
     public void testAddOne() {
         long[] mins = new long[] { 1, 2, 3 };
         long[] maxes = new long[] { 1, 4, 4 };
@@ -51,7 +56,9 @@ public class BoxTest {
         {
             List<String> list = new ArrayList<>();
             Box.visitPerimeter(mins, maxes, x, 2, y -> list.add(Arrays.toString(y)));
-            assertEquals("[[1, 1, 1], [1, 2, 1], [1, 3, 1], [2, 1, 1], [2, 2, 1], [2, 3, 1], [3, 1, 1], [3, 2, 1], [3, 3, 1]]", list.toString());
+            assertEquals(
+                    "[[1, 1, 1], [1, 2, 1], [1, 3, 1], [2, 1, 1], [2, 2, 1], [2, 3, 1], [3, 1, 1], [3, 2, 1], [3, 3, 1]]",
+                    list.toString());
         }
         {
             List<String> list = new ArrayList<>();
@@ -63,8 +70,7 @@ public class BoxTest {
             Box.visitPerimeter(mins, maxes, x, 0, y -> list.add(Arrays.toString(y)));
             assertEquals("[[1, 2, 2]]", list.toString());
         }
-        
-        
+
     }
 
     @Test
