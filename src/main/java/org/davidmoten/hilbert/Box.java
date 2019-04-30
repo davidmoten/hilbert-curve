@@ -136,10 +136,12 @@ final class Box {
         long[] mins = mins(a, b);
         long[] maxes = maxes(a, b);
         visitor.accept(mins);
-        for (int specialIndex = dimensions() - 1; specialIndex >0; specialIndex--) {
+        for (int specialIndex = dimensions() - 1; specialIndex > 0; specialIndex--) {
             long[] x = Arrays.copyOf(mins, mins.length);
+            // visit for the minimum at specialIndex
             visitPerimeter(mins, maxes, x, specialIndex, visitor);
             if (mins[specialIndex] != maxes[specialIndex]) {
+                // visit for the maximum at specialIndex
                 long[] y = Arrays.copyOf(mins, mins.length);
                 y[specialIndex] = maxes[specialIndex];
                 visitPerimeter(mins, maxes, y, specialIndex, visitor);
@@ -155,19 +157,42 @@ final class Box {
         // until incrementing first index beyond maximum
         long[] y = Arrays.copyOf(x, x.length);
         while (true) {
-            //try to increment
-            for (int i = specialIndex; i >= 0; i--) {
-                if (y[i] == maxes[i]) {
-                    if (i == 0) {
-                        // we are at end
+            System.out.println("y=" + Arrays.toString(y));
+            // try to increment once
+            for (int i = y.length - 1; i >= 0; i--) {
+                // start at right of number to increment (y[y.length - 1])
+                // for i > specialIndex increment with values z: min[i] < z < max[i]
+                // once z is max - 1 then rotate through to min + 1 and continue
+                // loop (visit next index to the left (i - 1))
+                // if i == specialIndex leave unchanged and continue loop
+                // if i < specialIndex then
+                // -- if y[i] == max[i] set y[i] = min[i] and continue loop
+                // -- else set y[i]=y[i]+1 and break
+                //
+                if (i > specialIndex) {
+                    if (mins[i] >= maxes[i] - 1) {
+                        // no values between min and max
                         return;
-                    } 
-                    // else continue loop to increment next index instead and set this value to min
-                    y[i] = mins[i];
-                } else {
-                    // not at max so can add one at index i and we are done with increment
-                    y[i] += 1;
-                    break;
+                    } else if (y[i] == maxes[i] - 1) {
+                        y[i] = mins[i] + 1;
+                        // continue looping to increment at the next index to the left
+                    } else {
+                        y[i] += 1;
+                        break;
+                    }
+                } else if (i < specialIndex) {
+                    if (y[i] == maxes[i]) {
+                        if (i == 0) {
+                            return;
+                        } else {
+                            y[i] = mins[i];
+                        }
+                    } else {
+                        y[i] += 1;
+                        break;
+                    }
+                } else if (i == specialIndex && i == 0) {
+                    return;
                 }
             }
             visitor.accept(y);
