@@ -174,6 +174,8 @@ continue as above with the rest of the remaining perimeter values in the sorted 
 ```
 
 #### Query examples
+Note that for the moment range queries have been implemented for the `SmallHilbertCurve` only. Raise an issue if you need them for the `HilbertCurve` object as well.
+
 A lot of small ranges may be inefficient due to lookup overheads and constraints so you can specify the maximum number of ranges returned (ranges are joined that have minimal gap between them). 
 
 ```java
