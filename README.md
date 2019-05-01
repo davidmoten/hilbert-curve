@@ -172,34 +172,31 @@ else // the next point on the curve is outside the box
 continue as above with the rest of the remaining perimeter values in the sorted list
 ```
 
-#### OBSOLETE
-*This section needs updating after the api changes and application of the perimeter algorithm for finding ranges.*
-
-A lot of small ranges may be inefficient due to lookup overheads and constraints so a selectable refinement is chosen for the query called `splitDepth`.
+A lot of small ranges may be inefficient due to lookup overheads and constraints so you can specify the maximum number of ranges returned (ranges are joined that have minimal gap between them). 
 
 ```java
 SmallHilbertCurve c = HilbertCurve.small().bits(5).dimensions(2);
 long[] point1 = new long[] {3, 3};
 long[] point2 = new long[] {8, 10};
-int splitDepth = 0;
-List<Range> ranges = c.query(point1, point2, splitDepth);
+// return just one range
+Ranges ranges = c.query(point1, point2, 1);
 ranges.stream().forEach(System.out::println);
 ```
 Result:
 ```
 Range [low=10, high=229]
 ```
-We can improve the ranges by increasing `splitDepth`.
+We can improve the ranges by increasing `maxRanges`.
 
 
-`splitDepth` is 1
+`maxRanges` is 3
 ```java
-Range [low=10, high=53]
-Range [low=69, high=132]
+Range [low=10, high=69]
+Range [low=122, high=132]
 Range [low=210, high=229]
 ```
 
-`splitDepth` is 2
+`maxRanges` is 6
 ```java
 Range [low=10, high=10]
 Range [low=26, high=53]
@@ -209,18 +206,7 @@ Range [low=210, high=221]
 Range [low=227, high=229]
 ```
 
-`splitDepth` is 3
-```java
-Range [low=10, high=10]
-Range [low=26, high=53]
-Range [low=69, high=69]
-Range [low=122, high=128]
-Range [low=131, high=132]
-Range [low=210, high=221]
-Range [low=227, high=229]
-```
-
-`splitDepth` is 4
+`maxRanges` is 0 (unlimited)
 ```java
 Range [low=10, high=10]
 Range [low=26, high=28]
@@ -232,11 +218,12 @@ Range [low=127, high=128]
 Range [low=131, high=132]
 Range [low=210, high=221]
 Range [low=227, high=229]
+
 ```
 
-When using querying do experiments with the number of bits and `splitDepth` to get your ideal run time. 
+When using querying do experiments with the number of bits and `maxRanges` (querying in parallel on each range) to get your ideal run time. 
 
-The perimeter traversal used by the `query` method is O(width<sup>dimensions-1</sup> 2<sup>splitDepth + bits*(dimensions-1)</sup>). In a recent experiment with spatio-temporal data (3 dimensions, 20m points) I found that 10 bits and `splitDepth` of 4 looked promising. Ranges were returned in about 50ms and the `splitDepth` of 4 gave me a 64% hit rate with 12 or so ranges (which could be queried in parallel). With a splitDepth of 5, numRanges is 20, hit rate 67%. With a splitDepth of 6, numRanges is still 20, same hit rate, and query ranges are calculated in 370ms.
+OBSOLETE: The perimeter traversal used by the `query` method is O(width<sup>dimensions-1</sup> 2<sup>splitDepth + bits*(dimensions-1)</sup>). In a recent experiment with spatio-temporal data (3 dimensions, 20m points) I found that 10 bits and `splitDepth` of 4 looked promising. Ranges were returned in about 50ms and the `splitDepth` of 4 gave me a 64% hit rate with 12 or so ranges (which could be queried in parallel). With a splitDepth of 5, numRanges is 20, hit rate 67%. With a splitDepth of 6, numRanges is still 20, same hit rate, and query ranges are calculated in 370ms.
 
 ## Benchmarks
 

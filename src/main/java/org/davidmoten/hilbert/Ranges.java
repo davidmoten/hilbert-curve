@@ -2,6 +2,7 @@ package org.davidmoten.hilbert;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import com.github.davidmoten.guavamini.Preconditions;
 
@@ -124,6 +125,10 @@ public final class Ranges {
 
     public int size() {
         return ranges.size();
+    }
+    
+    public Stream<Range> stream() {
+        return ranges.stream();
     }
 
 }

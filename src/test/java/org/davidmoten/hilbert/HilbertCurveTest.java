@@ -386,6 +386,42 @@ public class HilbertCurveTest {
         assertEquals(14L, x[0]);
         assertEquals(4L, x[1]);
     }
+    
+    @Test
+    public void testQuery1() {
+        SmallHilbertCurve c = HilbertCurve.small().bits(5).dimensions(2);
+        long[] point1 = new long[] {3, 3};
+        long[] point2 = new long[] {8, 10};
+        Ranges ranges = c.query(point1, point2, 1);
+        assertEquals(Lists.newArrayList(Range.create(10, 229)), ranges.get());
+    }
+    
+    @Test
+    public void testQueryJoin0() {
+        SmallHilbertCurve c = HilbertCurve.small().bits(5).dimensions(2);
+        long[] point1 = new long[] {3, 3};
+        long[] point2 = new long[] {8, 10};
+        Ranges ranges = c.query(point1, point2, 0);
+        ranges.stream().forEach(System.out::println);
+    }
+    
+    @Test
+    public void testQueryJoin3() {
+        SmallHilbertCurve c = HilbertCurve.small().bits(5).dimensions(2);
+        long[] point1 = new long[] {3, 3};
+        long[] point2 = new long[] {8, 10};
+        Ranges ranges = c.query(point1, point2, 3);
+        ranges.stream().forEach(System.out::println);
+    }
+    
+    @Test
+    public void testQueryJoin6() {
+        SmallHilbertCurve c = HilbertCurve.small().bits(5).dimensions(2);
+        long[] point1 = new long[] {3, 3};
+        long[] point2 = new long[] {8, 10};
+        Ranges ranges = c.query(point1, point2, 6);
+        ranges.stream().forEach(System.out::println);
+    }
 
     private static long[] scalePoint(float lat, float lon, long time, long minTime, long maxTime,
             long max) {
