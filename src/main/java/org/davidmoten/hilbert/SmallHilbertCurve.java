@@ -1,16 +1,11 @@
 package org.davidmoten.hilbert;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
-import com.github.davidmoten.guavamini.Lists;
 import com.github.davidmoten.guavamini.Preconditions;
-import com.github.davidmoten.guavamini.annotations.VisibleForTesting;
 
 /**
  * Converts between Hilbert index ({@code BigInteger}) and N-dimensional points.

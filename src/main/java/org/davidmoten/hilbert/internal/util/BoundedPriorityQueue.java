@@ -6,8 +6,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
 
-import org.davidmoten.hilbert.internal.util.BoundedPriorityQueue;
-
 import com.github.davidmoten.guavamini.Preconditions;
 
 public final class BoundedPriorityQueue<T> {
