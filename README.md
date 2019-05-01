@@ -149,7 +149,7 @@ This is one of the very useful applications of the Hilbert curve. By mapping n-d
 
 Given an n-dimensional search box the exact hilbert curve ranges that cover that box can be determined just by looking at the hilbert curve values on the perimeter of the search box. Let's first establish why this is so.
 
-Firstly, let's make that point that the points corresponding to 0 on the hilbert curve and the maximum on the hilbert curve are vertices of the domain. 
+Firstly, let's state that the points corresponding to 0 on the hilbert curve and the maximum on the hilbert curve are vertices of the domain. 
 
 Proof: TODO
 
@@ -160,16 +160,16 @@ Proof: TODO
 With these facts we create an algorithm for extracting the exact ranges:
 
 ```
-Find all the values of the hilbert curve on the perimeter of the search box
-Sort those values in ascending order
-At this point the smallest value v<sub>1</sub> in the list will correspond to the start of a range
-Continue recording the values in the list to the range while the hilbert curve proceeds along the perimeter (in steps of one along the Hilbert curve)
+find all the values of the hilbert curve on the perimeter of the search box
+sort those values in ascending order
+at this point the smallest value v<sub>1</sub> in the list will correspond to the start of a range
+continue recording the values in the list to the range while the hilbert curve proceeds along the perimeter (in steps of one along the Hilbert curve)
 If the next point on the curve is in the box (not on the perimeter) then 
   add all values on the curve till the next perimeter value in the list. 
   if the next hilbert curve value is on the perimeter then recursively apply this algorithm to continue extending the range
 else // the next point on the curve is outside the box
   close off the range
-
+continue as above with the rest of the remaining perimeter values in the sorted list
 ```
 
 #### OBSOLETE
