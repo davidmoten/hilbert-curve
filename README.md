@@ -223,7 +223,7 @@ Range [low=227, high=229]
 
 When using querying do experiments with the number of bits and `maxRanges` (querying in parallel on each range) to get your ideal run time. 
 
-OBSOLETE: The perimeter traversal used by the `query` method is O(width<sup>dimensions-1</sup> 2<sup>splitDepth + bits*(dimensions-1)</sup>). In a recent experiment with spatio-temporal data (3 dimensions, 20m points) I found that 10 bits and `splitDepth` of 4 looked promising. Ranges were returned in about 50ms and the `splitDepth` of 4 gave me a 64% hit rate with 12 or so ranges (which could be queried in parallel). With a splitDepth of 5, numRanges is 20, hit rate 67%. With a splitDepth of 6, numRanges is still 20, same hit rate, and query ranges are calculated in 370ms.
+The perimeter traversal used by the `query` method is O(width<sup>dimensions-1</sup> 2<sup>splitDepth + bits*(dimensions-1)</sup>). In a recent experiment with spatio-temporal data (3 dimensions, 20m points) I found that 10 bits and `maxRanges` of 12 looked promising. Ranges were returned in about 50ms and `maxRanges` of 4 gave me a 64% hit rate. With a `maxRanges` of 20, hit rate is 67%. 
 
 ## Benchmarks
 
