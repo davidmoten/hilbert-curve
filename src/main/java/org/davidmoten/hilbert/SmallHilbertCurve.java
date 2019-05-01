@@ -101,8 +101,21 @@ public final class SmallHilbertCurve {
     // Query support
     ////////////////////////////////////////////////
 
+    public Ranges query(long[] a, long[] b, int maxRanges) {
+        Preconditions.checkArgument(maxRanges >= 0);
+        // TODO optimise this by joining ranges as they are found
+        // instead of joining them at the end
+        Ranges ranges = query(a, b);
+        if (maxRanges >= ranges.size() || maxRanges == 0) {
+            return ranges;
+        } else {
+            return ranges.join(ranges.size() - maxRanges);
+        }
+    }
+
     /**
-     * Returns a list of index ranges exactly covering the region bounded by {@code a} and {@code b}.
+     * Returns a list of index ranges exactly covering the region bounded by
+     * {@code a} and {@code b}.
      * 
      * @param a one vertex of the region
      * @param b the opposing vertex to a
