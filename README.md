@@ -179,7 +179,8 @@ SmallHilbertCurve c = HilbertCurve.small().bits(5).dimensions(2);
 long[] point1 = new long[] {3, 3};
 long[] point2 = new long[] {8, 10};
 // return just one range
-Ranges ranges = c.query(point1, point2, 1);
+int maxRanges = 1;
+Ranges ranges = c.query(point1, point2, maxRanges);
 ranges.stream().forEach(System.out::println);
 ```
 Result:
