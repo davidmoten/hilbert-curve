@@ -147,6 +147,7 @@ HilbertCurveRenderer.renderToFile(bits, 800, "target/image.png");
 ### Querying N-dimensional space
 This is one of the very useful applications of the Hilbert curve. By mapping n-dimensional space onto 1 dimension we enable the use of range lookups on that 1 dimension using a B-tree or binary search. A search region represented as a box in n-dimensions can be mapped to a series of ranges on the hilbert curve. 
 
+#### Perimeter algorithm for finding ranges
 Given an n-dimensional search box **the exact hilbert curve ranges that cover the search box can be determined just by looking at the hilbert curve values on the perimeter of the box**. Let's first establish why this is so.
 
 Firstly, let's state that the points corresponding to 0 on the hilbert curve and the maximum on the hilbert curve are vertices of the domain. 
@@ -172,6 +173,7 @@ else // the next point on the curve is outside the box
 continue as above with the rest of the remaining perimeter values in the sorted list
 ```
 
+#### Query examples
 A lot of small ranges may be inefficient due to lookup overheads and constraints so you can specify the maximum number of ranges returned (ranges are joined that have minimal gap between them). 
 
 ```java
@@ -219,7 +221,6 @@ Range [low=127, high=128]
 Range [low=131, high=132]
 Range [low=210, high=221]
 Range [low=227, high=229]
-
 ```
 
 When using querying do experiments with the number of bits and `maxRanges` (querying in parallel on each range) to get your ideal run time. 
