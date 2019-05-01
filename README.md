@@ -148,15 +148,19 @@ HilbertCurveRenderer.renderToFile(bits, 800, "target/image.png");
 This is one of the very useful applications of the Hilbert curve. By mapping n-dimensional space onto 1 dimension we enable the use of range lookups on that 1 dimension using a B-tree or binary search. A search region represented as a box in n-dimensions can be mapped to a series of ranges on the hilbert curve. 
 
 #### Perimeter algorithm for finding ranges
-Given an n-dimensional search box **the exact hilbert curve ranges that cover the search box can be determined just by looking at the hilbert curve values on the perimeter of the box**. Let's first establish why this is so.
+Given an n-dimensional search box **the exact hilbert curve ranges that cover the search box can be determined just by looking at the hilbert curve values on the perimeter of the box**. I didn't manage to find any discussion of this very useful fact on the web and am confused as to why this isn't covered anywhere. Surely this is not an unpublished discovery (because it's a pretty trivial one to come across). Let me know if you find discussion of this technique elsewhere!
+
+Let's first establish why this is so.
 
 Firstly, let's state that the points corresponding to 0 on the hilbert curve and the maximum on the hilbert curve are vertices of the domain. 
 
 Proof: TODO
 
-Secondly, we make the observation that given exact covering ranges of the Hilbert curve over a search box that the extremes of those ranges must be on the perimeter of the search region.
+Secondly, based on the first statement we make the observation that given exact covering ranges of the Hilbert curve over a search box that the extremes of those ranges must be on the perimeter of the search region.
 
-Proof: TODO
+Proof: TODO. Easily demonstrable by contradiction.
+
+I'll get around to the above proofs one day, just need to come up with some precise language.
 
 With these facts we create an algorithm for extracting the exact ranges:
 
