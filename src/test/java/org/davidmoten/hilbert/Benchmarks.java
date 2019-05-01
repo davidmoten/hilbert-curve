@@ -2,6 +2,7 @@ package org.davidmoten.hilbert;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.infra.Blackhole;
@@ -12,7 +13,8 @@ public class Benchmarks {
     private static final long N = 1L << BITS - 1;
     private static final int DIMENSIONS = 5;
     private static final HilbertCurve c = HilbertCurve.bits(BITS).dimensions(DIMENSIONS);
-    private static final SmallHilbertCurve small = HilbertCurve.small().bits(BITS).dimensions(DIMENSIONS);
+    private static final SmallHilbertCurve small = HilbertCurve.small().bits(BITS)
+            .dimensions(DIMENSIONS);
     private static final long[] point = new long[DIMENSIONS];
     private static final List<long[]> points = createPoints();
 
@@ -23,14 +25,14 @@ public class Benchmarks {
             b.consume(c.index(point).longValue());
         }
     }
-    
+
     @Benchmark
     public void toIndexTimes512(Blackhole b) {
         for (int i = 0; i < N; i++) {
             b.consume(c.index(points.get(i)).longValue());
         }
     }
-    
+
     @Benchmark
     public void toIndexTimes512Small(Blackhole b) {
         for (int i = 0; i < N; i++) {
@@ -89,6 +91,34 @@ public class Benchmarks {
         for (long i = 0; i < N; i++) {
             small.point(i, point);
             b.consume(point);
+        }
+    }
+
+    private static final Query query = new Query();
+
+    @Benchmark
+    public Ranges querySydney() {
+        return query.query();
+    }
+
+    private static final class Query {
+        float lat1 = -33.806477f;
+        float lon1 = 151.181767f;
+        long minTime = 1510779675000L;
+        long maxTime = 1510876800000L;
+        long t1 = minTime + (maxTime - minTime) / 2;
+        float lat2 = -33.882896f;
+        float lon2 = 151.281330f;
+        long t2 = t1 + TimeUnit.HOURS.toMillis(1);
+        int bits = 10;
+        int dimensions = 3;
+        SmallHilbertCurve h = HilbertCurve.small().bits(bits).dimensions(dimensions);
+        long maxOrdinates = 1L << bits;
+        long[] point1 = GeoUtil.scalePoint(lat1, lon1, t1, minTime, maxTime, maxOrdinates);
+        long[] point2 = GeoUtil.scalePoint(lat2, lon2, t2, minTime, maxTime, maxOrdinates);
+
+        Ranges query() {
+            return h.query(point1, point2);
         }
     }
 

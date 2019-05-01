@@ -1,5 +1,6 @@
 package org.davidmoten.hilbert;
 
+import static org.davidmoten.hilbert.GeoUtil.scalePoint;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -331,8 +332,9 @@ public class HilbertCurveTest {
         int dimensions = 3;
         SmallHilbertCurve h = HilbertCurve.small().bits(bits).dimensions(dimensions);
         long maxOrdinates = 1L << bits;
-        h.query(scalePoint(lat1, lon1, t1, minTime, maxTime, maxOrdinates),
+        Ranges r = h.query(scalePoint(lat1, lon1, t1, minTime, maxTime, maxOrdinates),
                 scalePoint(lat2, lon2, t2, minTime, maxTime, maxOrdinates));
+        System.out.println(r.get().size());
     }
 
     @Test
@@ -423,22 +425,6 @@ public class HilbertCurveTest {
         ranges.stream().forEach(System.out::println);
     }
 
-    private static long[] scalePoint(float lat, float lon, long time, long minTime, long maxTime,
-            long max) {
-        long x = scale((lat + 90.0f) / 180, max);
-        long y = scale((lon + 180.0f) / 360, max);
-        long z = scale(((float) time - minTime) / (maxTime - minTime), max);
-        return new long[] { x, y, z };
-    }
-
-    private static long scale(float d, long max) {
-        Preconditions.checkArgument(d >= 0 && d <= 1);
-        if (d == 1) {
-            return max;
-        } else {
-            return Math.round(Math.floor(d * (max + 1)));
-        }
-    }
 
     private static long[] point(long... values) {
         return values;
