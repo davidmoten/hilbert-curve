@@ -145,7 +145,12 @@ HilbertCurveRenderer.renderToFile(bits, 800, "target/image.png");
 ```
 
 ### Querying N-dimensional space
-This is one of the very useful applications of the Hilbert curve. By mapping n-dimensional space onto 1 dimension we enable the use of range lookups on that 1 dimension using a B-tree or binary search. A search region represented as a box in n-dimensions can be mapped to a series of ranges on the hilbert curve. A lot of small ranges may be inefficient due to lookup overheads and constraints so a selectable refinement is chosen for the query called `splitDepth`.
+This is one of the very useful applications of the Hilbert curve. By mapping n-dimensional space onto 1 dimension we enable the use of range lookups on that 1 dimension using a B-tree or binary search. A search region represented as a box in n-dimensions can be mapped to a series of ranges on the hilbert curve. 
+
+#### OBSOLETE
+*This section needs updating after the api changes and application of the perimeter algorithm for finding ranges.*
+
+A lot of small ranges may be inefficient due to lookup overheads and constraints so a selectable refinement is chosen for the query called `splitDepth`.
 
 ```java
 SmallHilbertCurve c = HilbertCurve.small().bits(5).dimensions(2);
