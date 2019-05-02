@@ -339,7 +339,7 @@ public class HilbertCurveTest {
         DecimalFormat df2 = new DecimalFormat("00");
         for (int i = 0; i < ranges.get().size(); i++) {
             Ranges r = ranges.join(i);
-            System.out.println(df2.format(r.get().size()) + " "
+            System.out.println(df2.format(r.get().size()) + "\t"
                     + df.format((double) r.totalLength() / ranges.totalLength()));
         }
 
