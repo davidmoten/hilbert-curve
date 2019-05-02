@@ -258,6 +258,10 @@ Let's consider 3 dimensions of information being latitude, longitude and time. W
 02 56.29
 01 370.03
 ```
+The data above in a graph (only for ranges >=4):
+
+<img src="src/docs/coverage.png"/>
+
 So if you use 12 ranges you will be returned points from a region that is 2.28 times bigger than required for exact coverage. If your points were uniformly distributed then you would throw away roughly half the returned points because they were outside your search region. However, the tradeoff of query overhead may mean this is worthwhile. Your own benchmarks are the only way to really check this because your datastore will have its own concurrency and overhead characteristics.
 
 ## Benchmarks
