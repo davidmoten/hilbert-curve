@@ -18,7 +18,7 @@ public class Benchmarks {
     private static final long[] point = new long[DIMENSIONS];
     private static final List<long[]> points = createPoints();
 
-    @Benchmark
+//    @Benchmark
     public void roundTripTimes512(Blackhole b) {
         for (long i = 0; i < N; i++) {
             long[] point = c.point(i);
@@ -26,28 +26,28 @@ public class Benchmarks {
         }
     }
 
-    @Benchmark
+//    @Benchmark
     public void toIndexTimes512(Blackhole b) {
         for (int i = 0; i < N; i++) {
             b.consume(c.index(points.get(i)).longValue());
         }
     }
 
-    @Benchmark
+//    @Benchmark
     public void toIndexTimes512Small(Blackhole b) {
         for (int i = 0; i < N; i++) {
             b.consume(small.index(points.get(i)));
         }
     }
 
-    @Benchmark
+//    @Benchmark
     public void pointTimes512(Blackhole b) {
         for (long i = 0; i < N; i++) {
             b.consume(c.point(i));
         }
     }
 
-    @Benchmark
+//    @Benchmark
     public void roundTripSmallTimes512(Blackhole b) {
         for (long i = 0; i < N; i++) {
             long[] point = small.point(i);
@@ -55,14 +55,14 @@ public class Benchmarks {
         }
     }
 
-    @Benchmark
+//    @Benchmark
     public void pointSmallTimes512(Blackhole b) {
         for (long i = 0; i < N; i++) {
             b.consume(small.point(i));
         }
     }
 
-    @Benchmark
+//    @Benchmark
     public void roundTripTimes512LowAllocation(Blackhole b) {
         for (long i = 0; i < N; i++) {
             c.point(i, point);
@@ -70,7 +70,7 @@ public class Benchmarks {
         }
     }
 
-    @Benchmark
+//    @Benchmark
     public void pointTimes512LowAllocation(Blackhole b) {
         for (long i = 0; i < N; i++) {
             c.point(i, point);
@@ -78,7 +78,7 @@ public class Benchmarks {
         }
     }
 
-    @Benchmark
+//    @Benchmark
     public void roundTripSmallTimes512LowAllocation(Blackhole b) {
         for (long i = 0; i < N; i++) {
             small.point(i, point);
@@ -86,7 +86,7 @@ public class Benchmarks {
         }
     }
 
-    @Benchmark
+//    @Benchmark
     public void pointSmallTimes512LowAllocation(Blackhole b) {
         for (long i = 0; i < N; i++) {
             small.point(i, point);

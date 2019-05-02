@@ -10,6 +10,7 @@ import java.io.PrintStream;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.List;
@@ -19,7 +20,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.github.davidmoten.guavamini.Lists;
-import com.github.davidmoten.guavamini.Preconditions;
 
 public class HilbertCurveTest {
 
@@ -308,7 +308,7 @@ public class HilbertCurveTest {
         assertEquals(1, r.size());
         assertEquals(Range.create(0, 3), r.get().get(0));
     }
-    
+
     @Test
     public void testIssue1() {
         int bits = 16;
@@ -332,9 +332,17 @@ public class HilbertCurveTest {
         int dimensions = 3;
         SmallHilbertCurve h = HilbertCurve.small().bits(bits).dimensions(dimensions);
         long maxOrdinates = 1L << bits;
-        Ranges r = h.query(scalePoint(lat1, lon1, t1, minTime, maxTime, maxOrdinates),
-                scalePoint(lat2, lon2, t2, minTime, maxTime, maxOrdinates));
-        System.out.println(r.get().size());
+        long[] point1 = scalePoint(lat1, lon1, t1, minTime, maxTime, maxOrdinates);
+        long[] point2 = scalePoint(lat2, lon2, t2, minTime, maxTime, maxOrdinates);
+        Ranges ranges = h.query(point1, point2);
+        DecimalFormat df = new DecimalFormat("0.00");
+        DecimalFormat df2 = new DecimalFormat("00");
+        for (int i = 0; i < ranges.get().size(); i++) {
+            Ranges r = ranges.join(i);
+            System.out.println(df2.format(r.get().size()) + " "
+                    + df.format((double) r.totalLength() / ranges.totalLength()));
+        }
+
     }
 
     @Test
@@ -344,12 +352,12 @@ public class HilbertCurveTest {
         c.point(682, x);
         assertEquals(31L, x[0]);
         assertEquals(31L, x[1]);
-        
+
         c.point(100L, x);
         assertEquals(14L, x[0]);
         assertEquals(4L, x[1]);
     }
-    
+
     @Test
     public void testSmallQueryVisitWholeRegion() {
         SmallHilbertCurve c = HilbertCurve.small().bits(5).dimensions(2);
@@ -358,7 +366,7 @@ public class HilbertCurveTest {
         Ranges r = c.query(a, b);
         assertEquals(Lists.newArrayList(Range.create(0, 1023)), r.get());
     }
-    
+
     @Test
     public void testSmallQueryVisitWholeRegionMultipleRanges() {
         SmallHilbertCurve c = HilbertCurve.small().bits(4).dimensions(2);
@@ -367,11 +375,11 @@ public class HilbertCurveTest {
         Ranges result = c.query(a, b);
         Ranges expected = Ranges.create() //
                 .add(2, 2) //
-                .add(6,13) //
+                .add(6, 13) //
                 .add(17, 18) //
                 .add(22, 32) //
                 .add(35, 37) //
-                .add(53,  54) //
+                .add(53, 54) //
                 .add(57, 57);
         assertEquals(expected.get(), result.get());
     }
@@ -383,48 +391,47 @@ public class HilbertCurveTest {
         c.point(682L, x);
         assertEquals(31L, x[0]);
         assertEquals(31L, x[1]);
-        
+
         c.point(100L, x);
         assertEquals(14L, x[0]);
         assertEquals(4L, x[1]);
     }
-    
+
     @Test
     public void testQuery1() {
         SmallHilbertCurve c = HilbertCurve.small().bits(5).dimensions(2);
-        long[] point1 = new long[] {3, 3};
-        long[] point2 = new long[] {8, 10};
+        long[] point1 = new long[] { 3, 3 };
+        long[] point2 = new long[] { 8, 10 };
         Ranges ranges = c.query(point1, point2, 1);
         assertEquals(Lists.newArrayList(Range.create(10, 229)), ranges.get());
     }
-    
+
     @Test
     public void testQueryJoin0() {
         SmallHilbertCurve c = HilbertCurve.small().bits(5).dimensions(2);
-        long[] point1 = new long[] {3, 3};
-        long[] point2 = new long[] {8, 10};
+        long[] point1 = new long[] { 3, 3 };
+        long[] point2 = new long[] { 8, 10 };
         Ranges ranges = c.query(point1, point2, 0);
         ranges.stream().forEach(System.out::println);
     }
-    
+
     @Test
     public void testQueryJoin3() {
         SmallHilbertCurve c = HilbertCurve.small().bits(5).dimensions(2);
-        long[] point1 = new long[] {3, 3};
-        long[] point2 = new long[] {8, 10};
+        long[] point1 = new long[] { 3, 3 };
+        long[] point2 = new long[] { 8, 10 };
         Ranges ranges = c.query(point1, point2, 3);
         ranges.stream().forEach(System.out::println);
     }
-    
+
     @Test
     public void testQueryJoin6() {
         SmallHilbertCurve c = HilbertCurve.small().bits(5).dimensions(2);
-        long[] point1 = new long[] {3, 3};
-        long[] point2 = new long[] {8, 10};
+        long[] point1 = new long[] { 3, 3 };
+        long[] point2 = new long[] { 8, 10 };
         Ranges ranges = c.query(point1, point2, 6);
         ranges.stream().forEach(System.out::println);
     }
-
 
     private static long[] point(long... values) {
         return values;

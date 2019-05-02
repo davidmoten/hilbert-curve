@@ -2,6 +2,7 @@ package org.davidmoten.hilbert;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.github.davidmoten.guavamini.Preconditions;
@@ -83,15 +84,18 @@ public final class Ranges {
     }
 
     public Ranges join(int n) {
-        Preconditions.checkArgument(n > 0);
-
-        // TODO replace this with an efficient algorithm like a Max Heap which is kept
-        // at size k so runtime complexity is O(n + klogk)
-        Ranges r = this;
-        for (int i = 0; i < n; i++) {
-            r = r.joinOnePair();
+        Preconditions.checkArgument(n >= 0);
+        if (n == 0) {
+            return this;
+        } else {
+            // TODO replace this with an efficient algorithm like a Max Heap which is kept
+            // at size k so runtime complexity is O(n + klogk)
+            Ranges r = this;
+            for (int i = 0; i < n; i++) {
+                r = r.joinOnePair();
+            }
+            return r;
         }
-        return r;
     }
 
     private Ranges joinOnePair() {
@@ -126,9 +130,17 @@ public final class Ranges {
     public int size() {
         return ranges.size();
     }
-    
+
     public Stream<Range> stream() {
         return ranges.stream();
+    }
+
+    public long totalLength() {
+        return ranges //
+                .stream() //
+                .map(x -> x.high() - x.low() + 1) //
+                .collect(Collectors.reducing((x, y) -> x + y)) //
+                .orElse(0L);
     }
 
 }

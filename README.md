@@ -231,7 +231,34 @@ Range [low=227, high=229]
 
 When using querying do experiments with the number of bits and `maxRanges` (querying in parallel on each range) to get your ideal run time. 
 
-The perimeter traversal used by the `query` method is O(width<sup>dimensions-1</sup> 2<sup>splitDepth + bits*(dimensions-1)</sup>). In a recent experiment with spatio-temporal data (3 dimensions, 20m points) I found that 10 bits and `maxRanges` of 12 looked promising. Ranges were returned in about 50ms and `maxRanges` of 4 gave me a 64% hit rate. With a `maxRanges` of 20, hit rate is 67%. 
+The perimeter traversal used by the `query` method is O(width<sup>dimensions-1</sup> 2<sup>bits*(dimensions-1)</sup>). 
+
+### Spatio-temporal querying
+Let's consider 3 dimensions of information being latitude, longitude and time. We'll index the full world for one day using 10 bits. When I search the Sydney (Australia) region for an hour at midday I get exact coverage with 20 ranges. When we limit the number of ranges the ratio of coverage to exact coverage is below:
+
+```
+20 1.00
+19 1.05
+18 1.11
+17 1.16
+16 1.22
+15 1.49
+14 1.75
+13 2.01
+12 2.28
+11 2.54
+10 2.80
+09 3.49
+08 4.17
+07 4.86
+06 5.54
+05 7.70
+04 11.54
+03 17.07
+02 56.29
+01 370.03
+```
+So if you use 12 ranges you will be returned points from a region that is 2.28 times bigger than required for exact coverage. If your points were uniformly distributed then you would throw away roughly half the returned points because they were outside your search region. However, the tradeoff of query overhead may mean this is worthwhile. Your own benchmarks are the only way to really check this because your datastore will have its own concurrency and overhead characteristics.
 
 ## Benchmarks
 
