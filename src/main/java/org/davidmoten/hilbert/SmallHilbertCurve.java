@@ -160,6 +160,46 @@ public final class SmallHilbertCurve {
         return new Ranges(ranges);
     }
 
+    public Ranges query2(long[] a, long[] b, int maxRanges) {
+        Box box = new Box(a, b);
+        SortedSet<Long> set = new TreeSet<>();
+        box.visitPerimeter(cell -> {
+            long n = index(cell);
+            set.add(n);
+        });
+        List<Long> list = new ArrayList<>(set);
+        int i = 0;
+        Ranges2 ranges = new Ranges2(maxRanges);
+        long rangeStart = -1;
+        while (true) {
+            if (i == list.size()) {
+                break;
+            }
+            if (rangeStart == -1) {
+                rangeStart = list.get(i);
+            }
+            while (i < list.size() - 1 && list.get(i + 1) == list.get(i) + 1) {
+                i++;
+            }
+            if (i == list.size() - 1) {
+                ranges.add(Range.create(rangeStart, list.get(i)));
+                break;
+            }
+            long[] point = point(list.get(i) + 1);
+            if (box.contains(point)) {
+                // is not on the perimeter (would have been caught in previous while loop)
+                // so is internal to the box which means the next value in the sorted hilbert
+                // curve indexes for the perimiter must be where it exits
+                i += 1;
+            } else {
+                ranges.add(Range.create(rangeStart, list.get(i)));
+                rangeStart = -1;
+                i++;
+            }
+        }
+        return new Ranges(ranges);
+    }
+    
     public static final class Builder {
         private int bits;
 

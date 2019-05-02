@@ -18,9 +18,9 @@ public final class Range {
     public static Range create(long low, long high) {
         return new Range(low, high);
     }
-    
+
     public static Range create(long value) {
-        return new Range(value,value);
+        return new Range(value, value);
     }
 
     public long low() {
@@ -110,6 +110,10 @@ public final class Range {
         if (low != other.low)
             return false;
         return true;
+    }
+
+    public Range join(Range range) {
+        return Range.create(Math.min(low, range.low), Math.max(high, range.high));
     }
 
 }

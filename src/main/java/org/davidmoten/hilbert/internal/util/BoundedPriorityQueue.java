@@ -15,15 +15,13 @@ public final class BoundedPriorityQueue<T> {
     private final int maxSize;
 
     /**
-     * Constructs a {@link BoundedPriorityQueue} with the specified
-     * {@code maxSize} and {@code comparator}.
+     * Constructs a {@link BoundedPriorityQueue} with the specified {@code maxSize}
+     * and {@code comparator}.
      *
-     * @param maxSize
-     *            - The maximum size the queue can reach, must be a positive
-     *            integer.
-     * @param comparator
-     *            - The comparator to be used to compare the elements in the
-     *            queue, must be non-null.
+     * @param maxSize    - The maximum size the queue can reach, must be a positive
+     *                   integer.
+     * @param comparator - The comparator to be used to compare the elements in the
+     *                   queue, must be non-null.
      */
     public BoundedPriorityQueue(final int maxSize, final Comparator<? super T> comparator) {
         Preconditions.checkArgument(maxSize > 0, "maxSize must be > 0");
@@ -49,35 +47,39 @@ public final class BoundedPriorityQueue<T> {
     }
 
     /**
-     * Adds an element to the queue. If the queue contains {@code maxSize}
-     * elements, {@code e} will be compared to the lowest element in the queue
-     * using {@code comparator}. If {@code e} is greater than or equal to the
-     * lowest element, that element will be removed and {@code e} will be added
-     * instead. Otherwise, the queue will not be modified and {@code e} will not
-     * be added.
+     * Adds an element to the queue. If the queue contains {@code maxSize} elements,
+     * {@code e} will be compared to the lowest element in the queue using
+     * {@code comparator}. If {@code e} is greater than or equal to the lowest
+     * element, that element will be removed and {@code e} will be added instead.
+     * Otherwise, the queue will not be modified and {@code e} will not be added.
      *
-     * @param t
-     *            - Element to be added, must be non-null.
+     * @param t - Element to be added, must be non-null.
+     * @return null if no element was removed from queue otherwise returns the
+     *         element removed from the queue due to this addition
      */
-    public void add(final T t) {
+    public T add(final T t) {
         if (t == null) {
             throw new NullPointerException("cannot add null to the queue");
         }
+        final T v;
         if (queue.size() >= maxSize) {
             final T maxElement = queue.peek();
             if (comparator.compare(maxElement, t) < 1) {
-                return;
+                return null;
             } else {
-                queue.poll();
+                v = queue.poll();
             }
+        } else {
+            v = null;
         }
         queue.add(t);
+        return v;
     }
-    
+
     /**
      * @return Returns a view of the queue as a
-     *         {@link Collections#unmodifiableList(java.util.List)}
-     *         unmodifiableList sorted in reverse order.
+     *         {@link Collections#unmodifiableList(java.util.List)} unmodifiableList
+     *         sorted in reverse order.
      */
     public List<T> asList() {
         return Collections.unmodifiableList(new ArrayList<T>(queue));
