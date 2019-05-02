@@ -7,13 +7,13 @@ import com.github.davidmoten.guavamini.Preconditions;
 
 public class Ranges2 {
 
-    private final int maxRanges;
+    private final int bufferSize;
     private final TreeSet<Node> set;
     private Node ranges;
     private int count;
 
-    public Ranges2(int maxRanges) {
-        this.maxRanges = maxRanges;
+    public Ranges2(int bufferSize) {
+        this.bufferSize = bufferSize;
         this.ranges = null;
         this.set = new TreeSet<>();
     }
@@ -25,7 +25,7 @@ public class Ranges2 {
         if (ranges.next != null) {
             // if there are at least two ranges
             set.add(ranges);
-            if (count > maxRanges) {
+            if (count > bufferSize) {
                 // join the range with the smallest distance to next
                 Node x = set.first();
                 Node next = x.next;
@@ -51,7 +51,7 @@ public class Ranges2 {
             }
         }
     }
-
+    
     private static Node insert(Node ranges, Range r) {
         if (ranges == null) {
             return new Node(r);
