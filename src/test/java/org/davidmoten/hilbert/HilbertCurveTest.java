@@ -348,6 +348,13 @@ public class HilbertCurveTest {
                     new long[] { maxOrdinates, maxOrdinates, maxOrdinates });
             System.out.println("full domain query took " + (System.currentTimeMillis() - t) + "ms");
         }
+        if (true) {
+            long t = System.currentTimeMillis();
+            int count = h.query(new long[] { 0, 0, 0 },
+                    new long[] { maxOrdinates, maxOrdinates, maxOrdinates / 24 }).size();
+            System.out.println("full domain query for first hour took "
+                    + (System.currentTimeMillis() - t) + "ms with "+ count + " ranges");
+        }
     }
 
     @Test
