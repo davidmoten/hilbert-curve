@@ -342,7 +342,12 @@ public class HilbertCurveTest {
             System.out.println(df2.format(r.get().size()) + "\t"
                     + df.format((double) r.totalLength() / ranges.totalLength()));
         }
-
+        if (false) {
+            long t = System.currentTimeMillis();
+            h.query(new long[] { 0, 0, 0 },
+                    new long[] { maxOrdinates, maxOrdinates, maxOrdinates });
+            System.out.println("full domain query took " + (System.currentTimeMillis() - t) + "ms");
+        }
     }
 
     @Test

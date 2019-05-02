@@ -234,7 +234,7 @@ When using querying do experiments with the number of bits and `maxRanges` (quer
 The perimeter traversal used by the `query` method is O(width<sup>dimensions-1</sup> 2<sup>bits*(dimensions-1)</sup>). 
 
 ### Spatio-temporal querying
-Let's consider 3 dimensions of information being latitude, longitude and time. We'll index the full world for one day using 10 bits. When I search the Sydney (Australia) region for an hour at midday I get exact coverage with 20 ranges. When we limit the number of ranges the ratio of coverage to exact coverage is below:
+Let's consider 3 dimensions of information being latitude, longitude and time. We'll index the full world for one day using 10 bits. When I search the Sydney (Australia) region for an hour at midday I get exact coverage with 20 ranges and those ranges are calculated in ~20ns. When we limit the number of ranges the ratio of coverage to exact coverage is below:
 
 ```
 20 1.00
@@ -263,6 +263,8 @@ The data above in a graph (only for ranges >=4):
 <img src="src/docs/coverage.png"/>
 
 So if you use 12 ranges you will be returned points from a region that is 2.28 times bigger than required for exact coverage. If your points were uniformly distributed then you would throw away roughly half the returned points because they were outside your search region. However, the tradeoff of query overhead may mean this is worthwhile. Your own benchmarks are the only way to really check this because your datastore will have its own concurrency and overhead characteristics.
+
+Note that if we expand the search to the entire region (give me every point) then the single range to cover it is returned in about 4.4s. As search boxes approach the dimensions of the entire domain some simplifications may be useful (TODO).
 
 ## Benchmarks
 
