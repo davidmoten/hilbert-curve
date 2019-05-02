@@ -1,87 +1,93 @@
 package org.davidmoten.hilbert;
 
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
 import java.util.TreeSet;
-
-import org.davidmoten.hilbert.internal.util.BoundedPriorityQueue;
 
 import com.github.davidmoten.guavamini.Preconditions;
 
 public class Ranges2 {
 
     private final int maxRanges;
-    private final List<Range> ranges;
-    private final TreeSet<RangeWithDistanceToNext> set;
-    private static final Comparator<RangeWithDistanceToNext> COMPARATOR = (a,
-            b) -> a.distance < b.distance ? -1 : (a.distance == b.distance ? 0 : 1);
+    private final TreeSet<Node> set;
+    private Node ranges;
+    private int count;
 
     public Ranges2(int maxRanges) {
         this.maxRanges = maxRanges;
-        this.ranges = new ArrayList<>(maxRanges);
-        this.set = new TreeSet<>(COMPARATOR);
+        this.ranges = null;
+        this.set = new TreeSet<>();
     }
 
     public void add(Range r) {
-        Preconditions
-                .checkArgument(ranges.isEmpty() || ranges.get(ranges.size() - 1).high() <= r.low());
-        ranges.add(r);
-        if (ranges.size() > 1) {
-            {
-                RangeWithDistanceToNext x = new RangeWithDistanceToNext( //
-                        ranges.size() - 2, //
-                        r.low() - ranges.get(ranges.size() - 2).high());
-                set.add(x);
-            }
-            if (ranges.size() > maxRanges) {
+        Preconditions.checkArgument(ranges == null || ranges.value.high() < r.low());
+        ranges = insert(ranges, r);
+        count++;
+        if (ranges.next != null) {
+            // if there are at least two ranges
+            set.add(ranges);
+            if (count > maxRanges) {
                 // join the range with the smallest distance to next
-                RangeWithDistanceToNext x = set.first();
-                Range y = ranges.get(x.index).join(ranges.get(x.index + 1));
-                ranges.set(x.index, y);
-                ranges.remove(x.index + 1);
-                set.remove(new RangeWithDistanceToNext(x.index, -1));
-                if (x.index < ranges.size() - 1) {
-                    set.add(new RangeWithDistanceToNext(x.index,
-                            ranges.get(x.index + 1).low() - y.high()));
+                Node x = set.first();
+                Node next = x.next;
+                Node y = new Node(x.value.join(next.value));
+                y.next = next.next;
+                if (x.previous == null) {
+                    ranges = y;
+                } else {
+                    x.previous.next = y;
+                    y.previous = x.previous;
                 }
+                // x has been replaced now so null its references for the joy of gc (I remember
+                // some old/new generation gc problem with linked lists that was fixed by doing
+                // this)
+                x.next = null;
+                x.previous = null;
+
+                // remove x (its old distance was used for sorting)
+                set.remove(x);
+                // add y as replacement for x
+                set.add(y);
+                count--;
             }
         }
     }
 
-    private static final class RangeWithDistanceToNext {
+    private static Node insert(Node ranges, Range r) {
+        if (ranges == null) {
+            return new Node(r);
+        } else {
+            return ranges.insert(r);
+        }
+    }
 
-        final int index;
-        final long distance; // not involved in equals, hashCode
+    private static final class Node implements Comparator<Node> {
+        final Range value;
+        Node next;
+        Node previous;
 
-        RangeWithDistanceToNext(int index, long distance) {
-            Preconditions.checkArgument(distance > 0);
-            this.index = index;
-            this.distance = distance;
+        Node(Range value) {
+            this.value = value;
+        }
+
+        Node insert(Range value) {
+            Node n = new Node(value);
+            n.next = this;
+            previous = n;
+            return n;
         }
 
         @Override
-        public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + index;
-            return result;
+        public int compare(Node a, Node b) {
+            long x = a.next.value.low() - a.value.high();
+            long y = b.next.value.low() - b.value.high();
+            if (x < y) {
+                return -1;
+            } else if (x == y) {
+                return 0;
+            } else {
+                return 1;
+            }
         }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj)
-                return true;
-            if (obj == null)
-                return false;
-            if (getClass() != obj.getClass())
-                return false;
-            RangeWithDistanceToNext other = (RangeWithDistanceToNext) obj;
-            if (index != other.index)
-                return false;
-            return true;
-        }
-
     }
 
 }

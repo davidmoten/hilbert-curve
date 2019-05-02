@@ -160,7 +160,7 @@ public final class SmallHilbertCurve {
         return new Ranges(ranges);
     }
 
-    public Ranges query2(long[] a, long[] b, int maxRanges) {
+    public Ranges2 query2(long[] a, long[] b, int maxRanges) {
         Box box = new Box(a, b);
         SortedSet<Long> set = new TreeSet<>();
         box.visitPerimeter(cell -> {
@@ -197,7 +197,7 @@ public final class SmallHilbertCurve {
                 i++;
             }
         }
-        return new Ranges(ranges);
+        return ranges;
     }
     
     public static final class Builder {
