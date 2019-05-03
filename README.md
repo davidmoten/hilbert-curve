@@ -154,17 +154,15 @@ Let's first establish why this is so.
 
 ##### Perimeter algorithm proof
 
-**Lemma 1**
-*The points corresponding to 0 on the hilbert curve and the maximum on the hilbert curve are vertices of the domain*. 
+**Lemma 1:** *The points corresponding to 0 on the hilbert curve and the maximum on the hilbert curve are vertices of the domain*. 
 
 *Proof*: For two dimensions, note that the order 2 Hilbert curve has this property (this curve is just a U) and the known production rules for generating the Hilbert curve of order `n+1` from the curve of order `n` maintain the start and end positions of the curve on vertices. By induction the statement is true for 2 dimensions. The proof is similar for dimensions > 2.
 
-**Lemma 2**
-Given the exact covering ranges of the Hilbert curve over a search box, the endpoints of those ranges must be on the perimeter of the search region.
+**Lemma 2:** *Given the exact covering ranges of the Hilbert curve over a search box, the endpoints of those ranges must be on the perimeter of the search region.*
 
 *Proof*: We proceed with a proof by contradiction. Suppose an endpoint of one of the covering ranges was not on the perimeter of the search region. Remember that the hilbert curve is a single continuous line visiting every point in the region. If the range endpoint in question is inside the box then it must be the termination of the Hilbert curve but by Lemma 1 the Hilbert curve termination points are at the vertices of the domain which cannot be wholly inside the search box. 
 
-With these facts we create an algorithm for extracting the exact ranges. The hilbert curve values of the perimeter (an `n-1` dimensional surface) of the search box are calculated and put in a sorted list L. Then the values in L are paired with each other into ranges (and concatenated if they are adjacent) starting with the lowest value in L and checking if the next hop along the Hilbert curve in increasing value is on the perimeter, in the box or on the outside of the box. 
+With these facts we can create an algorithm for extracting the exact ranges. The hilbert curve values of the perimeter (an `n-1` dimensional surface) of the search box are calculated and put in a sorted list L. Then the values in L are paired with each other into ranges (and concatenated if they are adjacent) starting with the lowest value in L and checking if the next hop along the Hilbert curve in increasing value is on the perimeter, in the box or on the outside of the box. If the next value is outside the search box then we close the current range. If the value is on the perimeter then we add that value to the range and close off the range. If the value is strictly inside the search box then the next value in L must be where the curve exits (see Lemma 2) and we can add that value to the range and close it off. We continue adding ranges using the values in L and concatenate ranges when they are adjacent.
 
 #### Query examples
 Note that for the moment range queries have been implemented for the `SmallHilbertCurve` only. Raise an issue if you need them for the `HilbertCurve` object as well.
