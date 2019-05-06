@@ -261,18 +261,22 @@ To run benchmarks:
 mvn clean install -P benchmark
 ```
 
-Result 23/11/2017
+Result 7 May 2019,
+
+Oracle Java 1.8u201, Intel® Core™ i5-6200U CPU @ 2.30GHz:
 ```
 Benchmark                                         Mode  Cnt     Score     Error  Units
-Benchmarks.pointSmallTimes1000                   thrpt   10  7035.676 ± 303.699  ops/s
-Benchmarks.pointSmallTimes1000LowAllocation      thrpt   10  9134.077 ± 439.232  ops/s
-Benchmarks.pointTimes1000                        thrpt   10  6346.989 ±  32.957  ops/s
-Benchmarks.pointTimes1000LowAllocation           thrpt   10  6451.754 ±  30.435  ops/s
-Benchmarks.roundTripSmallTimes1000               thrpt   10  4008.059 ± 197.650  ops/s
-Benchmarks.roundTripSmallTimes1000LowAllocation  thrpt   10  5136.638 ±  22.340  ops/s
-Benchmarks.roundTripTimes1000                    thrpt   10  3138.075 ±  20.720  ops/s
-Benchmarks.roundTripTimes1000LowAllocation       thrpt   10  3261.835 ±  11.208  ops/s
-
+Benchmarks.pointSmallTimes512                   thrpt   10   6480.408 ±  57.225  ops/s
+Benchmarks.pointSmallTimes512LowAllocation      thrpt   10   8375.837 ± 229.945  ops/s
+Benchmarks.pointTimes512                        thrpt   10   5737.713 ±  80.470  ops/s
+Benchmarks.pointTimes512LowAllocation           thrpt   10   5889.068 ±  64.913  ops/s
+Benchmarks.querySydney                          thrpt   10  44580.045 ± 995.428  ops/s
+Benchmarks.roundTripSmallTimes512               thrpt   10   3705.171 ± 504.435  ops/s
+Benchmarks.roundTripSmallTimes512LowAllocation  thrpt   10   4535.697 ± 263.668  ops/s
+Benchmarks.roundTripTimes512                    thrpt   10   2899.455 ±  42.558  ops/s
+Benchmarks.roundTripTimes512LowAllocation       thrpt   10   3001.715 ±  94.521  ops/s
+Benchmarks.toIndexTimes512                      thrpt   10   6285.027 ±  61.203  ops/s
+Benchmarks.toIndexTimes512Small                 thrpt   10   8300.984 ± 114.932  ops/s
 ```
 
 Credits
