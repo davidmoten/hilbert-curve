@@ -1,6 +1,5 @@
 package org.davidmoten.hilbert;
 
-import java.util.Comparator;
 import java.util.TreeSet;
 
 import com.github.davidmoten.guavamini.Preconditions;
@@ -8,7 +7,7 @@ import com.github.davidmoten.guavamini.Preconditions;
 public class Ranges2 {
 
     private final int bufferSize;
-    
+
     // set is ordered by increasing distance to next node (Node is a linked list)
     private final TreeSet<Node> set;
     private Node ranges;
@@ -23,6 +22,7 @@ public class Ranges2 {
 
     public void add(Range r) {
         Preconditions.checkArgument(ranges == null || ranges.value.high() < r.low());
+        System.out.println("adding " + r);
         ranges = insert(ranges, r);
         count++;
         if (ranges.next != null) {
@@ -31,22 +31,24 @@ public class Ranges2 {
             if (count > bufferSize) {
                 // join the range with the smallest distance to next
                 Node x = set.first();
-                Node next = x.next;
+                System.out.println("first = " + x.value);
+                Node next = x.next();
                 Node y = new Node(x.value.join(next.value));
-                y.next = next.next;
-                if (x.previous == null) {
+                y.setNext(next.next());
+                if (x.previous() == null) {
                     ranges = y;
                 } else {
-                    x.previous.next = y;
-                    y.previous = x.previous;
+                    x.previous.setNext(y);
+                    y.setPrevious(x.previous);
                 }
                 // x has been replaced now so null its references for the joy of gc (I remember
                 // some old/new generation gc problem with linked lists that was fixed by doing
                 // this)
-                x.next = null;
-                x.previous = null;
+                x.setNext(null);
+                x.setPrevious (null);
 
                 // remove x (its old distance was used for sorting)
+                System.out.println("removing " + x);
                 set.remove(x);
                 // add y as replacement for x
                 set.add(y);
@@ -54,7 +56,7 @@ public class Ranges2 {
             }
         }
     }
-    
+
     private static Node insert(Node ranges, Range r) {
         if (ranges == null) {
             return new Node(r);
@@ -63,13 +65,39 @@ public class Ranges2 {
         }
     }
 
-    private static final class Node implements Comparator<Node> {
+    // NotThreadSafe
+    private static final class Node implements Comparable<Node> {
+        
+        private static long counter = 0;
+        
         final Range value;
-        Node next;
-        Node previous;
+        private Node next;
+        private Node previous;
+        private final long id;
 
         Node(Range value) {
             this.value = value;
+            this.id = counter++;
+        }
+        
+        Node next() {
+            return next;
+        }
+        
+        Node previous() {
+            return previous;
+        }
+        
+        Node setNext(Node next) {
+            Preconditions.checkArgument(next != this);
+            this.next = next;
+            return this;
+        }
+        
+        Node setPrevious(Node previous) {
+            Preconditions.checkArgument(previous != this);
+            this.previous = previous;
+            return this;
         }
 
         Node insert(Range value) {
@@ -80,17 +108,30 @@ public class Ranges2 {
         }
 
         @Override
-        public int compare(Node a, Node b) {
-            long x = a.next.value.low() - a.value.high();
-            long y = b.next.value.low() - b.value.high();
-            if (x < y) {
-                return -1;
-            } else if (x == y) {
+        public int compareTo(Node o) {
+            if (this == o) {
                 return 0;
             } else {
-                return 1;
+                if (next == null) {
+                    return -1;
+                }
+                long x = next.value.low() - value.high();
+                long y = o.next.value.low() - o.value.high();
+                if (x < y) {
+                    return -1;
+                } else if (x == y) {
+                    return Long.compare(id, o.id);
+                } else {
+                    return 1;
+                }
             }
         }
+
+        @Override
+        public String toString() {
+            return "Node [value=" + value + ", next=" + next + ", previous=" + previous + "]";
+        }
+        
     }
 
 }
