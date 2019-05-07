@@ -8,11 +8,14 @@ import com.github.davidmoten.guavamini.Preconditions;
 public class Ranges2 {
 
     private final int bufferSize;
+    
+    // set is ordered by increasing distance to next node (Node is a linked list)
     private final TreeSet<Node> set;
     private Node ranges;
     private int count;
 
     public Ranges2(int bufferSize) {
+        Preconditions.checkArgument(bufferSize > 1);
         this.bufferSize = bufferSize;
         this.ranges = null;
         this.set = new TreeSet<>();
