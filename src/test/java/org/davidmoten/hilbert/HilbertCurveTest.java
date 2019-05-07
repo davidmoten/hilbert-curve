@@ -25,6 +25,8 @@ public class HilbertCurveTest {
 
     private static final HilbertCurve c = HilbertCurve.bits(5).dimensions(2);
 
+    private static final boolean FULL_DOMAIN_QUERY = false;
+
     private static SmallHilbertCurve small = HilbertCurve.small().bits(5).dimensions(2);
 
     @Test
@@ -342,7 +344,7 @@ public class HilbertCurveTest {
             System.out.println(df2.format(r.get().size()) + "\t"
                     + df.format((double) r.totalLength() / ranges.totalLength()));
         }
-        if (false) {
+        if (FULL_DOMAIN_QUERY) {
             long t = System.currentTimeMillis();
             h.query(new long[] { 0, 0, 0 },
                     new long[] { maxOrdinates, maxOrdinates, maxOrdinates });
