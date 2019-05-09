@@ -97,7 +97,7 @@ public class Benchmarks {
     private static final Query query = new Query();
 
     @Benchmark
-    public Ranges querySydney() {
+    public Ranges2 querySydney() {
         return query.query();
     }
 
@@ -117,7 +117,7 @@ public class Benchmarks {
         long[] point1 = GeoUtil.scalePoint(lat1, lon1, t1, minTime, maxTime, maxOrdinates);
         long[] point2 = GeoUtil.scalePoint(lat2, lon2, t2, minTime, maxTime, maxOrdinates);
 
-        Ranges query() {
+        Ranges2 query() {
             return h.query(point1, point2);
         }
     }

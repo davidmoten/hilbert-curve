@@ -10,7 +10,6 @@ import java.io.PrintStream;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.List;
@@ -24,8 +23,6 @@ import com.github.davidmoten.guavamini.Lists;
 public class HilbertCurveTest {
 
     private static final HilbertCurve c = HilbertCurve.bits(5).dimensions(2);
-
-    private static final boolean FULL_DOMAIN_QUERY = false;
 
     private static SmallHilbertCurve small = HilbertCurve.small().bits(5).dimensions(2);
 
@@ -70,13 +67,11 @@ public class HilbertCurveTest {
                 out.println();
             }
             out.close();
-            String actual = new String(
-                    Files.readAllBytes(
-                            new File("target/indexes-2d-bits-" + bits + ".txt").toPath()),
+            String actual = new String(Files.readAllBytes(new File("target/indexes-2d-bits-" + bits + ".txt").toPath()),
                     StandardCharsets.UTF_8);
-            String expected = new String(Files.readAllBytes(
-                    new File("src/test/resources/expected/indexes-2d-bits-" + bits + ".txt")
-                            .toPath()),
+            String expected = new String(
+                    Files.readAllBytes(
+                            new File("src/test/resources/expected/indexes-2d-bits-" + bits + ".txt").toPath()),
                     StandardCharsets.UTF_8);
             assertEquals(expected, actual);
         }
@@ -114,8 +109,8 @@ public class HilbertCurveTest {
             for (int dimensions = 2; dimensions <= 10; dimensions++)
                 for (long i = 0; i < Math.pow(2, bits + 1); i++) {
                     if (!checkRoundTrip(bits, dimensions, i)) {
-                        System.out.println("failed round trip for bits=" + bits + ", dimensions="
-                                + dimensions + ", index=" + i);
+                        System.out.println(
+                                "failed round trip for bits=" + bits + ", dimensions=" + dimensions + ", index=" + i);
                         failed = true;
                     }
                 }
@@ -132,8 +127,8 @@ public class HilbertCurveTest {
             for (int dimensions = 2; dimensions <= Math.min(5, 63 / bits); dimensions++)
                 for (long i = 0; i < 1 << bits + 1; i++) {
                     if (!checkRoundTripSmall(bits, dimensions, i)) {
-                        System.out.println("failed round trip for bits=" + bits + ", dimensions="
-                                + dimensions + ", index=" + i);
+                        System.out.println(
+                                "failed round trip for bits=" + bits + ", dimensions=" + dimensions + ", index=" + i);
                         failed = true;
                     }
                 }
@@ -306,9 +301,9 @@ public class HilbertCurveTest {
 
     @Test
     public void testSmallQueryPerimeterAlgorithm() {
-        Ranges r = small.query(point(0, 0), point(1, 1));
+        Ranges2 r = small.query(point(0, 0), point(1, 1));
         assertEquals(1, r.size());
-        assertEquals(Range.create(0, 3), r.get().get(0));
+        assertEquals(Range.create(0, 3), r.toList().get(0));
     }
 
     @Test
@@ -317,6 +312,12 @@ public class HilbertCurveTest {
         int dimensions = 2;
         long index = Math.round(Math.pow(2, bits * dimensions - 1) + 1);
         assertTrue(checkRoundTripSmall(bits, dimensions, index));
+    }
+
+    @Test
+    public void testFullDomainSearch() {
+        SmallHilbertCurve h = HilbertCurve.small().bits(5).dimensions(2);
+        h.query(new long[] { 0, 0 }, new long[] { h.maxOrdinate(), h.maxOrdinate() });
     }
 
     @Test
@@ -333,29 +334,20 @@ public class HilbertCurveTest {
         int bits = 10;
         int dimensions = 3;
         SmallHilbertCurve h = HilbertCurve.small().bits(bits).dimensions(dimensions);
-        long maxOrdinates = 1L << bits;
-        long[] point1 = scalePoint(lat1, lon1, t1, minTime, maxTime, maxOrdinates);
-        long[] point2 = scalePoint(lat2, lon2, t2, minTime, maxTime, maxOrdinates);
-        Ranges ranges = h.query(point1, point2);
-        DecimalFormat df = new DecimalFormat("0.00");
-        DecimalFormat df2 = new DecimalFormat("00");
-        for (int i = 0; i < ranges.get().size(); i++) {
-            Ranges r = ranges.join(i);
-            System.out.println(df2.format(r.get().size()) + "\t"
-                    + df.format((double) r.totalLength() / ranges.totalLength()));
-        }
-        if (FULL_DOMAIN_QUERY) {
+        long[] point1 = scalePoint(lat1, lon1, t1, minTime, maxTime, h.maxOrdinate());
+        long[] point2 = scalePoint(lat2, lon2, t2, minTime, maxTime, h.maxOrdinate());
+        h.query(point1, point2);
+        {
             long t = System.currentTimeMillis();
-            h.query(new long[] { 0, 0, 0 },
-                    new long[] { maxOrdinates, maxOrdinates, maxOrdinates });
+            h.query(new long[] { 0, 0, 0 }, new long[] { h.maxOrdinate(), h.maxOrdinate(), h.maxOrdinate() });
             System.out.println("full domain query took " + (System.currentTimeMillis() - t) + "ms");
         }
-        if (true) {
+        {
             long t = System.currentTimeMillis();
             int count = h.query(new long[] { 0, 0, 0 },
-                    new long[] { maxOrdinates, maxOrdinates, maxOrdinates / 24 }).size();
-            System.out.println("full domain query for first hour took "
-                    + (System.currentTimeMillis() - t) + "ms with "+ count + " ranges");
+                    new long[] { h.maxOrdinate(), h.maxOrdinate(), h.maxOrdinate() / 24 }).size();
+            System.out.println("full domain query for first hour took " + (System.currentTimeMillis() - t) + "ms with "
+                    + count + " ranges");
         }
     }
 
@@ -377,8 +369,8 @@ public class HilbertCurveTest {
         SmallHilbertCurve c = HilbertCurve.small().bits(5).dimensions(2);
         long[] a = new long[] { 0, 0 };
         long[] b = new long[] { 31, 31 };
-        Ranges r = c.query(a, b);
-        assertEquals(Lists.newArrayList(Range.create(0, 1023)), r.get());
+        Ranges2 r = c.query(a, b);
+        assertEquals(Lists.newArrayList(Range.create(0, 1023)), r.toList());
     }
 
     @Test
@@ -386,16 +378,15 @@ public class HilbertCurveTest {
         SmallHilbertCurve c = HilbertCurve.small().bits(4).dimensions(2);
         long[] a = new long[] { 1, 1 };
         long[] b = new long[] { 7, 4 };
-        Ranges result = c.query(a, b);
-        Ranges expected = Ranges.create() //
-                .add(2, 2) //
+        Ranges2 result = c.query(a, b);
+        Ranges2 expected = new Ranges2(0).add(2, 2) //
                 .add(6, 13) //
                 .add(17, 18) //
                 .add(22, 32) //
                 .add(35, 37) //
                 .add(53, 54) //
                 .add(57, 57);
-        assertEquals(expected.get(), result.get());
+        assertEquals(expected.toList(), result.toList());
     }
 
     @Test
@@ -416,8 +407,8 @@ public class HilbertCurveTest {
         SmallHilbertCurve c = HilbertCurve.small().bits(5).dimensions(2);
         long[] point1 = new long[] { 3, 3 };
         long[] point2 = new long[] { 8, 10 };
-        Ranges ranges = c.query(point1, point2, 1);
-        assertEquals(Lists.newArrayList(Range.create(10, 229)), ranges.get());
+        Ranges2 ranges = c.query(point1, point2, 1);
+        assertEquals(Lists.newArrayList(Range.create(10, 229)), ranges.toList());
     }
 
     @Test
@@ -425,7 +416,7 @@ public class HilbertCurveTest {
         SmallHilbertCurve c = HilbertCurve.small().bits(5).dimensions(2);
         long[] point1 = new long[] { 3, 3 };
         long[] point2 = new long[] { 8, 10 };
-        Ranges ranges = c.query(point1, point2, 0);
+        Ranges2 ranges = c.query(point1, point2, 0);
         ranges.stream().forEach(System.out::println);
     }
 
@@ -434,7 +425,7 @@ public class HilbertCurveTest {
         SmallHilbertCurve c = HilbertCurve.small().bits(5).dimensions(2);
         long[] point1 = new long[] { 3, 3 };
         long[] point2 = new long[] { 8, 10 };
-        Ranges ranges = c.query(point1, point2, 3);
+        Ranges2 ranges = c.query(point1, point2, 3);
         ranges.stream().forEach(System.out::println);
     }
 
@@ -443,7 +434,7 @@ public class HilbertCurveTest {
         SmallHilbertCurve c = HilbertCurve.small().bits(5).dimensions(2);
         long[] point1 = new long[] { 3, 3 };
         long[] point2 = new long[] { 8, 10 };
-        Ranges ranges = c.query(point1, point2, 6);
+        Ranges2 ranges = c.query(point1, point2, 6);
         ranges.stream().forEach(System.out::println);
     }
 

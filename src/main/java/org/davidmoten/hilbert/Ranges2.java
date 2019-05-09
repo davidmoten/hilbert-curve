@@ -1,8 +1,12 @@
 package org.davidmoten.hilbert;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.TreeSet;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
+import com.github.davidmoten.guavamini.Lists;
 import com.github.davidmoten.guavamini.Preconditions;
 
 // NotThreadSafe
@@ -27,7 +31,13 @@ public class Ranges2 implements Iterable<Range> {
         }
     }
 
-    public void add(Range r) {
+    public Ranges2 add(long low, long high) {
+        Preconditions.checkArgument(low <= high);
+        add(Range.create(low, high));
+        return this;
+    }
+
+    public Ranges2 add(Range r) {
         Preconditions.checkArgument(ranges == null || ranges.value.high() < r.low(),
                 "ranges must be added in increasing order and without overlap");
         Node node = new Node(r);
@@ -59,7 +69,9 @@ public class Ranges2 implements Iterable<Range> {
                 Node n = new Node(joined);
                 // link and recalculate distance (won't change because the lower bound of the
                 // new ranges is the same as the lower bound of the range of first)
-                n.setNext(first.next());
+                if (first.next() != null) {
+                    n.setNext(first.next());
+                }
                 // link and calculate the distance for n
                 Node firstPrevious = first.previous();
                 if (firstPrevious == ranges) {
@@ -76,6 +88,7 @@ public class Ranges2 implements Iterable<Range> {
                 count--;
             }
         }
+        return this;
     }
 
     @Override
@@ -99,12 +112,20 @@ public class Ranges2 implements Iterable<Range> {
         };
     }
 
+    public Stream<Range> stream() {
+        return StreamSupport.stream(this.spliterator(), false);
+    }
+
     public void println() {
         forEach(System.out::println);
     }
 
     public int size() {
         return count;
+    }
+
+    public List<Range> toList() {
+        return Lists.newArrayList(this);
     }
 
 }
