@@ -292,7 +292,7 @@ public class HilbertCurveTest {
         SmallHilbertCurve h = HilbertCurve.small().bits(5).dimensions(2);
         h.query(new long[] { 0, 0 }, new long[] { h.maxOrdinate(), h.maxOrdinate() });
     }
-    
+
     @Test
     public void testTotalRangeExpandingWithIncreasingSplitDepth() {
         // get ranges for Sydney query to measure effectiveness
@@ -310,25 +310,35 @@ public class HilbertCurveTest {
         long[] point1 = scalePoint(lat1, lon1, t1, minTime, maxTime, h.maxOrdinate());
         long[] point2 = scalePoint(lat2, lon2, t2, minTime, maxTime, h.maxOrdinate());
         h.query(point1, point2);
+        Range all = Range.create(0, (1 << bits * dimensions) - 1);
         {
             long t = System.currentTimeMillis();
             System.out.println("maxOrdinate=" + h.maxOrdinate());
-            Ranges ranges = h.query(new long[] { 0, 0, 0 }, new long[] { h.maxOrdinate(), h.maxOrdinate(), h.maxOrdinate() });
-            System.out.println("full domain query in 3 dimensions, 10 bits, took " + (System.currentTimeMillis() - t) + "ms with " + ranges.size() + " ranges");
+            Ranges ranges = h.query(new long[] { 0, 0, 0 },
+                    new long[] { h.maxOrdinate(), h.maxOrdinate(), h.maxOrdinate() });
+            System.out.println("full domain query in 3 dimensions, 10 bits, took " + (System.currentTimeMillis() - t)
+                    + "ms with " + ranges.size() + " ranges");
             assertEquals(1, ranges.size());
-            ranges = h.query(new long[] { 0, 0, 0 }, new long[] { h.maxOrdinate(), h.maxOrdinate(), h.maxOrdinate() }, 12);
-            System.out.println("full domain query in 3 dimensions, 10 bits, took " + (System.currentTimeMillis() - t) + "ms with " + ranges.size() + " ranges");
-            ranges = h.query(new long[] { 0, 0, 0 }, new long[] { h.maxOrdinate(), h.maxOrdinate(), h.maxOrdinate() }, 1);
-            System.out.println("full domain query in 3 dimensions, 10 bits, took " + (System.currentTimeMillis() - t) + "ms with " + ranges.size() + " ranges");
-            ranges.println();
-            System.out.println("maxIndex=" + h.maxIndex());
+            assertEquals(all, ranges.iterator().next());
+            ranges = h.query(new long[] { 0, 0, 0 }, new long[] { h.maxOrdinate(), h.maxOrdinate(), h.maxOrdinate() },
+                    12);
+            System.out.println("full domain query in 3 dimensions, 10 bits, took " + (System.currentTimeMillis() - t)
+                    + "ms with " + ranges.size() + " ranges");
+            assertEquals(1, ranges.size());
+            assertEquals(all, ranges.iterator().next());
+            ranges = h.query(new long[] { 0, 0, 0 }, new long[] { h.maxOrdinate(), h.maxOrdinate(), h.maxOrdinate() },
+                    1);
+            System.out.println("full domain query in 3 dimensions, 10 bits, took " + (System.currentTimeMillis() - t)
+                    + "ms with " + ranges.size() + " ranges");
+            assertEquals(1, ranges.size());
+            assertEquals(all, ranges.iterator().next());
         }
         {
             long t = System.currentTimeMillis();
             int count = h.query(new long[] { 0, 0, 0 },
                     new long[] { h.maxOrdinate(), h.maxOrdinate(), h.maxOrdinate() / 24 }).size();
-            System.out.println("full domain query in 3 dimensions, 10 bits, for first hour took " + (System.currentTimeMillis() - t) + "ms with "
-                    + count + " ranges");
+            System.out.println("full domain query in 3 dimensions, 10 bits, for first hour took "
+                    + (System.currentTimeMillis() - t) + "ms with " + count + " ranges");
             assertEquals(295051, count);
         }
     }
