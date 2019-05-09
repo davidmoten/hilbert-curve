@@ -9,6 +9,11 @@ import java.util.stream.StreamSupport;
 import com.github.davidmoten.guavamini.Lists;
 import com.github.davidmoten.guavamini.Preconditions;
 
+/**
+ * Adds ranges to a collection and combines ranges optimally when the internal
+ * buffer is exceeded.
+ * 
+ */
 // NotThreadSafe
 public class Ranges implements Iterable<Range> {
 
@@ -16,6 +21,8 @@ public class Ranges implements Iterable<Range> {
 
     // set is ordered by increasing distance to next node (Node is a linked list)
     private final TreeSet<Node> set;
+
+    //mutable
     private Node ranges; // in descending order of ranges e.g. Range(5,7) -> Range(1,3)
     private int count; // count of items in ranges
 
