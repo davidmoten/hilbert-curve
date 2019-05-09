@@ -16,10 +16,15 @@ public class Ranges2 implements Iterable<Range> {
     private int count; // count of items in ranges
 
     public Ranges2(int bufferSize) {
-        Preconditions.checkArgument(bufferSize > 1);
+        Preconditions.checkArgument(bufferSize >= 0);
         this.bufferSize = bufferSize;
         this.ranges = null;
-        this.set = new TreeSet<>();
+        if (bufferSize == 0) {
+            // save on allocations
+            this.set = null;
+        } else {
+            this.set = new TreeSet<>();
+        }
     }
 
     public void add(Range r) {
@@ -29,11 +34,13 @@ public class Ranges2 implements Iterable<Range> {
         count++;
         if (ranges == null) {
             ranges = node;
+        } else if (bufferSize == 0) {
+            node.setNext(ranges);
         } else {
             // and set new head and recalculate distance for ranges
             node.setNext(ranges);
 
-            // add old head to set (now that the distanceToPrevious has been calculated) 
+            // add old head to set (now that the distanceToPrevious has been calculated)
             set.add(ranges);
 
             ranges = node;
@@ -44,7 +51,7 @@ public class Ranges2 implements Iterable<Range> {
 
                 // replace that node in linked list (ranges) with a new Node
                 // that has the concatenation of that node with previous node's range
-                // also remove its predecessor 
+                // also remove its predecessor
 
                 // first.previous will not be null because distance was present to be in set
                 Range joined = first.value.join(first.previous().value);
@@ -94,6 +101,10 @@ public class Ranges2 implements Iterable<Range> {
 
     public void println() {
         forEach(System.out::println);
+    }
+
+    public int size() {
+        return count;
     }
 
 }
