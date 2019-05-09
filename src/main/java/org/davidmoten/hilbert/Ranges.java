@@ -22,7 +22,7 @@ public class Ranges implements Iterable<Range> {
     // set is ordered by increasing distance to next node (Node is a linked list)
     private final TreeSet<Node> set;
 
-    //mutable
+    // mutable
     private Node ranges; // in descending order of ranges e.g. Range(5,7) -> Range(1,3)
     private Node last;
     private int count; // count of items in ranges
@@ -41,8 +41,7 @@ public class Ranges implements Iterable<Range> {
 
     public Ranges add(long low, long high) {
         Preconditions.checkArgument(low <= high);
-        add(Range.create(low, high));
-        return this;
+        return add(Range.create(low, high));
     }
 
     public Ranges add(Range r) {
@@ -52,9 +51,10 @@ public class Ranges implements Iterable<Range> {
         count++;
         if (ranges == null) {
             ranges = node;
-            last = ranges;
+            last = node;
         } else if (bufferSize == 0) {
             node.setNext(ranges);
+            ranges = node;
         } else {
             // and set new head and recalculate distance for ranges
             node.setNext(ranges);
@@ -70,10 +70,12 @@ public class Ranges implements Iterable<Range> {
 
                 // replace that node in linked list (ranges) with a new Node
                 // that has the concatenation of that node with previous node's range
-                // also remove its predecessor
+                // also remove its predecessor. We dont' need to remove the predecessor from the
+                // set because it's distanceToPrevious will remain the same
 
                 // first.previous will not be null because distance was present to be in set
                 Range joined = first.value.join(first.previous().value);
+                set.remove(first.previous());
 
                 Node n = new Node(joined);
                 // link and recalculate distance (won't change because the lower bound of the
@@ -91,6 +93,7 @@ public class Ranges implements Iterable<Range> {
                 } else {
                     first.previous().previous().setNext(n);
                 }
+                set.add(n);
 
                 // clear pointers from first to help gc out
                 // there new gen to old gen promotion can cause problems
