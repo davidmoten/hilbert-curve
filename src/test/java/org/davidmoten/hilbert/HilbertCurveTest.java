@@ -313,16 +313,16 @@ public class HilbertCurveTest {
         {
             long t = System.currentTimeMillis();
             Ranges ranges = h.query(new long[] { 0, 0, 0 }, new long[] { h.maxOrdinate(), h.maxOrdinate(), h.maxOrdinate() });
-            System.out.println("full domain query took " + (System.currentTimeMillis() - t) + "ms with " + ranges.size() + " ranges");
+            System.out.println("full domain query in 3 dimensions, 10 bits, took " + (System.currentTimeMillis() - t) + "ms with " + ranges.size() + " ranges");
             assertEquals(278300, ranges.size());
             ranges = h.query(new long[] { 0, 0, 0 }, new long[] { h.maxOrdinate(), h.maxOrdinate(), h.maxOrdinate() }, 12);
-            System.out.println("full domain query took " + (System.currentTimeMillis() - t) + "ms with " + ranges.size() + " ranges");
+            System.out.println("full domain query in 3 dimensions, 10 bits, took " + (System.currentTimeMillis() - t) + "ms with " + ranges.size() + " ranges");
         }
         {
             long t = System.currentTimeMillis();
             int count = h.query(new long[] { 0, 0, 0 },
                     new long[] { h.maxOrdinate(), h.maxOrdinate(), h.maxOrdinate() / 24 }).size();
-            System.out.println("full domain query for first hour took " + (System.currentTimeMillis() - t) + "ms with "
+            System.out.println("full domain query in 3 dimensions, 10 bits, for first hour took " + (System.currentTimeMillis() - t) + "ms with "
                     + count + " ranges");
             assertEquals(25206, count);
         }

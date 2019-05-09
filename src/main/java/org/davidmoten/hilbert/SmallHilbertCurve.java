@@ -3,8 +3,6 @@ package org.davidmoten.hilbert;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import com.github.davidmoten.guavamini.Preconditions;
 
@@ -106,6 +104,10 @@ public final class SmallHilbertCurve {
 
     public long maxOrdinate() {
         return 1 << bits - 1;
+    }
+    
+    public long maxIndex() {
+        return 1 << (bits * dimensions) - 1;
     }
 
     /////////////////////////////////////////////////
