@@ -6,7 +6,7 @@ import java.util.TreeSet;
 import com.github.davidmoten.guavamini.Preconditions;
 
 // NotThreadSafe
-public class Ranges2 implements Iterable<Range>{
+public class Ranges2 implements Iterable<Range> {
 
     private final int bufferSize;
 
@@ -50,14 +50,15 @@ public class Ranges2 implements Iterable<Range>{
                 // link and recalculate distance (won't change because the lower bound of the
                 // new ranges is the same as the lower bound of the range of first)
                 n.setNext(first.next());
-                //link and calculate the distance for n
+                // link and calculate the distance for n
                 first.previous().setNext(n);
 
                 // clear pointers from first to help gc out
                 // there new gen to old gen promotion can cause problems
-                first.clearNext();
-                first.clearPrevious();
+                first.clearForGc();
 
+                // we have reduced number of nodes in list so reduce count
+                count--;
             }
         }
     }
@@ -65,7 +66,7 @@ public class Ranges2 implements Iterable<Range>{
     @Override
     public Iterator<Range> iterator() {
         return new Iterator<Range>() {
-            
+
             Node r = ranges;
 
             @Override
@@ -79,9 +80,8 @@ public class Ranges2 implements Iterable<Range>{
                 r = r.next();
                 return v;
             }
-            
+
         };
     }
 
-    
 }

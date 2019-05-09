@@ -35,13 +35,6 @@ final class Node implements Comparable<Node> {
         return this;
     }
 
-    Node insert(Range value) {
-        Node n = new Node(value);
-        n.next = this;
-        previous = n;
-        return n;
-    }
-
     @Override
     public int compareTo(Node o) {
         if (this == o) {
@@ -71,12 +64,9 @@ final class Node implements Comparable<Node> {
         this.distanceToPrevious = distance;
     }
 
-    public void clearNext() {
+    public void clearForGc() {
         next = null;
-    }
-    
-    public void clearPrevious() {
         previous = null;
     }
-
+    
 }
