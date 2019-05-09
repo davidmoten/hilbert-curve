@@ -1,10 +1,12 @@
 package org.davidmoten.hilbert;
 
+import java.util.Iterator;
 import java.util.TreeSet;
 
 import com.github.davidmoten.guavamini.Preconditions;
 
-public class Ranges2 {
+// NotThreadSafe
+public class Ranges2 implements Iterable<Range>{
 
     private final int bufferSize;
 
@@ -22,116 +24,64 @@ public class Ranges2 {
 
     public void add(Range r) {
         Preconditions.checkArgument(ranges == null || ranges.value.high() < r.low());
-        System.out.println("adding " + r);
-        ranges = insert(ranges, r);
+        Node node = new Node(r);
         count++;
-        if (ranges.next != null) {
-            // if there are at least two ranges
-            set.add(ranges);
-            if (count > bufferSize) {
-                // join the range with the smallest distance to next
-                Node x = set.first();
-                System.out.println("first = " + x.value);
-                Node next = x.next();
-                Node y = new Node(x.value.join(next.value));
-                y.setNext(next.next());
-                if (x.previous() == null) {
-                    ranges = y;
-                } else {
-                    x.previous.setNext(y);
-                    y.setPrevious(x.previous);
-                }
-                // x has been replaced now so null its references for the joy of gc (I remember
-                // some old/new generation gc problem with linked lists that was fixed by doing
-                // this)
-                x.setNext(null);
-                x.setPrevious (null);
-
-                // remove x (its old distance was used for sorting)
-                System.out.println("removing " + x);
-                set.remove(x);
-                // add y as replacement for x
-                set.add(y);
-                count--;
-            }
-        }
-    }
-
-    private static Node insert(Node ranges, Range r) {
         if (ranges == null) {
-            return new Node(r);
+            ranges = node;
         } else {
-            return ranges.insert(r);
-        }
-    }
+            // and set new head and recalculate distance for ranges
+            node.setNext(ranges);
 
-    // NotThreadSafe
-    private static final class Node implements Comparable<Node> {
-        
-        private static long counter = 0;
-        
-        final Range value;
-        private Node next;
-        private Node previous;
-        private final long id;
+            // add old head to set
+            set.add(ranges);
 
-        Node(Range value) {
-            this.value = value;
-            this.id = counter++;
-        }
-        
-        Node next() {
-            return next;
-        }
-        
-        Node previous() {
-            return previous;
-        }
-        
-        Node setNext(Node next) {
-            Preconditions.checkArgument(next != this);
-            this.next = next;
-            return this;
-        }
-        
-        Node setPrevious(Node previous) {
-            Preconditions.checkArgument(previous != this);
-            this.previous = previous;
-            return this;
-        }
+            ranges = node;
 
-        Node insert(Range value) {
-            Node n = new Node(value);
-            n.next = this;
-            previous = n;
-            return n;
-        }
+            if (count > bufferSize) {
+                // remove node from set with least distance to next node
+                Node first = set.pollFirst();
 
-        @Override
-        public int compareTo(Node o) {
-            if (this == o) {
-                return 0;
-            } else {
-                if (next == null) {
-                    return -1;
-                }
-                long x = next.value.low() - value.high();
-                long y = o.next.value.low() - o.value.high();
-                if (x < y) {
-                    return -1;
-                } else if (x == y) {
-                    return Long.compare(id, o.id);
-                } else {
-                    return 1;
-                }
+                // replace that node in linked list (ranges) with a new Node
+                // that has the concatenation of that node with previous node's range
+
+                // first.previous will not be null because distance was present to be in set
+                Range joined = first.value.join(first.previous().value);
+                Node n = new Node(joined);
+                // link and recalculate distance (won't change because the lower bound of the
+                // new ranges is the same as the lower bound of the range of first)
+                n.setNext(first.next());
+                //link and calculate the distance for n
+                first.previous().setNext(n);
+
+                // clear pointers from first to help gc out
+                // there new gen to old gen promotion can cause problems
+                first.clearNext();
+                first.clearPrevious();
+
             }
         }
-
-        @Override
-        public String toString() {
-            return "Node [value=" + value + ", next=" + next + ", previous=" + previous + "]";
-        }
-        
     }
 
+    @Override
+    public Iterator<Range> iterator() {
+        return new Iterator<Range>() {
+            
+            Node r = ranges;
+
+            @Override
+            public boolean hasNext() {
+                return r != null;
+            }
+
+            @Override
+            public Range next() {
+                Range v = r.value;
+                r = r.next();
+                return v;
+            }
+            
+        };
+    }
+
+    
 }
