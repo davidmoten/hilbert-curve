@@ -44,7 +44,7 @@ public class Ranges2 implements Iterable<Range> {
 
                 // replace that node in linked list (ranges) with a new Node
                 // that has the concatenation of that node with previous node's range
-                // also replace its predecessor 
+                // also remove its predecessor 
 
                 // first.previous will not be null because distance was present to be in set
                 Range joined = first.value.join(first.previous().value);
