@@ -5,9 +5,6 @@ import com.github.davidmoten.guavamini.Preconditions;
 // NotThreadSafe
 final class Node implements Comparable<Node> {
 
-    private static long counter = 0;
-
-    private final long id;
     final Range value;
     private Node next;
     private Node previous;
@@ -15,7 +12,6 @@ final class Node implements Comparable<Node> {
 
     Node(Range value) {
         this.value = value;
-        this.id = counter++;
     }
 
     Node next() {
@@ -48,7 +44,7 @@ final class Node implements Comparable<Node> {
             if (x < y) {
                 return -1;
             } else if (x == y) {
-                return Long.compare(id, o.id);
+                return Long.compare(value.low(), o.value.low());
             } else {
                 return 1;
             }
