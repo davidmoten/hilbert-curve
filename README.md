@@ -218,7 +218,7 @@ Range [low=227, high=229]
 
 When using querying do experiments with the number of bits and `maxRanges` (querying in parallel on each range) to get your ideal run time. 
 
-The perimeter traversal used by the `query` method is O(width<sup>dimensions-1</sup> 2<sup>bits*(dimensions-1)</sup>). 
+The number of cells on the perimeter is width<sup>dimensions-1</sup> 2<sup>bits*(dimensions-1)</sup>. Once the perimeter values are collected the values are sorted so the computational complexity of the algorithm is O(Xlog(X)) where X = width<sup>dimensions-1</sup> 2<sup>bits*(dimensions-1)</sup>.
 
 ### Spatio-temporal querying
 Let's consider 3 dimensions of information being latitude, longitude and time. We'll index the full world for one day using 10 bits. When I search the Sydney (Australia) region for an hour at midday I get exact coverage with 20 ranges and those ranges are calculated in ~20ns. When we limit the number of ranges the ratio of coverage to exact coverage is below:
