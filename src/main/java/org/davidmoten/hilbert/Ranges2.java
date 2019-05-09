@@ -33,7 +33,7 @@ public class Ranges2 implements Iterable<Range> {
             // and set new head and recalculate distance for ranges
             node.setNext(ranges);
 
-            // add old head to set
+            // add old head to set (now that the distanceToPrevious has been calculated) 
             set.add(ranges);
 
             ranges = node;
@@ -44,6 +44,7 @@ public class Ranges2 implements Iterable<Range> {
 
                 // replace that node in linked list (ranges) with a new Node
                 // that has the concatenation of that node with previous node's range
+                // also replace its predecessor 
 
                 // first.previous will not be null because distance was present to be in set
                 Range joined = first.value.join(first.previous().value);
@@ -53,7 +54,12 @@ public class Ranges2 implements Iterable<Range> {
                 // new ranges is the same as the lower bound of the range of first)
                 n.setNext(first.next());
                 // link and calculate the distance for n
-                first.previous().setNext(n);
+                Node firstPrevious = first.previous();
+                if (firstPrevious == ranges) {
+                    ranges = n;
+                } else {
+                    first.previous().previous().setNext(n);
+                }
 
                 // clear pointers from first to help gc out
                 // there new gen to old gen promotion can cause problems
@@ -84,6 +90,10 @@ public class Ranges2 implements Iterable<Range> {
             }
 
         };
+    }
+
+    public void println() {
+        forEach(System.out::println);
     }
 
 }
