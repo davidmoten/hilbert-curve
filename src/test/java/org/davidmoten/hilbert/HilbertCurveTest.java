@@ -292,7 +292,7 @@ public class HilbertCurveTest {
         SmallHilbertCurve h = HilbertCurve.small().bits(5).dimensions(2);
         h.query(new long[] { 0, 0 }, new long[] { h.maxOrdinate(), h.maxOrdinate() });
     }
-
+    
     @Test
     public void testTotalRangeExpandingWithIncreasingSplitDepth() {
         // get ranges for Sydney query to measure effectiveness
@@ -312,8 +312,9 @@ public class HilbertCurveTest {
         h.query(point1, point2);
         {
             long t = System.currentTimeMillis();
-            h.query(new long[] { 0, 0, 0 }, new long[] { h.maxOrdinate(), h.maxOrdinate(), h.maxOrdinate() });
-            System.out.println("full domain query took " + (System.currentTimeMillis() - t) + "ms");
+            Ranges ranges = h.query(new long[] { 0, 0, 0 }, new long[] { h.maxOrdinate(), h.maxOrdinate(), h.maxOrdinate() });
+            System.out.println("full domain query took " + (System.currentTimeMillis() - t) + "ms with " + ranges.size() + " ranges");
+            assertTrue(ranges.size() > 10);
         }
         {
             long t = System.currentTimeMillis();
@@ -321,6 +322,7 @@ public class HilbertCurveTest {
                     new long[] { h.maxOrdinate(), h.maxOrdinate(), h.maxOrdinate() / 24 }).size();
             System.out.println("full domain query for first hour took " + (System.currentTimeMillis() - t) + "ms with "
                     + count + " ranges");
+            assertTrue(count > 10);
         }
     }
 

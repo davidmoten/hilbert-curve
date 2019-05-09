@@ -16,7 +16,8 @@ public class RangesTest {
         Ranges r = new Ranges(2);
         r.add(Range.create(1));
         r.add(Range.create(10));
-        checkIs(r, 10, 10, 1, 1);
+        checkIs(r, 1, 1, 10, 10);
+        assertEquals(2, r.size());
     }
 
     @Test
@@ -25,7 +26,8 @@ public class RangesTest {
         r.add(Range.create(1));
         r.add(Range.create(10));
         r.add(Range.create(12));
-        checkIs(r, 10, 12, 1, 1);
+        checkIs(r, 1, 1, 10, 12);
+        assertEquals(2, r.size());
     }
 
     @Test
@@ -36,7 +38,7 @@ public class RangesTest {
         r.add(Range.create(12));
         r.add(Range.create(18));
         r.println();
-        checkIs(r, 18, 18, 10, 12, 1, 1);
+        checkIs(r, 1, 1, 10, 12, 18, 18);
     }
 
     @Test(expected = IllegalArgumentException.class)

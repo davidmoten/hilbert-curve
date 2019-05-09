@@ -129,7 +129,7 @@ public final class SmallHilbertCurve {
         if (maxRanges == 0) {
             return query(a, b, 0, 0);
         } else {
-            return query(a, b, maxRanges, Math.min(DEFAULT_BUFFER_SIZE, maxRanges));
+            return query(a, b, maxRanges, Math.max(DEFAULT_BUFFER_SIZE, maxRanges));
         }
     }
 

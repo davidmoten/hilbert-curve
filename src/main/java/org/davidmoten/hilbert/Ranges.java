@@ -24,6 +24,7 @@ public class Ranges implements Iterable<Range> {
 
     //mutable
     private Node ranges; // in descending order of ranges e.g. Range(5,7) -> Range(1,3)
+    private Node last;
     private int count; // count of items in ranges
 
     Ranges(int bufferSize) {
@@ -51,6 +52,7 @@ public class Ranges implements Iterable<Range> {
         count++;
         if (ranges == null) {
             ranges = node;
+            last = ranges;
         } else if (bufferSize == 0) {
             node.setNext(ranges);
         } else {
@@ -78,6 +80,9 @@ public class Ranges implements Iterable<Range> {
                 // new ranges is the same as the lower bound of the range of first)
                 if (first.next() != null) {
                     n.setNext(first.next());
+                } else {
+                    // first is last in linked list so update last
+                    last = n;
                 }
                 // link and calculate the distance for n
                 Node firstPrevious = first.previous();
@@ -102,7 +107,7 @@ public class Ranges implements Iterable<Range> {
     public Iterator<Range> iterator() {
         return new Iterator<Range>() {
 
-            Node r = ranges;
+            Node r = last;
 
             @Override
             public boolean hasNext() {
@@ -112,7 +117,7 @@ public class Ranges implements Iterable<Range> {
             @Override
             public Range next() {
                 Range v = r.value;
-                r = r.next();
+                r = r.previous();
                 return v;
             }
 
