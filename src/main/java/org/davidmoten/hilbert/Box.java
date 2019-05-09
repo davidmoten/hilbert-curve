@@ -17,7 +17,7 @@ final class Box {
         this.b = b;
     }
 
-    public int dimensions() {
+    int dimensions() {
         return a.length;
     }
 
@@ -28,7 +28,7 @@ final class Box {
 
     // TODO not used yet but good for unit testing (e.g. ensuring that the cells
     // reported by the perimiter algorithm match those reported by visit all cells
-    public void visitCells(Consumer<? super long[]> visitor) {
+    void visitCells(Consumer<? super long[]> visitor) {
         long[] mins = mins(a, b);
         long[] maxes = maxes(a, b);
         long[] x = Arrays.copyOf(mins, mins.length);
@@ -42,7 +42,7 @@ final class Box {
         }
     }
 
-    public void visitPerimeter(Consumer<? super long[]> visitor) {
+    void visitPerimeter(Consumer<? super long[]> visitor) {
         long[] mins = mins(a, b);
         long[] maxes = maxes(a, b);
         for (int specialIndex = dimensions() - 1; specialIndex >= 0; specialIndex--) {
@@ -143,7 +143,7 @@ final class Box {
         return c;
     }
 
-    public boolean contains(long[] point) {
+    boolean contains(long[] point) {
         Preconditions.checkArgument(a.length == point.length);
         for (int i = 0; i < a.length; i++) {
             if (point[i] < Math.min(a[i], b[i]) || point[i] > Math.max(a[i], b[i])) {

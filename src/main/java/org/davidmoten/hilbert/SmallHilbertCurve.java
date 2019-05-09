@@ -1,9 +1,8 @@
 package org.davidmoten.hilbert;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import com.github.davidmoten.guavamini.Preconditions;
 
@@ -19,6 +18,8 @@ import com.github.davidmoten.guavamini.Preconditions;
  */
 public final class SmallHilbertCurve {
 
+    private static final int DEFAULT_BUFFER_SIZE = 1024;
+
     private final int bits;
     private final int dimensions;
     private final int length;
@@ -32,12 +33,14 @@ public final class SmallHilbertCurve {
     /**
      * Converts a point to its Hilbert curve index.
      * 
-     * @param point an array of {@code long}. Each coordinate can be between 0 and
-     *              2<sup>bits</sup>-1.
+     * @param point
+     *            an array of {@code long}. Each coordinate can be between 0 and
+     *            2<sup>bits</sup>-1.
      * @return index {@code long} in the range 0 to 2<sup>bits * dimensions</sup> -
      *         1
-     * @throws IllegalArgumentException if length of point array is not equal to the
-     *                                  number of dimensions.
+     * @throws IllegalArgumentException
+     *             if length of point array is not equal to the number of
+     *             dimensions.
      */
     public long index(long... point) {
         Preconditions.checkArgument(point.length == dimensions);
@@ -48,10 +51,12 @@ public final class SmallHilbertCurve {
      * Converts a {@code long} index (distance along the Hilbert Curve from 0) to a
      * point of dimensions defined in the constructor of {@code this}.
      * 
-     * @param index index along the Hilbert Curve from 0. Maximum value 2 <sup>bits
-     *              * dimensions</sup>-1.
+     * @param index
+     *            index along the Hilbert Curve from 0. Maximum value 2 <sup>bits *
+     *            dimensions</sup>-1.
      * @return array of longs being the point
-     * @throws IllegalArgumentException if index is negative
+     * @throws IllegalArgumentException
+     *             if index is negative
      */
     public long[] point(long index) {
         return HilbertCurve.transposedIndexToPoint(bits, transposeLong(index));
@@ -97,79 +102,55 @@ public final class SmallHilbertCurve {
         return x;
     }
 
+    public long maxOrdinate() {
+        return (1 << bits) - 1;
+    }
+    
+    public long maxIndex() {
+        return (1 << (bits * dimensions)) - 1;
+    }
+
     /////////////////////////////////////////////////
     // Query support
     ////////////////////////////////////////////////
-
-    public Ranges query(long[] a, long[] b, int maxRanges) {
-        Preconditions.checkArgument(maxRanges >= 0);
-        // TODO optimise this by joining ranges as they are found
-        // instead of joining them at the end
-        Ranges ranges = query(a, b);
-        if (maxRanges >= ranges.size() || maxRanges == 0) {
-            return ranges;
-        } else {
-            return ranges.join(ranges.size() - maxRanges);
-        }
-    }
 
     /**
      * Returns a list of index ranges exactly covering the region bounded by
      * {@code a} and {@code b}.
      * 
-     * @param a one vertex of the region
-     * @param b the opposing vertex to a
+     * @param a
+     *            one vertex of the region
+     * @param b
+     *            the opposing vertex to a
      */
     public Ranges query(long[] a, long[] b) {
-        Box box = new Box(a, b);
-        SortedSet<Long> set = new TreeSet<>();
-        box.visitPerimeter(cell -> {
-            long n = index(cell);
-            set.add(n);
-        });
-        List<Long> list = new ArrayList<>(set);
-        int i = 0;
-        List<Range> ranges = new ArrayList<>();
-        long rangeStart = -1;
-        while (true) {
-            if (i == list.size()) {
-                break;
-            }
-            if (rangeStart == -1) {
-                rangeStart = list.get(i);
-            }
-            while (i < list.size() - 1 && list.get(i + 1) == list.get(i) + 1) {
-                i++;
-            }
-            if (i == list.size() - 1) {
-                ranges.add(Range.create(rangeStart, list.get(i)));
-                break;
-            }
-            long[] point = point(list.get(i) + 1);
-            if (box.contains(point)) {
-                // is not on the perimeter (would have been caught in previous while loop)
-                // so is internal to the box which means the next value in the sorted hilbert
-                // curve indexes for the perimiter must be where it exits
-                i += 1;
-            } else {
-                ranges.add(Range.create(rangeStart, list.get(i)));
-                rangeStart = -1;
-                i++;
-            }
-        }
-        return new Ranges(ranges);
+        return query(a, b, 0, 0);
     }
 
-    public Ranges2 query2(long[] a, long[] b, int maxRanges) {
+    public Ranges query(long[] a, long[] b, int maxRanges) {
+        if (maxRanges == 0) {
+            return query(a, b, 0, 0);
+        } else {
+            return query(a, b, maxRanges, Math.max(DEFAULT_BUFFER_SIZE, maxRanges));
+        }
+    }
+
+    public Ranges query(long[] a, long[] b, int maxRanges, int bufferSize) {
+        Preconditions.checkArgument(maxRanges >= 0);
+        Preconditions.checkArgument(bufferSize >= maxRanges, "bufferSize must be greater than or equal to maxRanges");
+        if (maxRanges == 0) {
+            // unlimited
+            bufferSize = 0;
+        }
         Box box = new Box(a, b);
-        SortedSet<Long> set = new TreeSet<>();
+        List<Long> list = new ArrayList<>();
         box.visitPerimeter(cell -> {
             long n = index(cell);
-            set.add(n);
+            list.add(n);
         });
-        List<Long> list = new ArrayList<>(set);
+        Collections.sort(list);
         int i = 0;
-        Ranges2 ranges = new Ranges2(maxRanges);
+        Ranges ranges = new Ranges(bufferSize);
         long rangeStart = -1;
         while (true) {
             if (i == list.size()) {
@@ -197,9 +178,17 @@ public final class SmallHilbertCurve {
                 i++;
             }
         }
-        return ranges;
+        if (ranges.size() <= maxRanges) {
+            return ranges;
+        } else {
+            Ranges r = new Ranges(maxRanges);
+            for (Range range : ranges) {
+                r.add(range);
+            }
+            return r;
+        }
     }
-    
+
     public static final class Builder {
         private int bits;
 
@@ -213,8 +202,7 @@ public final class SmallHilbertCurve {
         }
 
         public SmallHilbertCurve dimensions(int dimensions) {
-            Preconditions.checkArgument(bits * dimensions <= 63,
-                    "bits * dimensions must be less than or equal to 63");
+            Preconditions.checkArgument(bits * dimensions <= 63, "bits * dimensions must be less than or equal to 63");
             return new SmallHilbertCurve(bits, dimensions);
         }
 
