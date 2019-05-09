@@ -12,8 +12,8 @@ public class Ranges2 implements Iterable<Range> {
 
     // set is ordered by increasing distance to next node (Node is a linked list)
     private final TreeSet<Node> set;
-    private Node ranges;
-    private int count;
+    private Node ranges; // in descending order of ranges e.g. Range(5,7) -> Range(1,3)
+    private int count; // count of items in ranges
 
     public Ranges2(int bufferSize) {
         Preconditions.checkArgument(bufferSize > 1);
@@ -23,7 +23,8 @@ public class Ranges2 implements Iterable<Range> {
     }
 
     public void add(Range r) {
-        Preconditions.checkArgument(ranges == null || ranges.value.high() < r.low());
+        Preconditions.checkArgument(ranges == null || ranges.value.high() < r.low(),
+                "ranges must be added in increasing order and without overlap");
         Node node = new Node(r);
         count++;
         if (ranges == null) {
@@ -46,6 +47,7 @@ public class Ranges2 implements Iterable<Range> {
 
                 // first.previous will not be null because distance was present to be in set
                 Range joined = first.value.join(first.previous().value);
+
                 Node n = new Node(joined);
                 // link and recalculate distance (won't change because the lower bound of the
                 // new ranges is the same as the lower bound of the range of first)
