@@ -1,146 +1,131 @@
 package org.davidmoten.hilbert;
 
-import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.TreeSet;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
+import com.github.davidmoten.guavamini.Lists;
 import com.github.davidmoten.guavamini.Preconditions;
 
-//immutable
-public final class Ranges {
+// NotThreadSafe
+public class Ranges implements Iterable<Range> {
 
-    private final List<Range> ranges;
+    private final int bufferSize;
 
-    Ranges(List<Range> ranges) {
-        this.ranges = ranges;
-    }
+    // set is ordered by increasing distance to next node (Node is a linked list)
+    private final TreeSet<Node> set;
+    private Node ranges; // in descending order of ranges e.g. Range(5,7) -> Range(1,3)
+    private int count; // count of items in ranges
 
-    public static Ranges create() {
-        return new Ranges(new ArrayList<>());
-    }
-
-    static Builder builder() {
-        return new Builder(new ArrayList<>());
-    }
-
-    static final class Builder {
-
-        private List<Range> ranges;
-
-        Builder(List<Range> ranges) {
-            this.ranges = ranges;
+    Ranges(int bufferSize) {
+        Preconditions.checkArgument(bufferSize >= 0);
+        this.bufferSize = bufferSize;
+        this.ranges = null;
+        if (bufferSize == 0) {
+            // save on allocations
+            this.set = null;
+        } else {
+            this.set = new TreeSet<>();
         }
-
-        void add(long value) {
-            int modifiedIndex = -1;
-            for (int i = 0; i < ranges.size(); i++) {
-                Range range = ranges.get(i);
-                if (range.contains(value)) {
-                    throw new RuntimeException("unexpected");
-                } else if (range.low() == value + 1) {
-                    ranges.set(i, new Range(value, range.high()));
-                    modifiedIndex = i;
-                    break;
-                } else if (range.high() == value - 1) {
-                    ranges.set(i, new Range(range.low(), value));
-                    modifiedIndex = i;
-                    break;
-                } else if (value < range.low()) {
-                    ranges.add(i, new Range(value, value));
-                    modifiedIndex = i;
-                    break;
-                }
-            }
-            if (modifiedIndex == -1) {
-                ranges.add(new Range(value, value));
-            } else if (modifiedIndex < ranges.size() - 1) {
-                Range modified = ranges.get(modifiedIndex);
-                Range r = ranges.get(modifiedIndex + 1);
-                if (modified.high() == r.low() - 1) {
-                    // join the two Range objects
-                    ranges.set(modifiedIndex, new Range(modified.low(), r.high()));
-                    ranges.remove(modifiedIndex + 1);
-                }
-            }
-        }
-
-        Ranges build() {
-            return new Ranges(ranges);
-        }
-    }
-
-    public List<Range> get() {
-        return ranges;
     }
 
     public Ranges add(long low, long high) {
-        Builder b = new Ranges.Builder(ranges);
-        // TODO this is inefficient (but only used in unit tests)
-        for (long i = low; i <= high; i++) {
-            b.add(i);
-        }
-        return b.build();
+        Preconditions.checkArgument(low <= high);
+        add(Range.create(low, high));
+        return this;
     }
 
-    public Ranges join(int n) {
-        Preconditions.checkArgument(n >= 0);
-        if (n == 0) {
-            return this;
+    public Ranges add(Range r) {
+        Preconditions.checkArgument(ranges == null || ranges.value.high() < r.low(),
+                "ranges must be added in increasing order and without overlap");
+        Node node = new Node(r);
+        count++;
+        if (ranges == null) {
+            ranges = node;
+        } else if (bufferSize == 0) {
+            node.setNext(ranges);
         } else {
-            // TODO replace this with an efficient algorithm like a Max Heap which is kept
-            // at size k so runtime complexity is O(n + klogk)
-            Ranges r = this;
-            for (int i = 0; i < n; i++) {
-                r = r.joinOnePair();
-            }
-            return r;
-        }
-    }
+            // and set new head and recalculate distance for ranges
+            node.setNext(ranges);
 
-    private Ranges joinOnePair() {
-        // find the smallest gap and join those ranges
-        int smallestGapIndex = -1;
-        {
-            long smallestGap = Long.MAX_VALUE;
-            for (int i = 1; i < ranges.size(); i++) {
-                long gap = ranges.get(i).low() - ranges.get(i - 1).high();
-                if (gap < smallestGap) {
-                    smallestGap = gap;
-                    smallestGapIndex = i - 1;
+            // add old head to set (now that the distanceToPrevious has been calculated)
+            set.add(ranges);
+
+            ranges = node;
+
+            if (count > bufferSize) {
+                // remove node from set with least distance to next node
+                Node first = set.pollFirst();
+
+                // replace that node in linked list (ranges) with a new Node
+                // that has the concatenation of that node with previous node's range
+                // also remove its predecessor
+
+                // first.previous will not be null because distance was present to be in set
+                Range joined = first.value.join(first.previous().value);
+
+                Node n = new Node(joined);
+                // link and recalculate distance (won't change because the lower bound of the
+                // new ranges is the same as the lower bound of the range of first)
+                if (first.next() != null) {
+                    n.setNext(first.next());
                 }
+                // link and calculate the distance for n
+                Node firstPrevious = first.previous();
+                if (firstPrevious == ranges) {
+                    ranges = n;
+                } else {
+                    first.previous().previous().setNext(n);
+                }
+
+                // clear pointers from first to help gc out
+                // there new gen to old gen promotion can cause problems
+                first.clearForGc();
+
+                // we have reduced number of nodes in list so reduce count
+                count--;
             }
         }
-        if (smallestGapIndex != -1) {
-            List<Range> list = new ArrayList<>(ranges.size() - 1);
-            for (int i = 0; i < smallestGapIndex; i++) {
-                list.add(ranges.get(i));
-            }
-            list.add(Range.create(//
-                    ranges.get(smallestGapIndex).low(), ranges.get(smallestGapIndex + 1).high()));
-            for (int i = smallestGapIndex + 2; i < ranges.size(); i++) {
-                list.add(ranges.get(i));
-            }
-            return new Ranges(list);
-        } else {
-            return this;
-        }
+        return this;
     }
 
-    public int size() {
-        return ranges.size();
+    @Override
+    public Iterator<Range> iterator() {
+        return new Iterator<Range>() {
+
+            Node r = ranges;
+
+            @Override
+            public boolean hasNext() {
+                return r != null;
+            }
+
+            @Override
+            public Range next() {
+                Range v = r.value;
+                r = r.next();
+                return v;
+            }
+
+        };
     }
 
     public Stream<Range> stream() {
-        return ranges.stream();
+        return StreamSupport.stream(this.spliterator(), false);
     }
 
-    public long totalLength() {
-        return ranges //
-                .stream() //
-                .map(x -> x.high() - x.low() + 1) //
-                .collect(Collectors.reducing((x, y) -> x + y)) //
-                .orElse(0L);
+    public void println() {
+        forEach(System.out::println);
+    }
+
+    public int size() {
+        return count;
+    }
+
+    public List<Range> toList() {
+        return Lists.newArrayList(this);
     }
 
 }

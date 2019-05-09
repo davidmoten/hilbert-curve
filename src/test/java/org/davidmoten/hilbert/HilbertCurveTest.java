@@ -12,7 +12,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.BitSet;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Assert;
@@ -274,34 +273,8 @@ public class HilbertCurveTest {
     }
 
     @Test
-    public void testSplitOnHigh() {
-        List<Range> list = new Range(3, 7).split(1);
-        System.out.println(list);
-        assertEquals(Lists.newArrayList( //
-                Range.create(3, 3), Range.create(4, 7)), list);
-    }
-
-    @Test
-    public void testSplitOnLow() {
-        List<Range> list = new Range(3, 6).split(1);
-        System.out.println(list);
-        assertEquals(Lists.newArrayList( //
-                Range.create(3, 3), //
-                Range.create(4, 6)), list);
-    }
-
-    @Test
-    public void testSplitOnMiddle() {
-        List<Range> list = new Range(5, 10).split(1);
-        System.out.println(list);
-        assertEquals(Lists.newArrayList( //
-                Range.create(5, 7), //
-                Range.create(8, 10)), list);
-    }
-
-    @Test
     public void testSmallQueryPerimeterAlgorithm() {
-        Ranges2 r = small.query(point(0, 0), point(1, 1));
+        Ranges r = small.query(point(0, 0), point(1, 1));
         assertEquals(1, r.size());
         assertEquals(Range.create(0, 3), r.toList().get(0));
     }
@@ -369,7 +342,7 @@ public class HilbertCurveTest {
         SmallHilbertCurve c = HilbertCurve.small().bits(5).dimensions(2);
         long[] a = new long[] { 0, 0 };
         long[] b = new long[] { 31, 31 };
-        Ranges2 r = c.query(a, b);
+        Ranges r = c.query(a, b);
         assertEquals(Lists.newArrayList(Range.create(0, 1023)), r.toList());
     }
 
@@ -378,8 +351,8 @@ public class HilbertCurveTest {
         SmallHilbertCurve c = HilbertCurve.small().bits(4).dimensions(2);
         long[] a = new long[] { 1, 1 };
         long[] b = new long[] { 7, 4 };
-        Ranges2 result = c.query(a, b);
-        Ranges2 expected = new Ranges2(0).add(2, 2) //
+        Ranges result = c.query(a, b);
+        Ranges expected = new Ranges(0).add(2, 2) //
                 .add(6, 13) //
                 .add(17, 18) //
                 .add(22, 32) //
@@ -407,7 +380,7 @@ public class HilbertCurveTest {
         SmallHilbertCurve c = HilbertCurve.small().bits(5).dimensions(2);
         long[] point1 = new long[] { 3, 3 };
         long[] point2 = new long[] { 8, 10 };
-        Ranges2 ranges = c.query(point1, point2, 1);
+        Ranges ranges = c.query(point1, point2, 1);
         assertEquals(Lists.newArrayList(Range.create(10, 229)), ranges.toList());
     }
 
@@ -416,7 +389,7 @@ public class HilbertCurveTest {
         SmallHilbertCurve c = HilbertCurve.small().bits(5).dimensions(2);
         long[] point1 = new long[] { 3, 3 };
         long[] point2 = new long[] { 8, 10 };
-        Ranges2 ranges = c.query(point1, point2, 0);
+        Ranges ranges = c.query(point1, point2, 0);
         ranges.stream().forEach(System.out::println);
     }
 
@@ -425,7 +398,7 @@ public class HilbertCurveTest {
         SmallHilbertCurve c = HilbertCurve.small().bits(5).dimensions(2);
         long[] point1 = new long[] { 3, 3 };
         long[] point2 = new long[] { 8, 10 };
-        Ranges2 ranges = c.query(point1, point2, 3);
+        Ranges ranges = c.query(point1, point2, 3);
         ranges.stream().forEach(System.out::println);
     }
 
@@ -434,7 +407,7 @@ public class HilbertCurveTest {
         SmallHilbertCurve c = HilbertCurve.small().bits(5).dimensions(2);
         long[] point1 = new long[] { 3, 3 };
         long[] point2 = new long[] { 8, 10 };
-        Ranges2 ranges = c.query(point1, point2, 6);
+        Ranges ranges = c.query(point1, point2, 6);
         ranges.stream().forEach(System.out::println);
     }
 

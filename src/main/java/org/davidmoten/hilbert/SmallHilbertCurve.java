@@ -121,11 +121,11 @@ public final class SmallHilbertCurve {
      * @param b
      *            the opposing vertex to a
      */
-    public Ranges2 query(long[] a, long[] b) {
+    public Ranges query(long[] a, long[] b) {
         return query(a, b, 0, 0);
     }
 
-    public Ranges2 query(long[] a, long[] b, int maxRanges) {
+    public Ranges query(long[] a, long[] b, int maxRanges) {
         if (maxRanges == 0) {
             return query(a, b, 0, 0);
         } else {
@@ -133,7 +133,7 @@ public final class SmallHilbertCurve {
         }
     }
 
-    public Ranges2 query(long[] a, long[] b, int maxRanges, int bufferSize) {
+    public Ranges query(long[] a, long[] b, int maxRanges, int bufferSize) {
         Preconditions.checkArgument(maxRanges >= 0);
         Preconditions.checkArgument(bufferSize >= maxRanges, "bufferSize must be greater than or equal to maxRanges");
         if (maxRanges == 0) {
@@ -148,7 +148,7 @@ public final class SmallHilbertCurve {
         });
         Collections.sort(list);
         int i = 0;
-        Ranges2 ranges = new Ranges2(bufferSize);
+        Ranges ranges = new Ranges(bufferSize);
         long rangeStart = -1;
         while (true) {
             if (i == list.size()) {
@@ -179,7 +179,7 @@ public final class SmallHilbertCurve {
         if (ranges.size() <= maxRanges) {
             return ranges;
         } else {
-            Ranges2 r = new Ranges2(maxRanges);
+            Ranges r = new Ranges(maxRanges);
             for (Range range : ranges) {
                 r.add(range);
             }

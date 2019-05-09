@@ -1,10 +1,5 @@
 package org.davidmoten.hilbert;
 
-import java.util.Collections;
-import java.util.List;
-
-import com.github.davidmoten.guavamini.Lists;
-
 public final class Range {
 
     private final long low;
@@ -33,53 +28,6 @@ public final class Range {
 
     public boolean contains(long value) {
         return low <= value && value <= high;
-    }
-
-    public List<Range> split() {
-        if (low == high) {
-            return Collections.singletonList(this);
-        }
-        long x = Util.mostSignificantBetween(low + 1, high + 1) - 1;
-        if (x == low) {
-            return Lists.newArrayList(Range.create(low, low), Range.create(low + 1, high));
-        } else {
-            return Lists.newArrayList(Range.create(low, x), Range.create(x + 1, high));
-        }
-    }
-
-    public List<Range> split(int n) {
-        if (n == 0) {
-            return Collections.singletonList(this);
-        } else if (n == 1) {
-            return split();
-        }
-        List<Range> split = split();
-        if (split.size() == 1) {
-            return split;
-        } else {
-            List<Range> result = Lists.newArrayList();
-            for (Range range : split()) {
-                result.addAll(range.split(n - 1));
-            }
-            return result;
-        }
-    }
-
-    static List<Range> simplify(List<Range> list) {
-        // mutates list!
-        Collections.sort(list, (a, b) -> Long.compare(a.low(), b.low()));
-        int i = 1;
-        while (i < list.size()) {
-            Range previous = list.get(i - 1);
-            Range current = list.get(i);
-            if (previous.high() >= current.low() - 1) {
-                list.set(i - 1, Range.create(previous.low(), current.high()));
-                list.remove(i);
-            } else {
-                i++;
-            }
-        }
-        return list;
     }
 
     @Override

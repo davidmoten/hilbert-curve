@@ -60,11 +60,11 @@ final class Node implements Comparable<Node> {
         return "Node [value=" + value + ", next=" + next + ", previous=" + previous + "]";
     }
 
-    public void setDistanceToPrevious(long distance) {
+    void setDistanceToPrevious(long distance) {
         this.distanceToPrevious = distance;
     }
 
-    public void clearForGc() {
+    void clearForGc() {
         next = null;
         previous = null;
     }
