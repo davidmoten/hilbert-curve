@@ -103,11 +103,11 @@ public final class SmallHilbertCurve {
     }
 
     public long maxOrdinate() {
-        return 1 << bits - 1;
+        return (1 << bits) - 1;
     }
     
     public long maxIndex() {
-        return 1 << (bits * dimensions) - 1;
+        return (1 << (bits * dimensions)) - 1;
     }
 
     /////////////////////////////////////////////////
