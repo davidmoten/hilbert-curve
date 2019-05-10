@@ -14,6 +14,7 @@ Features
 * method chaining
 * renders in 2-dimensions
 * benchmarked with `jmh`
+* [efficiently finds Hilbert curve index ranges for bounding box queries(#querying-n-dimensional-space)
 
 Status: *deployed to Maven Central*
 
