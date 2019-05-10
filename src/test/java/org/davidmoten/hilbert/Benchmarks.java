@@ -106,6 +106,7 @@ public class Benchmarks {
     }
 
     private static final class Query {
+    	//query sydney region from whole world for one hour from midday from a day
         float lat1 = -33.806477f;
         float lon1 = 151.181767f;
         long minTime = 1510779675000L;
