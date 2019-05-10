@@ -13,8 +13,7 @@ public class Benchmarks {
     private static final long N = 1L << BITS - 1;
     private static final int DIMENSIONS = 5;
     private static final HilbertCurve c = HilbertCurve.bits(BITS).dimensions(DIMENSIONS);
-    private static final SmallHilbertCurve small = HilbertCurve.small().bits(BITS)
-            .dimensions(DIMENSIONS);
+    private static final SmallHilbertCurve small = HilbertCurve.small().bits(BITS).dimensions(DIMENSIONS);
     private static final long[] point = new long[DIMENSIONS];
     private static final List<long[]> points = createPoints();
 
@@ -101,6 +100,11 @@ public class Benchmarks {
         return query.query();
     }
 
+    @Benchmark
+    public Ranges querySydneyMaxRanges8() {
+        return query.query(8);
+    }
+
     private static final class Query {
         float lat1 = -33.806477f;
         float lon1 = 151.181767f;
@@ -119,6 +123,10 @@ public class Benchmarks {
 
         Ranges query() {
             return h.query(point1, point2);
+        }
+
+        Ranges query(int maxRanges) {
+            return h.query(point1, point2, maxRanges);
         }
     }
 
