@@ -142,5 +142,10 @@ public class Ranges implements Iterable<Range> {
     public List<Range> toList() {
         return Lists.newArrayList(this);
     }
+    
+    @Override
+    public String toString() {
+    	return toList().toString();
+    }
 
 }

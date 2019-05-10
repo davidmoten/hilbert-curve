@@ -353,6 +353,7 @@ public class HilbertCurveTest {
 			int windowMinutes = 60;
 			p2[2] = h.maxOrdinate() * (12 * 60 + windowMinutes) / (24 * 60);
 			int rangesCount = h.query(p1, p2).size();
+			System.out.println(h.query(p1, p2));
 			long t = System.currentTimeMillis();
 			int count = h.query(p1, p2, maxRanges).size();
 			System.out.println("sydney query in 3 dimensions, 10 bits, for one hour at midday took "
