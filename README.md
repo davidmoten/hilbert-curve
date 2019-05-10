@@ -266,22 +266,22 @@ mvn clean install -P benchmark
 
 Result 7 May 2019,
 
-Oracle Java 1.8u201, Intel® Core™ i5-6200U CPU @ 2.30GHz:
+Oracle Java 1.8u201, Intel® Xeon(R) CPU-E51650 v2 @ 3.50GHz:
 ```
-Benchmark                                         Mode  Cnt     Score     Error  Units
-Benchmarks.pointSmallTimes512                   thrpt   10   6480.408 ±  57.225  ops/s
-Benchmarks.pointSmallTimes512LowAllocation      thrpt   10   8375.837 ± 229.945  ops/s
-Benchmarks.pointTimes512                        thrpt   10   5737.713 ±  80.470  ops/s
-Benchmarks.pointTimes512LowAllocation           thrpt   10   5889.068 ±  64.913  ops/s
-Benchmarks.querySydney                          thrpt   10  44580.045 ± 995.428  ops/s
-Benchmarks.roundTripSmallTimes512               thrpt   10   3705.171 ± 504.435  ops/s
-Benchmarks.roundTripSmallTimes512LowAllocation  thrpt   10   4535.697 ± 263.668  ops/s
-Benchmarks.roundTripTimes512                    thrpt   10   2899.455 ±  42.558  ops/s
-Benchmarks.roundTripTimes512LowAllocation       thrpt   10   3001.715 ±  94.521  ops/s
-Benchmarks.toIndexTimes512                      thrpt   10   6285.027 ±  61.203  ops/s
-Benchmarks.toIndexTimes512Small                 thrpt   10   8300.984 ± 114.932  ops/s
+Benchmark                                        Mode  Cnt      Score     Error  Units
+Benchmarks.pointSmallTimes512                   thrpt   10   7053.853 ± 195.516  ops/s
+Benchmarks.pointSmallTimes512LowAllocation      thrpt   10  10300.849 ± 231.470  ops/s
+Benchmarks.pointTimes512                        thrpt   10   6461.033 ± 241.782  ops/s
+Benchmarks.pointTimes512LowAllocation           thrpt   10   6382.470 ±  95.981  ops/s
+Benchmarks.querySydney                          thrpt   10  52377.208 ± 619.063  ops/s
+Benchmarks.querySydneyMaxRanges8                thrpt   10  48068.992 ± 902.004  ops/s
+Benchmarks.roundTripSmallTimes512               thrpt   10   4128.441 ±  54.041  ops/s
+Benchmarks.roundTripSmallTimes512LowAllocation  thrpt   10   5174.301 ±  70.768  ops/s
+Benchmarks.roundTripTimes512                    thrpt   10   3196.380 ±  32.564  ops/s
+Benchmarks.roundTripTimes512LowAllocation       thrpt   10   3191.937 ±  48.420  ops/s
+Benchmarks.toIndexTimes512                      thrpt   10   6410.679 ± 291.534  ops/s
+Benchmarks.toIndexTimes512Small                 thrpt   10   8375.023 ± 412.324  ops/s
 ```
-
 Credits
 ----------
 Primary credit goes to John Skilling for his article "Programming the Hilbert curve" (American Institue of Physics (AIP) Conf. Proc. 707, 381 (2004)).
