@@ -105,7 +105,7 @@ public final class SmallHilbertCurve {
     public long maxOrdinate() {
         return (1 << bits) - 1;
     }
-    
+
     public long maxIndex() {
         return (1 << (bits * dimensions)) - 1;
     }
@@ -116,7 +116,8 @@ public final class SmallHilbertCurve {
 
     /**
      * Returns a list of index ranges exactly covering the region bounded by
-     * {@code a} and {@code b}.
+     * {@code a} and {@code b}. The list will be in increasing order of the range
+     * bounds (there should be no overlaps).
      * 
      * @param a
      *            one vertex of the region

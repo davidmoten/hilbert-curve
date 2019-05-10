@@ -10,8 +10,11 @@ import java.io.PrintStream;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
+import java.util.List;
+import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Assert;
@@ -432,6 +435,59 @@ public class HilbertCurveTest {
 
     private static long[] point(long... values) {
         return values;
+    }
+
+    @Test
+    public void testMaxIndex() {
+        SmallHilbertCurve h = HilbertCurve.small().bits(3).dimensions(2);
+        assertEquals(63, h.maxIndex());
+    }
+
+    @Test
+    public void testMaxOrdinate() {
+        SmallHilbertCurve h = HilbertCurve.small().bits(3).dimensions(2);
+        assertEquals(7, h.maxOrdinate());
+    }
+
+    @Test
+    public void bruteForceTestOfWholeDomain2DQueries() {
+        for (int bits = 2; bits <= 4; bits++) {
+            SmallHilbertCurve h = HilbertCurve.small().bits(bits).dimensions(2);
+            TreeSet<Long> indexes = new TreeSet<>();
+            List<Range> list = new ArrayList<>((int) h.maxIndex());
+            for (int i = 0; i <= h.maxOrdinate(); i++) {
+                for (int j = 0; j <= h.maxOrdinate(); j++) {
+                    for (int k = 0; k <= h.maxOrdinate(); k++) {
+                        for (int l = 0; l <= h.maxOrdinate(); l++) {
+                            long[] a = new long[] { i, j };
+                            long[] b = new long[] { k, l };
+                            Ranges ranges = h.query(a, b);
+                            indexes.clear();
+                            Box box = new Box(a, b);
+                            box.visitCells(cell -> indexes.add(h.index(cell)));
+                            list.clear();
+                            long rangeStart = indexes.pollFirst();
+                            long rangeEnd = rangeStart;
+                            while (true) {
+                                Long v = indexes.pollFirst();
+                                if (v == null) {
+                                    list.add(Range.create(rangeStart, rangeEnd));
+                                    break;
+                                }
+                                if (v == rangeEnd + 1) {
+                                    rangeEnd = v;
+                                } else {
+                                    list.add(Range.create(rangeStart, rangeEnd));
+                                    rangeStart = v;
+                                    rangeEnd = v;
+                                }
+                            }
+                            assertEquals(list, ranges.toList());
+                        }
+                    }
+                }
+            }
+        }
     }
 
 }
