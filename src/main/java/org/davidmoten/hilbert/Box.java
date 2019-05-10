@@ -26,8 +26,6 @@ final class Box {
         return "Box [" + Arrays.toString(a) + ", " + Arrays.toString(b) + "]";
     }
 
-    // TODO not used yet but good for unit testing (e.g. ensuring that the cells
-    // reported by the perimiter algorithm match those reported by visit all cells
     void visitCells(Consumer<? super long[]> visitor) {
         long[] mins = mins(a, b);
         long[] maxes = maxes(a, b);

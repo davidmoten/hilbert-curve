@@ -115,19 +115,36 @@ public final class SmallHilbertCurve {
     ////////////////////////////////////////////////
 
     /**
-     * Returns a list of index ranges exactly covering the region bounded by
-     * {@code a} and {@code b}. The list will be in increasing order of the range
-     * bounds (there should be no overlaps).
+     * Returns index ranges exactly covering the region bounded by {@code a} and
+     * {@code b}. The list will be in increasing order of the range bounds (there
+     * should be no overlaps).
      * 
      * @param a
      *            one vertex of the region
      * @param b
      *            the opposing vertex to a
+     * @return ranges
      */
     public Ranges query(long[] a, long[] b) {
         return query(a, b, 0, 0);
     }
 
+    /**
+     * Returns index ranges covering the region bounded by {@code a} and {@code b}.
+     * The list will be in increasing order of the range bounds (there should be no
+     * overlaps). The index ranges may cover a larger region than the search box
+     * because the set of exact covering ranges will have been reduced by joining
+     * ranges with minimal gaps. The buffer size used by this method is 1024.
+     * 
+     * @param a
+     *            one vertex of the region
+     * @param b
+     *            the opposing vertex to a
+     * @param maxRanges
+     *            the maximum number of ranges to be returned. If 0 then all ranges
+     *            are returned.
+     * @return ranges
+     */
     public Ranges query(long[] a, long[] b, int maxRanges) {
         if (maxRanges == 0) {
             return query(a, b, 0, 0);
@@ -136,6 +153,30 @@ public final class SmallHilbertCurve {
         }
     }
 
+    /**
+     * Returns index ranges covering the region bounded by {@code a} and {@code b}.
+     * The list will be in increasing order of the range bounds (there should be no
+     * overlaps). The index ranges may cover a larger region than the search box
+     * because the set of exact covering ranges will have been reduced by joining
+     * ranges with minimal gaps. A buffer of ranges is used and has a size that is
+     * generally speaking a fair bit larger than maxRanges to increase the
+     * probability that minimal extra coverage be returned.
+     * 
+     * @param a
+     *            one vertex of the region
+     * @param b
+     *            the opposing vertex to a
+     * @param maxRanges
+     *            the maximum number of ranges to be returned. If 0 then all ranges
+     *            are returned.
+     * @param bufferSize
+     *            the buffer size of ranges to use. A larger buffer size will
+     *            increase the probability that ranges have been joined optimally
+     *            (we want to join ranges that have minimal gaps to minimize the
+     *            resultant extra coverage). If 0 is passed to bufferSize then all
+     *            ranges will be buffered before shrinking to maxRanges.
+     * @return
+     */
     public Ranges query(long[] a, long[] b, int maxRanges, int bufferSize) {
         Preconditions.checkArgument(maxRanges >= 0);
         Preconditions.checkArgument(bufferSize >= maxRanges, "bufferSize must be greater than or equal to maxRanges");
@@ -143,6 +184,8 @@ public final class SmallHilbertCurve {
             // unlimited
             bufferSize = 0;
         }
+        // this is the implementation of the Perimiter Algorithm mentioned in README.md
+        
         Box box = new Box(a, b);
         List<Long> list = new ArrayList<>();
         box.visitPerimeter(cell -> {
