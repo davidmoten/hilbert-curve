@@ -450,7 +450,7 @@ public class HilbertCurveTest {
     }
 
     @Test
-    public void bruteForceTestOfWholeDomain2DQueries() {
+    public void exhaustiveTestOfWholeDomain2DQueries() {
         for (int bits = 2; bits <= 4; bits++) {
             SmallHilbertCurve h = HilbertCurve.small().bits(bits).dimensions(2);
             TreeSet<Long> indexes = new TreeSet<>();
@@ -463,6 +463,8 @@ public class HilbertCurveTest {
                             long[] b = new long[] { k, l };
                             Ranges ranges = h.query(a, b);
                             indexes.clear();
+                            
+                            //use a box visitor to check that the ranges are correct
                             Box box = new Box(a, b);
                             box.visitCells(cell -> indexes.add(h.index(cell)));
                             list.clear();
