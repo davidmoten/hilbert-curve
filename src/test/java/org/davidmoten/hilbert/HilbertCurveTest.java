@@ -66,7 +66,8 @@ public class HilbertCurveTest {
 					if (j != n - 1)
 						out.print("\t");
 				}
-				out.println();
+				// don't use println because test may fail on Windows
+				out.print("\n");
 			}
 			out.close();
 			String actual = new String(Files.readAllBytes(new File("target/indexes-2d-bits-" + bits + ".txt").toPath()),
