@@ -172,7 +172,7 @@ The boundary of an d-dimensional region is a number of (d-1) dimensional *faces*
 
 For a cube of side `w` in `d` dimensions the runtime complexity of obtaining the ranges is
 
-    O(d(d-1)w<sup>d-1</sup>log(w))
+&nbsp;&nbsp;&nbsp;&nbsp;O(d(d-1)w<sup>d-1</sup>log(w))
 
 #### Query examples
 Note that for the moment range queries have been implemented for the `SmallHilbertCurve` only. Raise an issue if you need them for the `HilbertCurve` object as well.
