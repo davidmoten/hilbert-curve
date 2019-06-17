@@ -148,12 +148,12 @@ HilbertCurveRenderer.renderToFile(bits, 800, "target/image.png");
 ### Querying N-dimensional space
 This is one of the very useful applications of the Hilbert curve. By mapping n-dimensional space onto 1 dimension we enable the use of range lookups on that 1 dimension using a B-tree or binary search. A search region represented as a box in n-dimensions can be mapped to a series of ranges on the hilbert curve. 
 
-#### Perimeter algorithm for finding ranges
+#### Boundary algorithm for finding ranges
 Given an n-dimensional search region **the exact hilbert curve ranges that cover the search box can be determined just by looking at the hilbert curve values on the perimeter (boundary) of the region**. *I didn't manage to find any discussion of this very useful fact on the web and am confused as to why this isn't covered in an accessible way somewhere. Surely this is not an unpublished discovery (because it's a pretty trivial one to come across). Let me know if you find discussion of this technique elsewhere!*
 
 Let's first establish why this is so.
 
-##### Perimeter algorithm proof
+##### Boundary algorithm proof
 
 **Lemma 1:** *The points corresponding to 0 on the hilbert curve and the maximum on the hilbert curve are vertices of the domain*. 
 
@@ -165,7 +165,14 @@ Let's first establish why this is so.
 
 With these facts we can create an algorithm for extracting the exact ranges. The hilbert curve values of the perimeter (an `n-1` dimensional surface) of a search box are calculated and put in a sorted list L. Then the values in L are paired with each other into ranges (and concatenated if they are adjacent) starting with the lowest value in L and checking if the next hop along the Hilbert curve in increasing value is on the perimeter, in the box or on the outside of the box. If the next value is outside the search box then we close the current range. If the value is on the perimeter then we add that value to the range and close off the range. If the value is strictly inside the search box then the next value in L must be where the curve exits (see Lemma 2) and we can add that value to the range and close it off. We continue adding ranges using the values in L and concatenate ranges when they are adjacent.
 
-Note that a simplification for 2 dimensions may exist in that the list L doesn't need to be sorted but rather the minimum index on the perimeter found and then travel in which ever direction along the perimeter that has the closest initial index to that minimum index.
+Note that a simplification for 2 dimensions *may* exist in that the list L doesn't need to be sorted but rather the minimum index on the perimeter found and then travel in which ever direction along the perimeter that has the closest initial index to that minimum index.
+
+##### Boundary algorithm runtime complexity
+The boundary of an d-dimensional region is a number of (d-1) dimensional *faces*. The number of such faces is `2d`.  
+
+For a cube of side `w` in `d` dimensions the runtime complexity of obtaining the ranges is
+
+    O(d(d-1)w<sup>d-1</sup>log(w))
 
 #### Query examples
 Note that for the moment range queries have been implemented for the `SmallHilbertCurve` only. Raise an issue if you need them for the `HilbertCurve` object as well.
