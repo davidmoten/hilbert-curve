@@ -308,3 +308,7 @@ Dave Moten's contribution:
 * lots of unit tests
 * made a simple easy-to-read API (hopefully)
 * supplement with utilities for using a Hilbert Index with bounding box searches
+
+References
+-----------
+Lawder, Jonathan K., and Peter J. H. King. "Querying multi-dimensional data indexed using the Hilbert space-filling curve." ACM Sigmod Record 30.1 (2001): 19-24.
