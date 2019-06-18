@@ -151,7 +151,7 @@ This is one of the very useful applications of the Hilbert curve. By mapping n-d
 #### Boundary algorithm for finding ranges
 Given an n-dimensional search region **the exact hilbert curve ranges that cover the search box can be determined just by looking at the hilbert curve values on the perimeter (boundary) of the region**. *I didn't manage to find any discussion of this very useful fact on the web and am confused as to why this isn't covered in an accessible way somewhere. Surely this is not an unpublished discovery (because it's simple to show and seems obvious in retrospect). Let me know if you find discussion of this technique elsewhere!*
 
-Let's first establish why this is so.
+Let's prove this statement:
 
 ##### Boundary algorithm proof
 
