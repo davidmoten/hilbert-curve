@@ -170,9 +170,9 @@ Having proved the relationship of the boundary to the ranges we can create an al
 Note that a simplification for 2 dimensions *may* exist in that the list L doesn't need to be sorted but rather the minimum index on the perimeter found and then travel in which ever direction along the perimeter that has the closest initial index to that minimum index.
 
 ##### Boundary algorithm runtime complexity
-The boundary of an d-dimensional region is a number of (d-1) dimensional *faces*. The number of such faces is `2d`.  
+The boundary of a d-dimensional region is comprised of `2d` *faces* each having `d-1` dimensions.
 
-For a cube of side `w` in `d` dimensions the runtime complexity of obtaining the ranges is
+For a cube of side `w` in `d` dimensions the runtime complexity of obtaining the ranges is:
 
 &nbsp;&nbsp;&nbsp;&nbsp;O(d(d-1)w<sup>d-1</sup>log(w))
 
