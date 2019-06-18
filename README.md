@@ -167,7 +167,7 @@ Let's prove this statement:
 
 Having proved the relationship of the boundary to the ranges we can create an algorithm for extracting the exact ranges. The hilbert curve values of the perimeter (an `n-1` dimensional surface) of a search box are calculated and put in a sorted list L. Then the values in L are paired with each other into ranges (and concatenated if they are adjacent) starting with the lowest value in L and checking if the next hop along the Hilbert curve in increasing value is on the perimeter, in the box or on the outside of the box. If the next value is outside the search box then we close the current range. If the value is on the perimeter then we add that value to the range and close off the range. If the value is strictly inside the search box then the next value in L must be where the curve exits (see Lemma 2) and we can add that value to the range and close it off. We continue adding ranges using the values in L and concatenate ranges when they are adjacent.
 
-TODO amend the above description a bit to reflect how it is implemented in code
+TODO amend the above description a bit to reflect how it is implemented in code (which is more efficient)
 
 Note that a simplification for 2 dimensions *may* exist in that the list L doesn't need to be sorted but rather the minimum index on the perimeter found and then travel in which ever direction along the perimeter that has the closest initial index to that minimum index.
 
@@ -178,7 +178,7 @@ For a cube of side `w` in `d` dimensions the runtime complexity of obtaining the
 
 &nbsp;&nbsp;&nbsp;&nbsp;O(d(d-1)w<sup>d-1</sup>log(w))
 
-This is a clear improvement on the traditional range finding algorithm proposed by Lawder and King in [Querying Multi-dimensional Data Indexed Using the Hilbert Space-Filling Curve](https://sigmodrecord.org/publications/sigmodRecord/0103/3.lawder.pdf) which appears to be O(w<sup>d</sup>).
+This is a clear improvement on the traditional range finding algorithm proposed by Lawder and King in [Querying Multi-dimensional Data Indexed Using the Hilbert Space-Filling Curve](https://sigmodrecord.org/publications/sigmodRecord/0103/3.lawder.pdf) which appears to be at least O(w<sup>d</sup>).
 
 #### Query examples
 Note that for the moment range queries have been implemented for the `SmallHilbertCurve` only. Raise an issue if you need them for the `HilbertCurve` object as well.
