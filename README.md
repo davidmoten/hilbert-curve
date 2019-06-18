@@ -149,7 +149,7 @@ HilbertCurveRenderer.renderToFile(bits, 800, "target/image.png");
 This is one of the very useful applications of the Hilbert curve. By mapping n-dimensional space onto 1 dimension we enable the use of range lookups on that 1 dimension using a B-tree or binary search. A search region represented as a box in n-dimensions can be mapped to a series of ranges on the hilbert curve. 
 
 #### Boundary algorithm for finding ranges
-Given an n-dimensional search region **the exact hilbert curve ranges that cover the search box can be determined just by looking at the hilbert curve values on the perimeter (boundary) of the region**. *I didn't manage to find any discussion of this very useful fact on the web and am confused as to why this isn't covered in an accessible way somewhere. Surely this is not an unpublished discovery (because it's simple to show and seems obvious in retrospect). Let me know if you find discussion of this technique elsewhere!*
+Given an n-dimensional search region **the exact hilbert curve ranges that cover the search region can be determined just by looking at the hilbert curve values on the perimeter (boundary) of the region**. *I didn't manage to find any discussion of this very useful fact on the web and am confused as to why this isn't covered in an accessible way somewhere. Surely this is not an unpublished discovery (because it's simple to show and seems obvious in retrospect). Let me know if you find discussion of this technique elsewhere!*
 
 Let's prove this statement:
 
