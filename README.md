@@ -178,7 +178,7 @@ For a cube of side `w` in `d` dimensions the runtime complexity of obtaining the
 
 &nbsp;&nbsp;&nbsp;&nbsp;O(d(d-1)w<sup>d-1</sup>log(w))
 
-This is a clear improvement on the traditional range finding algorithm proposed by Lawder and King in [Querying Multi-dimensional Data Indexed Using the Hilbert Space-Filling Curve](https://sigmodrecord.org/publications/sigmodRecord/0103/3.lawder.pdf) which appears to be at least O(w<sup>d</sup>).
+TODO assess runtime complexity of range finding algorithm proposed by Lawder and King in [Querying Multi-dimensional Data Indexed Using the Hilbert Space-Filling Curve](https://sigmodrecord.org/publications/sigmodRecord/0103/3.lawder.pdf).
 
 #### Query examples
 Note that for the moment range queries have been implemented for the `SmallHilbertCurve` only. Raise an issue if you need them for the `HilbertCurve` object as well.
