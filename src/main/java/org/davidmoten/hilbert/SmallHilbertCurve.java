@@ -171,7 +171,7 @@ public final class SmallHilbertCurve {
      *                   minimize the resultant extra coverage). If 0 is passed to
      *                   bufferSize then all ranges will be buffered before
      *                   shrinking to maxRanges.
-     * @return
+     * @return ranges
      */
     public Ranges query(long[] a, long[] b, int maxRanges, int bufferSize) {
         Preconditions.checkArgument(maxRanges >= 0);
