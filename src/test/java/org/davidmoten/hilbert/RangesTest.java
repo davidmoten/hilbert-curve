@@ -52,6 +52,24 @@ public class RangesTest {
         r.add(Range.create(5, 6));
         r.add(Range.create(1, 2));
     }
+    
+    @Test
+    public void testIssue5() {
+        SmallHilbertCurve c = HilbertCurve.small().bits(5).dimensions(2);
+        long[] point1 = new long[] { 3, 3 };
+        long[] point2 = new long[] { 8, 10 };
+        // return just one range
+        {
+            int maxRanges = 1;
+            Ranges ranges = c.query(point1, point2, maxRanges);
+            checkIs(ranges, 10, 229);
+        }
+        {
+            int maxRanges = 2;
+            Ranges ranges = c.query(point1, point2, maxRanges);
+            checkIs(ranges, 10, 10, 26, 229);
+        }
+    }
 
     private void checkIs(Ranges r, int... ords) {
         List<Range> list = new ArrayList<>();

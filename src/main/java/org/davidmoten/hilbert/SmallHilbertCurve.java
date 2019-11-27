@@ -181,7 +181,7 @@ public final class SmallHilbertCurve {
             // unlimited
             bufferSize = 0;
         }
-        // this is the implementation of the Perimiter Algorithm mentioned in README.md
+        // this is the implementation of the Perimeter Algorithm mentioned in README.md
 
         Box box = new Box(a, b);
         List<Long> list = new ArrayList<>();
