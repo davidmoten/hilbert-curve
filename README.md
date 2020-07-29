@@ -20,6 +20,8 @@ Status: *deployed to Maven Central*
 
 Maven [reports](https://davidmoten.github.io/hilbert-curve/index.html) including [javadocs](https://davidmoten.github.io/hilbert-curve/apidocs/index.html)
 
+See also [sparse-hilbert-index](https://github.com/davidmoten/sparse-hilbert-index).
+
 Background
 -------------
 A [Hilbert curve](https://en.wikipedia.org/wiki/Hilbert_curve) is a continuous fractal space-filling curve first described by David Hilbert in 1891.
