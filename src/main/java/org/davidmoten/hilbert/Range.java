@@ -86,27 +86,4 @@ public final class Range implements Comparable<Range>{
             }
         }
     }
-    
-    public static void main(String[] args) {
-        ArrayList<Range> list = new ArrayList<>();
-        list.add(new Range(100,1000));
-        list.add(new Range(10,700));
-        list.add(new Range(10000,12000));
-        list.add(new Range(10000,10850));
-        list.add(new Range(1,5));
-        list.add(new Range(250,450));
-        list.add(new Range(100,500));
-        list.add(new Range(99,312));
-        list.add(new Range(100,150));
-        Iterator<Range> i =list.iterator();
-        while (i.hasNext()) {
-            System.out.println(i.next().toString());
-        }
-        System.out.println("===================");
-        Collections.sort(list);
-        i = list.iterator();
-        while (i.hasNext()) {
-            System.out.println(i.next().toString());
-        }   
-    }
 }
