@@ -1,6 +1,10 @@
 package org.davidmoten.hilbert;
 
-public final class Range {
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+
+public final class Range implements Comparable<Range>{
 
     private final long low;
     private final long high;
@@ -64,4 +68,45 @@ public final class Range {
         return Range.create(Math.min(low, range.low), Math.max(high, range.high));
     }
 
+    @Override
+    public int compareTo(Range o) {
+        long x = this.low()-o.low();
+        if (x<0) {
+            return -1;
+        } else if (x>0) {
+            return 1;
+        } else {
+            long y = this.high()-o.high();
+            if (y<0) {
+                return -1;
+            } else if (y>0) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    }
+    
+    public static void main(String[] args) {
+        ArrayList<Range> list = new ArrayList<>();
+        list.add(new Range(100,1000));
+        list.add(new Range(10,700));
+        list.add(new Range(10000,12000));
+        list.add(new Range(10000,10850));
+        list.add(new Range(1,5));
+        list.add(new Range(250,450));
+        list.add(new Range(100,500));
+        list.add(new Range(99,312));
+        list.add(new Range(100,150));
+        Iterator<Range> i =list.iterator();
+        while (i.hasNext()) {
+            System.out.println(i.next().toString());
+        }
+        System.out.println("===================");
+        Collections.sort(list);
+        i = list.iterator();
+        while (i.hasNext()) {
+            System.out.println(i.next().toString());
+        }   
+    }
 }
