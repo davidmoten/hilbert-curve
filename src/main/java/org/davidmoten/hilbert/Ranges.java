@@ -27,7 +27,7 @@ public class Ranges implements Iterable<Range> {
     private Node last;
     private int count; // count of items in ranges
 
-    Ranges(int bufferSize) {
+    public Ranges(int bufferSize) {
         Preconditions.checkArgument(bufferSize >= 0);
         this.bufferSize = bufferSize;
         this.ranges = null;
