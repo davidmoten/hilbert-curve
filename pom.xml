@@ -8,7 +8,7 @@
         <version>0.1</version>
     </parent>
     <artifactId>hilbert-curve</artifactId>
-    <version>0.2.2</version>
+    <version>0.2.3-SNAPSHOT</version>
     <name>${project.artifactId}</name>
     <description>Utilities for transforming distance along N-dimensional Hilbert Curve to a point and back</description>
     <packaging>jar</packaging>
@@ -74,7 +74,7 @@
         <connection>scm:git:https://github.com/davidmoten/hilbert-curve.git</connection>
         <developerConnection>scm:git:https://github.com/davidmoten/hilbert-curve.git</developerConnection>
         <url>scm:git:https://github.com:davidmoten/hilbert-curve.git</url>
-        <tag>0.2.2</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <dependencies>
