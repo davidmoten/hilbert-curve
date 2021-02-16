@@ -22,7 +22,6 @@
         <jmh.version>1.25.2</jmh.version>
         <exec.version>1.6.0</exec.version>
 
-        <cobertura.version>2.7</cobertura.version>
         <checkstyle.version>3.0.0</checkstyle.version>
         <findbugs.version>2.5.4</findbugs.version>
         <javadoc.version>3.0.1</javadoc.version>
