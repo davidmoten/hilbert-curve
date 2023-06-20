@@ -264,13 +264,13 @@ public final class HilbertCurve {
     // single number.
     @VisibleForTesting
     BigInteger toIndex(long... transposedIndex) {
-        byte[] b = new byte[length];
+        byte[] b = new byte[length / 8 + 1];
         int bIndex = length - 1;
         long mask = 1L << (bits - 1);
         for (int i = 0; i < bits; i++) {
             for (int j = 0; j < transposedIndex.length; j++) {
                 if ((transposedIndex[j] & mask) != 0) {
-                    b[length - 1 - bIndex / 8] |= 1 << (bIndex % 8);
+                    b[b.length - 1 - bIndex / 8] |= 1 << (bIndex % 8);
                 }
                 bIndex--;
             }
