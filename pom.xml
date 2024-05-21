@@ -20,7 +20,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.target>1.8</maven.compiler.target>
         <jmh.version>1.37</jmh.version>
-        <exec.version>3.2.0</exec.version>
+        <exec.version>3.3.0</exec.version>
 
         <checkstyle.version>3.3.1</checkstyle.version>
         <findbugs.version>2.5.4</findbugs.version>
