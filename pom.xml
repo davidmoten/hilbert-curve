@@ -22,7 +22,7 @@
         <jmh.version>1.37</jmh.version>
         <exec.version>3.3.0</exec.version>
 
-        <checkstyle.version>3.3.1</checkstyle.version>
+        <checkstyle.version>3.4.0</checkstyle.version>
         <findbugs.version>2.5.4</findbugs.version>
         <javadoc.version>3.7.0</javadoc.version>
         <pmd.version>3.22.0</pmd.version>
